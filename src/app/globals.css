@@ -124,12 +124,16 @@
 }
 
 @keyframes ticker-scroll {
-  0% {
+  from {
     transform: translateX(0);
   }
-  100% {
-    transform: translateX(-50%);
+  to {
+    transform: translateX(var(--ticker-width, -50%));
   }
+}
+
+.ticker-scroll {
+  animation: ticker-scroll 30s linear infinite;
 }
 
 @keyframes pulse-glow {
@@ -170,4 +174,19 @@
 
 .animate-confetti {
   animation: confetti-fall 2s ease-in forwards;
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.7s ease-out forwards;
 }

@@ -3,7 +3,7 @@
  * GCASH DONATIONS API
  * ============================================================================
  * Handles GCash donation submissions from both guests and authenticated users.
- * Includes receipt upload and verification workflow.
+ * Uses gcash_donations table columns: amount_php, reference_number, status, notes
  * ============================================================================
  */
 
@@ -18,31 +18,22 @@ import { authOptions } from '@/lib/auth';
 
 /**
  * POST /api/donations/gcash
- * Submit a GCash donation with receipt.
+ * Submit a GCash donation.
  * Can be used by both authenticated users and guests.
- * 
- * Request Body:
- * - campaign_id: UUID of the campaign
- * - amount: Donation amount in PHP
- * - receipt_url: URL of uploaded receipt image
- * - gcash_reference: GCash transaction reference number
- * - donor_name: Name for guest donations (optional if authenticated)
- * - donor_email: Email for guest donations (optional if authenticated)
- * - message: Optional message with donation
  */
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions) as Session | null;
     const body = await request.json();
-    
-    const { 
-      campaign_id, 
-      amount, 
-      receipt_url, 
+
+    const {
+      campaign_id,
+      amount,
       gcash_reference,
       donor_name,
       donor_email,
-      message = null 
+      message = null,
+      is_anonymous = false,
     } = body;
 
     // Validate required fields
@@ -60,9 +51,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!receipt_url) {
+    if (amount < 20) {
       return NextResponse.json(
-        { success: false, message: 'Receipt image is required' },
+        { success: false, message: 'Minimum donation amount is \u20b120' },
         { status: 400 }
       );
     }
@@ -75,6 +66,9 @@ export async function POST(request: NextRequest) {
     }
 
     // For guest donations, name and email are required
+    const finalDonorName = donor_name || session?.user?.name || '';
+    const finalDonorEmail = donor_email || session?.user?.email || '';
+
     if (!session?.user?.email && (!donor_name || !donor_email)) {
       return NextResponse.json(
         { success: false, message: 'Name and email are required for guest donations' },
@@ -82,7 +76,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Verify campaign exists and accepts GCash
+    // Verify campaign exists and is active
     const { data: campaign, error: campaignError } = await supabase
       .from('donation_campaigns')
       .select('*')
@@ -97,18 +91,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!campaign.accepts_gcash) {
-      return NextResponse.json(
-        { success: false, message: 'This campaign does not accept GCash donations' },
-        { status: 400 }
-      );
-    }
-
     // Check for duplicate reference number (prevent double submission)
     const { data: existingDonation } = await supabase
       .from('gcash_donations')
       .select('id')
-      .eq('gcash_reference', gcash_reference)
+      .eq('reference_number', gcash_reference)
       .single();
 
     if (existingDonation) {
@@ -118,8 +105,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get user ID if authenticated
-    let userId = null;
+    // Check if authenticated user is banned
     if (session?.user?.email) {
       const { data: userData } = await supabase
         .from('users')
@@ -133,22 +119,26 @@ export async function POST(request: NextRequest) {
           { status: 403 }
         );
       }
-      userId = userData?.id;
     }
 
+    // Build notes field (includes anonymous flag and optional message)
+    let notes: string | null = '';
+    if (is_anonymous) notes += '[ANONYMOUS] ';
+    if (message) notes += message.substring(0, 500);
+    notes = notes.trim() || null;
+
     // Create the donation record (pending verification)
+    // Column names match gcash_donations table schema exactly
     const { data: donation, error: donationError } = await supabase
       .from('gcash_donations')
       .insert({
-        user_id: userId,
         campaign_id: campaign_id,
-        amount: amount,
-        receipt_url: receipt_url,
-        gcash_reference: gcash_reference,
-        donor_name: donor_name || session?.user?.name,
-        donor_email: donor_email || session?.user?.email,
-        message: message?.substring(0, 500),
-        verification_status: 'pending',
+        amount_php: amount,
+        reference_number: gcash_reference,
+        donor_name: finalDonorName,
+        donor_email: finalDonorEmail,
+        notes: notes,
+        status: 'pending',
       })
       .select()
       .single();
@@ -156,16 +146,24 @@ export async function POST(request: NextRequest) {
     if (donationError) throw donationError;
 
     // Log audit entry if user is authenticated
-    if (userId) {
-      await supabase
-        .from('audit_logs')
-        .insert({
-          actor_id: userId,
-          action: 'gcash_donation_submitted',
-          entity_type: 'donation_campaigns',
-          entity_id: campaign_id,
-          new_values: { amount, gcash_reference },
-        });
+    if (session?.user?.email) {
+      const { data: userData } = await supabase
+        .from('users')
+        .select('id')
+        .eq('email', session.user.email)
+        .single();
+
+      if (userData) {
+        await supabase
+          .from('audit_logs')
+          .insert({
+            actor_id: userData.id,
+            action: 'gcash_donation_submitted',
+            entity_type: 'donation_campaigns',
+            entity_id: campaign_id,
+            new_values: { amount, reference_number: gcash_reference },
+          });
+      }
     }
 
     return NextResponse.json({
@@ -175,7 +173,7 @@ export async function POST(request: NextRequest) {
         id: donation.id,
         amount: amount,
         status: 'pending',
-        campaign: campaign.title,
+        campaign: campaign.name,
       },
     });
 
@@ -191,6 +189,7 @@ export async function POST(request: NextRequest) {
 /**
  * GET /api/donations/gcash
  * Get user's GCash donation history (authenticated only).
+ * Looks up by donor_email since gcash_donations has no user_id column.
  */
 export async function GET(request: NextRequest) {
   try {
@@ -202,31 +201,17 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Get user ID
-    const { data: userData, error: userError } = await supabase
-      .from('users')
-      .select('id')
-      .eq('email', session.user.email)
-      .single();
-
-    if (userError || !userData) {
-      return NextResponse.json(
-        { success: false, message: 'User not found' },
-        { status: 404 }
-      );
-    }
-
-    // Get donations with campaign info
+    // Get donations by donor email (no user_id column on gcash_donations)
     const { data: donations, error: donationsError } = await supabase
       .from('gcash_donations')
       .select(`
         *,
         donation_campaigns (
           id,
-          title
+          name
         )
       `)
-      .eq('user_id', userData.id)
+      .eq('donor_email', session.user.email)
       .order('created_at', { ascending: false });
 
     if (donationsError) throw donationsError;

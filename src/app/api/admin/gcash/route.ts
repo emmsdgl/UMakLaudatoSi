@@ -13,9 +13,26 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import type { Session } from 'next-auth';
-import { supabase } from "@/lib/supabase";
+import { supabaseAdmin } from "@/lib/supabase-admin";
 import { validateAdminSession, hasPermission, logAdminAction } from "@/lib/adminAuth";
 import { authOptions } from "@/lib/auth";
+
+// Use admin client for all DB operations (bypasses RLS)
+const supabase = supabaseAdmin;
+
+/**
+ * Donation amount → pledge points tiers
+ */
+function getPointsForDonation(amount: number): number {
+  if (amount >= 300) return 30;
+  if (amount >= 200) return 20;
+  if (amount >= 151) return 15;
+  if (amount >= 101) return 10;
+  if (amount >= 81) return 8;
+  if (amount >= 51) return 5;
+  if (amount >= 20) return 3;
+  return 0;
+}
 
 /**
  * GET - Fetch GCash donations with optional filters
@@ -177,7 +194,7 @@ export async function PUT(request: Request) {
     // Get donation to check status and get campaign info
     const { data: donation, error: fetchError } = await supabase
       .from("gcash_donations")
-      .select("*, campaign:campaign_id (id, current_amount, current_points)")
+      .select("*")
       .eq("id", id)
       .single();
     
@@ -214,21 +231,33 @@ export async function PUT(request: Request) {
       );
     }
     
-    // If verified, update campaign total (convert pesos to points: 1 peso = 1 point)
-    if (action === "verify" && donation.campaign) {
-      const donationAmount = donation.amount || donation.amount_php || 0;
-      const currentAmount = donation.campaign.current_amount || donation.campaign.current_points || 0;
-      const newTotal = currentAmount + donationAmount;
-      
-      await supabase
-        .from("donation_campaigns")
-        .update({ 
-          current_amount: newTotal,
-          current_points: newTotal 
-        })
-        .eq("id", donation.campaign_id);
+    // If verified, update campaign total and award pledge points to donor
+    let pointsAwarded = 0;
+    if (action === "verify") {
+      const donationAmount = Number(donation.amount_php) || 0;
+
+      // Note: campaign totals are computed dynamically from donation tables,
+      // so no need to update current_points here.
+
+      // Award pledge points to donor based on amount tier
+      // Look up user by donor_email (gcash_donations has no user_id column)
+      pointsAwarded = getPointsForDonation(donationAmount);
+      if (pointsAwarded > 0 && donation.donor_email) {
+        const { data: userData } = await supabase
+          .from("users")
+          .select("id, total_points")
+          .eq("email", donation.donor_email)
+          .single();
+
+        if (userData) {
+          await supabase
+            .from("users")
+            .update({ total_points: (userData.total_points || 0) + pointsAwarded })
+            .eq("id", userData.id);
+        }
+      }
     }
-    
+
     // Log admin action
     await logAdminAction(
       adminCheck.user.id,
@@ -236,16 +265,17 @@ export async function PUT(request: Request) {
       "gcash_donation",
       id,
       {
-        amount: donation.amount || donation.amount_php,
+        amount: donation.amount_php,
         donor: donation.donor_name || donation.donor_email,
+        points_awarded: pointsAwarded > 0 ? pointsAwarded : undefined,
         reason: reason || undefined,
       }
     );
-    
+
     return NextResponse.json({
       success: true,
-      message: action === "verify" 
-        ? "Donation verified successfully" 
+      message: action === "verify"
+        ? `Donation verified successfully${pointsAwarded > 0 ? `. ${pointsAwarded} pledge points awarded to donor.` : ''}`
         : "Donation rejected",
     });
   } catch (error) {

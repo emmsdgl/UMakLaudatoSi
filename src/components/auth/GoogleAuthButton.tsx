@@ -32,7 +32,7 @@ export function GoogleAuthButton() {
         <Button
           onClick={handleSignIn}
           disabled={isLoading}
-          className="w-full h-14 bg-white hover:bg-gray-50 text-[#2C2C2C] font-body text-base rounded-xl shadow-lg border-2 border-[#D4A574]/30 transition-all flex items-center justify-center gap-3"
+          className="w-full h-14 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-[#2C2C2C] dark:text-gray-100 font-body text-base rounded-xl shadow-lg border-2 border-[#D4A574]/30 dark:border-[#D4A574]/20 transition-all flex items-center justify-center gap-3"
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24">
             <path
@@ -57,7 +57,7 @@ export function GoogleAuthButton() {
       </motion.div>
       
       <p className="text-center text-sm text-muted-foreground mt-4 font-body">
-        <span className="font-mono text-[#4A6B5C]">@umak.edu.ph</span> users get full access.
+        <span className="font-mono text-[#4A6B5C] dark:text-[#8BC68C]">@umak.edu.ph</span> users get full access.
         <br />Guests can make one pledge.
       </p>
     </motion.div>

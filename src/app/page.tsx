@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import { Header } from "@/components/common/Header";
 import { ThreePlant } from "@/components/plant/ThreePlant";
 import { ContributorTicker } from "@/components/plant/ContributorTicker";
+import { DonationTicker } from "@/components/plant/DonationTicker";
 import { GrowthProgressBar } from "@/components/plant/GrowthProgressBar";
 import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
 import { DailyLimitMessage } from "@/components/common/DailyLimitMessage";
@@ -51,12 +52,29 @@ function isUMakUser(email: string | null | undefined): boolean {
  */
 const ADMIN_ROLES = ['admin', 'canteen_admin', 'finance_admin', 'sa_admin', 'super_admin'];
 
+function getPlantStage(count: number): PlantStage {
+  if (count >= 500) return 'tree';
+  if (count >= 100) return 'plant';
+  if (count >= 10) return 'sprout';
+  return 'seed';
+}
+
 export default function Page() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { contributions: realtimeContributions, loading: contributionsLoading } = useRealtimeContributions();
   const { plantStats, loading: statsLoading } = useRealtimePlantStats();
-  
+
+  // Dev mode: activate with ?dev=true in URL
+  const [isDevMode, setIsDevMode] = useState(false);
+  const [devContributions, setDevContributions] = useState<number | null>(null);
+  const [devSeason, setDevSeason] = useState<Season | null>(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setIsDevMode(params.get('dev') === 'true');
+  }, []);
+
   // Guest pledge state (no longer used - all users go to dashboard)
   const [showGuestPledge, setShowGuestPledge] = useState(false);
   const [guestHasPledged, setGuestHasPledged] = useState(false);
@@ -117,8 +135,11 @@ export default function Page() {
     setTimeout(() => setShowMilestone(false), 2500);
   }, []);
 
-  const contributions = plantStats?.total_contributions || 0;
-  const plantStage = plantStats?.current_stage || "seed";
+  // Dev mode overrides real values for preview
+  const realContributions = plantStats?.total_contributions || 0;
+  const contributions = isDevMode && devContributions !== null ? devContributions : realContributions;
+  const plantStage = isDevMode && devContributions !== null ? getPlantStage(devContributions) : (plantStats?.current_stage || "seed");
+  const effectiveSeason = isDevMode && devSeason ? devSeason : season;
   const maxContributions = 1000;
   const milestones = [10, 50, 100, 200, 500];
 
@@ -126,6 +147,8 @@ export default function Page() {
   const formattedContributors = realtimeContributions.map((contrib: any) => ({
     id: contrib.id,
     name: contrib.users?.name || "Anonymous",
+    pledge: contrib.pledge_text || null,
+    _isNew: contrib._isNew || false,
     timestamp: new Date(contrib.created_at),
   }));
 
@@ -152,7 +175,7 @@ export default function Page() {
             contributors={formattedContributors}
             stage={plantStage as PlantStage}
             timeOfDay={timeOfDay}
-            season={season}
+            season={effectiveSeason}
           />
 
           {/* Stage indicator */}
@@ -160,9 +183,9 @@ export default function Page() {
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full border border-[#D4A574]/30 shadow-sm"
+              className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm px-4 py-2 rounded-full border border-[#D4A574]/30 dark:border-[#D4A574]/20 shadow-sm"
             >
-              <span className="font-display text-sm text-[#4A6B5C] capitalize">
+              <span className="font-display text-sm text-[#4A6B5C] dark:text-[#8BC68C] capitalize">
                 Stage: {plantStage}
               </span>
             </motion.div>
@@ -180,6 +203,9 @@ export default function Page() {
 
         {/* Contributor Ticker */}
         <ContributorTicker contributors={formattedContributors} />
+
+        {/* Donation Ticker */}
+        <DonationTicker />
 
         {/* Main Content Area */}
         <section className="flex-1 flex items-center justify-center px-4 py-8 md:py-12">
@@ -209,7 +235,7 @@ export default function Page() {
                   transition={{ delay: 0.1 }}
                   className="mb-8"
                 >
-                  <h2 className="font-display text-3xl md:text-4xl text-[#2C2C2C] mb-4">
+                  <h2 className="font-display text-3xl md:text-4xl text-[#2C2C2C] dark:text-gray-100 mb-4">
                     Join the Growth
                   </h2>
                   <p className="font-body text-muted-foreground text-lg">
@@ -250,6 +276,83 @@ export default function Page() {
         guestEmail={session?.user?.email || undefined}
       />
 
+      {/* Dev Controls Panel — activate with ?dev=true */}
+      {isDevMode && (
+        <div className="fixed bottom-4 right-4 z-50 bg-black/90 text-white p-4 rounded-xl shadow-2xl w-72 font-mono text-xs space-y-3 border border-green-500/30">
+          <div className="flex items-center justify-between">
+            <span className="text-green-400 font-bold text-sm">DEV CONTROLS</span>
+            <span className="text-gray-400">Stage: {plantStage}</span>
+          </div>
+
+          {/* Contributions slider */}
+          <div>
+            <div className="flex justify-between mb-1">
+              <span className="text-gray-400">Contributions</span>
+              <span className="text-green-300">{contributions}</span>
+            </div>
+            <input
+              type="range"
+              min={0}
+              max={1200}
+              value={devContributions ?? realContributions}
+              onChange={(e) => setDevContributions(Number(e.target.value))}
+              className="w-full accent-green-500"
+            />
+          </div>
+
+          {/* Preset buttons */}
+          <div className="flex flex-wrap gap-1">
+            {[
+              { label: "Seed (0)", val: 0 },
+              { label: "Sprout (10)", val: 10 },
+              { label: "Plant (100)", val: 100 },
+              { label: "Tree (500)", val: 500 },
+              { label: "Full (1000)", val: 1000 },
+            ].map((p) => (
+              <button
+                key={p.val}
+                onClick={() => setDevContributions(p.val)}
+                className={`px-2 py-1 rounded text-xs border ${
+                  contributions === p.val
+                    ? "bg-green-600 border-green-400 text-white"
+                    : "bg-gray-800 border-gray-600 text-gray-300 hover:bg-gray-700"
+                }`}
+              >
+                {p.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Season override */}
+          <div>
+            <span className="text-gray-400 block mb-1">Season</span>
+            <div className="flex gap-1">
+              {(["Spring", "Summer", "Autumn", "Winter"] as Season[]).map((s) => (
+                <button
+                  key={s}
+                  onClick={() => setDevSeason(s)}
+                  className={`px-2 py-1 rounded text-xs border flex-1 ${
+                    effectiveSeason === s
+                      ? "bg-green-600 border-green-400 text-white"
+                      : "bg-gray-800 border-gray-600 text-gray-300 hover:bg-gray-700"
+                  }`}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Reset button */}
+          <button
+            onClick={() => { setDevContributions(null); setDevSeason(null); }}
+            className="w-full py-1 bg-gray-700 hover:bg-gray-600 rounded text-gray-300 border border-gray-500"
+          >
+            Reset to Live Data
+          </button>
+        </div>
+      )}
+
       {/* Milestone celebration overlay */}
       <AnimatePresence>
         {showMilestone && (
@@ -267,8 +370,8 @@ export default function Page() {
               transition={{ type: "spring", bounce: 0.5 }}
               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
             >
-              <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-8 shadow-2xl border border-[#C8E86C] text-center">
-                <h3 className="font-display text-3xl text-[#4A6B5C] mb-2">
+              <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-2xl p-8 shadow-2xl border border-[#C8E86C] text-center">
+                <h3 className="font-display text-3xl text-[#4A6B5C] dark:text-[#8BC68C] mb-2">
                   🎉 Thank You!
                 </h3>
                 <p className="font-body text-muted-foreground">

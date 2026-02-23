@@ -63,52 +63,55 @@ export default function RanksPage() {
     setLoading(true);
 
     try {
-      // Fetch top users by points (using only existing columns)
-      const { data, error } = await supabase
-        .from('users')
-        .select('id, name, email, avatar_url, total_points')
-        .gt('total_points', 0)
-        .order('total_points', { ascending: false })
-        .limit(100);
+      // Map time filter to API period param
+      const periodMap: Record<TimeFilter, string> = {
+        weekly: 'weekly',
+        monthly: 'monthly',
+        alltime: 'all',
+      };
 
-      if (error) throw error;
+      // Fetch leaderboard via API route (bypasses RLS)
+      const res = await fetch(`/api/leaderboard?type=points&period=${periodMap[timeFilter]}&limit=100`);
+      const json = await res.json();
 
-      // Add rank to each user and map avatar_url to image
-      const rankedUsers = (data || []).map((user, index) => ({
-        ...user,
-        image: user.avatar_url, // Map avatar_url to image for compatibility
-        current_streak: 0, // Default value since column doesn't exist yet
-        rank: index + 1,
-        trend: ['up', 'down', 'same'][Math.floor(Math.random() * 3)] as 'up' | 'down' | 'same', // Mock trend data
+      if (!json.success) throw new Error(json.message);
+
+      const rankedUsers = (json.data || []).map((user: any) => ({
+        id: user.user_id,
+        name: user.name,
+        email: '',
+        image: user.avatar_url,
+        total_points: user.total,
+        current_streak: 0,
+        rank: user.rank,
+        trend: 'same' as const,
       }));
 
       setLeaderboard(rankedUsers);
 
-      // Find current user's position
+      // Find current user's position using direct query (SELECT works with anon key)
       if (session?.user?.email) {
-        const userPosition = rankedUsers.find(u => u.email === session.user?.email);
-        
-        if (userPosition) {
-          setCurrentUser(userPosition);
-        } else {
-          // User not in top 100, fetch their data
-          const { data: userData } = await supabase
-            .from('users')
-            .select('id, name, email, avatar_url, total_points')
-            .eq('email', session.user.email)
-            .single();
+        const { data: userData } = await supabase
+          .from('users')
+          .select('id, name, email, avatar_url, total_points')
+          .eq('email', session.user.email)
+          .single();
 
-          if (userData) {
-            // Get their actual rank
+        if (userData) {
+          // Check if user is already in the leaderboard
+          const existingPos = rankedUsers.find((u: any) => u.id === userData.id);
+          if (existingPos) {
+            setCurrentUser(existingPos);
+          } else {
             const { count } = await supabase
               .from('users')
               .select('*', { count: 'exact', head: true })
-              .gt('total_points', userData.total_points);
+              .gt('total_points', userData.total_points || 0);
 
             setCurrentUser({
               ...userData,
               image: userData.avatar_url,
-              current_streak: 0, // Default value since column doesn't exist
+              current_streak: 0,
               rank: (count || 0) + 1,
               trend: 'same',
             });
@@ -120,11 +123,11 @@ export default function RanksPage() {
     } finally {
       setLoading(false);
     }
-  }, [session?.user?.email]);
+  }, [session?.user?.email, timeFilter]);
 
   useEffect(() => {
     fetchLeaderboard();
-  }, [fetchLeaderboard, timeFilter]);
+  }, [fetchLeaderboard]);
 
   /**
    * Get initials from name

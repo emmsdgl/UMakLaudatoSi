@@ -970,7 +970,7 @@ function FloatingMessage({ contributor, position, onComplete }: { contributor: C
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.5, y: -20 }}
         transition={{ duration: 0.5 }}
-        className="bg-white/95 backdrop-blur-md px-4 py-3 rounded-2xl shadow-xl border border-[#C8E86C] min-w-[180px] max-w-[240px] pointer-events-none"
+        className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-md px-4 py-3 rounded-2xl shadow-xl border border-[#C8E86C] dark:border-[#C8E86C]/50 min-w-[180px] max-w-[240px] pointer-events-none"
       >
         <div className="flex items-center gap-2 mb-1">
           <div className="w-6 h-6 rounded-full bg-[#4A6B5C] flex items-center justify-center text-white text-xs font-bold">
@@ -1046,11 +1046,11 @@ function PlantLabel({ visible, onClose }: { visible: boolean, onClose: () => voi
                         initial={{ opacity: 0, y: 10, scale: 0.8 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.8 }}
-                        className="bg-white/90 backdrop-blur-md px-4 py-2 rounded-full shadow-lg border border-[#81C784] flex items-center gap-2 cursor-pointer"
+                        className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md px-4 py-2 rounded-full shadow-lg border border-[#81C784] dark:border-[#81C784]/50 flex items-center gap-2 cursor-pointer"
                         onClick={(e) => { e.stopPropagation(); onClose(); }}
                     >
                         <span className="w-2 h-2 rounded-full bg-[#4CAF50] animate-pulse" />
-                        <span className="font-display text-[#2E7D32] font-bold text-sm whitespace-nowrap">Apple Tree</span>
+                        <span className="font-display text-[#2E7D32] dark:text-[#81C784] font-bold text-sm whitespace-nowrap">Apple Tree</span>
                     </motion.div>
                 )}
             </AnimatePresence>
@@ -1143,7 +1143,7 @@ function RealisticSprout({ onClick }: { onClick: () => void }) {
 function SeasonIndicator({ season }: { season: Season }) {
     return (
         <Html position={[0, -2, 0]} center>
-            <div className="bg-white/50 backdrop-blur px-4 py-1 rounded-full text-xs font-mono tracking-widest text-gray-600 uppercase border border-white/50 shadow-sm">
+            <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur px-4 py-1 rounded-full text-xs font-mono tracking-widest text-gray-600 dark:text-gray-300 uppercase border border-white/50 dark:border-gray-600/50 shadow-sm">
                 {season}
             </div>
         </Html>

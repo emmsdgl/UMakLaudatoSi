@@ -98,33 +98,17 @@ export default function RewardsPage() {
    */
   const fetchData = useCallback(async () => {
     try {
-      // Fetch active rewards
-      const { data: rewardsData, error: rewardsError } = await supabase
-        .from('rewards')
-        .select('*')
-        .eq('is_active', true)
-        .gt('remaining_quantity', 0);
+      // Fetch rewards via API route (bypasses RLS) and user points in parallel
+      const rewardsPromise = fetch('/api/rewards').then(r => r.json());
+      const userPromise = session?.user?.email
+        ? supabase.from('users').select('total_points').eq('email', session.user.email).single()
+        : Promise.resolve({ data: null });
 
-      if (rewardsError) {
-        console.error('Error fetching rewards:', rewardsError);
-        // Rewards table may not exist yet
-        setRewards([]);
-        setFilteredRewards([]);
-      } else {
-        setRewards(rewardsData || []);
-        setFilteredRewards(rewardsData || []);
-      }
+      const [rewardsJson, userResult] = await Promise.all([rewardsPromise, userPromise]);
 
-      // Fetch user points
-      if (session?.user?.email) {
-        const { data: userData } = await supabase
-          .from('users')
-          .select('total_points')
-          .eq('email', session.user.email)
-          .single();
-
-        setUserPoints(userData?.total_points || 0);
-      }
+      setRewards(rewardsJson.rewards || []);
+      setFilteredRewards(rewardsJson.rewards || []);
+      setUserPoints(userResult.data?.total_points || 0);
     } catch (error) {
       console.error('Error fetching rewards:', error);
       toast({

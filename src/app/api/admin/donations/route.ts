@@ -18,6 +18,20 @@ import { validateAdminSession, hasPermission, logAdminAction } from "@/lib/admin
 import { authOptions } from "@/lib/auth";
 
 /**
+ * Donation amount → equivalent pledge points (same tiers as admin/gcash)
+ */
+function getPointsForDonation(amount: number): number {
+  if (amount >= 300) return 30;
+  if (amount >= 200) return 20;
+  if (amount >= 151) return 15;
+  if (amount >= 101) return 10;
+  if (amount >= 81) return 8;
+  if (amount >= 51) return 5;
+  if (amount >= 20) return 3;
+  return 0;
+}
+
+/**
  * GET - List all donation campaigns (including inactive)
  */
 export async function GET(request: NextRequest) {
@@ -55,13 +69,41 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Map database field names to frontend field names for compatibility
-    const mappedCampaigns = (campaigns || []).map(campaign => ({
-      ...campaign,
-      title: campaign.name,
-      goal_amount: campaign.goal_points,
-      current_amount: campaign.current_points,
-    }));
+    // Compute actual totals dynamically from donation tables
+    const mappedCampaigns = await Promise.all(
+      (campaigns || []).map(async (campaign) => {
+        // Sum point donations from point_donations table
+        const { data: pointData } = await supabase
+          .from('point_donations')
+          .select('points_donated')
+          .eq('campaign_id', campaign.id);
+        const pointTotal = pointData?.reduce((sum, d) => sum + (d.points_donated || 0), 0) || 0;
+
+        // Sum verified GCash donations from gcash_donations table
+        const { data: gcashData } = await supabase
+          .from('gcash_donations')
+          .select('amount_php')
+          .eq('campaign_id', campaign.id)
+          .eq('status', 'verified');
+        const gcashTotal = gcashData?.reduce((sum, d) => sum + (Number(d.amount_php) || 0), 0) || 0;
+
+        // Compute GCash equivalent points for campaign progress
+        const gcashEquivalentPoints = (gcashData || []).reduce(
+          (sum, d) => sum + getPointsForDonation(Number(d.amount_php) || 0), 0
+        );
+
+        return {
+          ...campaign,
+          title: campaign.name,
+          goal_amount: campaign.goal_points,
+          // Campaign progress = point donations + GCash equivalent points
+          current_amount: pointTotal + gcashEquivalentPoints,
+          point_donations_total: pointTotal,
+          gcash_total: gcashTotal,
+          gcash_equivalent_points: gcashEquivalentPoints,
+        };
+      })
+    );
 
     return NextResponse.json({
       success: true,

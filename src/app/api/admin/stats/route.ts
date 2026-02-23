@@ -165,15 +165,15 @@ export async function GET(request: NextRequest) {
       const { count: pendingGcash } = await supabase
         .from('gcash_donations')
         .select('*', { count: 'exact', head: true })
-        .eq('verification_status', 'pending');
+        .eq('status', 'pending');
 
       // Total GCash (verified only)
       const { data: gcashData } = await supabase
         .from('gcash_donations')
-        .select('amount')
-        .eq('verification_status', 'verified');
+        .select('amount_php')
+        .eq('status', 'verified');
 
-      const totalGcash = gcashData?.reduce((sum, d) => sum + d.amount, 0) || 0;
+      const totalGcash = gcashData?.reduce((sum, d) => sum + (Number(d.amount_php) || 0), 0) || 0;
 
       stats.donations = {
         activeCampaigns: activeCampaigns || 0,

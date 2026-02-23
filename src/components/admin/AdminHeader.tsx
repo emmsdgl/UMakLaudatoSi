@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
+import { useTheme } from 'next-themes';
 
 interface AdminHeaderProps {
   user: {
@@ -35,24 +36,16 @@ interface AdminHeaderProps {
 }
 
 export default function AdminHeader({ user }: AdminHeaderProps) {
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  // Handle mount for theme
   useEffect(() => {
     setMounted(true);
-    // Check system preference or stored preference
-    const isDark = document.documentElement.classList.contains('dark') ||
-      (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    setTheme(isDark ? 'dark' : 'light');
   }, []);
 
   // Toggle theme
   const toggleTheme = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(newTheme);
-    localStorage.setItem('theme', newTheme);
-    document.documentElement.classList.toggle('dark', newTheme === 'dark');
+    setTheme(theme === 'light' ? 'dark' : 'light');
   };
 
   // Get user initials for avatar fallback

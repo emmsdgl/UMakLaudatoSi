@@ -620,7 +620,7 @@ export default function AdminDonationsPage() {
                     <span className="text-sm">Point Donations</span>
                   </div>
                   <p className="text-2xl font-bold mt-1 text-gray-900 dark:text-white">
-                    {viewingCampaign.current_amount.toLocaleString()} pts
+                    {((viewingCampaign as any).point_donations_total || 0).toLocaleString()} pts
                   </p>
                 </div>
                 <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
@@ -647,7 +647,7 @@ export default function AdminDonationsPage() {
                       className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900/50 rounded-lg"
                     >
                       <div>
-                        <p className="font-medium text-gray-900 dark:text-white">{donation.user?.name || "Anonymous"}</p>
+                        <p className="font-medium text-gray-900 dark:text-white">{donation.user?.name || donation.donor_name || "Anonymous"}</p>
                         <p className="text-sm text-gray-600 dark:text-gray-400">
                           {new Date(donation.created_at).toLocaleString()}
                         </p>

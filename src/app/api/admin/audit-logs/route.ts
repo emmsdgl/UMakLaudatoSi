@@ -90,7 +90,7 @@ export async function GET(request: NextRequest) {
     if (error) throw error;
 
     // Fetch actor (admin) info separately for each unique actor_id
-    const actorIds = [...new Set((logs || []).map(l => l.actor_id).filter(Boolean))];
+    const actorIds = Array.from(new Set((logs || []).map(l => l.actor_id).filter(Boolean)));
     let actorsMap: Record<string, { id: string; name: string; email: string; role: string }> = {};
 
     if (actorIds.length > 0) {

@@ -41,7 +41,6 @@ import {
 } from '@/components/ui/dialog';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/components/ui/use-toast';
-import { supabase } from '@/lib/supabase';
 import QRCode from 'react-qr-code';
 
 interface Redemption {
@@ -85,52 +84,18 @@ export default function WalletPage() {
   const [qrError, setQrError] = useState<string | null>(null);
 
   /**
-   * Fetch user's redemptions
+   * Fetch user's redemptions via API route (bypasses RLS)
    */
   const fetchRedemptions = useCallback(async () => {
     if (!session?.user?.email) return;
 
     try {
-      // Get user ID first
-      const { data: userData } = await supabase
-        .from('users')
-        .select('id')
-        .eq('email', session.user.email)
-        .single();
+      const res = await fetch('/api/wallet');
+      const json = await res.json();
 
-      if (!userData) return;
+      if (!json.success) throw new Error(json.message);
 
-      // Get redemptions with reward details
-      const { data, error } = await supabase
-        .from('redemptions')
-        .select(`
-          id,
-          redemption_code,
-          points_spent,
-          status,
-          expires_at,
-          created_at,
-          verified_at,
-          rewards (
-            id,
-            name,
-            description,
-            image_url,
-            category
-          )
-        `)
-        .eq('user_id', userData.id)
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-
-      // Transform data to handle Supabase's single object response for joins
-      const transformedData = (data || []).map((item: any) => ({
-        ...item,
-        reward: item.rewards, // Supabase returns joined data directly
-      })).filter((item: any) => item.reward) as Redemption[];
-
-      setRedemptions(transformedData);
+      setRedemptions(json.redemptions || []);
     } catch (error) {
       console.error('Error fetching redemptions:', error);
       toast({

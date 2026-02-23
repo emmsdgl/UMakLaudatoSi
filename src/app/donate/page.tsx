@@ -4,22 +4,21 @@
  * ============================================================================
  * DONATIONS PAGE
  * ============================================================================
- * Allows users to donate points to campaigns or make GCash donations.
+ * Allows users to donate via GCash to environmental campaigns.
+ * Verified donations award pledge points based on amount tiers.
  * Supports both authenticated users and guest donors.
  * ============================================================================
  */
 
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
-import { Heart, Coins, CreditCard, Target, Users, Clock, Upload } from 'lucide-react';
+import { Heart, CreditCard, Users, Clock, Leaf } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Dialog,
   DialogContent,
@@ -31,7 +30,6 @@ import {
 import { useToast } from '@/components/ui/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Header } from '@/components/common/Header';
-import { supabase } from '@/lib/supabase';
 
 interface Campaign {
   id: string;
@@ -51,27 +49,29 @@ interface Campaign {
   };
 }
 
+/**
+ * Donation amount → pledge points tiers
+ */
+const DONATION_TIERS = [
+  { min: 20, max: 50, points: 3 },
+  { min: 51, max: 80, points: 5 },
+  { min: 81, max: 100, points: 8 },
+  { min: 101, max: 150, points: 10 },
+  { min: 151, max: 199, points: 15 },
+  { min: 200, max: 299, points: 20 },
+  { min: 300, max: Infinity, points: 30 },
+];
+
+function getPointsForAmount(amount: number): number {
+  const tier = DONATION_TIERS.find(t => amount >= t.min && amount <= t.max);
+  return tier?.points || 0;
+}
+
 export default function DonationsPage() {
   const { data: session } = useSession();
   const { toast } = useToast();
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [loading, setLoading] = useState(true);
-  const [userPoints, setUserPoints] = useState(0);
-
-  // Dialog states
-  const [pointsDialog, setPointsDialog] = useState<{
-    open: boolean;
-    campaign: Campaign | null;
-    amount: string;
-    message: string;
-    isAnonymous: boolean;
-  }>({
-    open: false,
-    campaign: null,
-    amount: '',
-    message: '',
-    isAnonymous: false,
-  });
 
   const [gcashDialog, setGcashDialog] = useState<{
     open: boolean;
@@ -81,6 +81,7 @@ export default function DonationsPage() {
     donorName: string;
     donorEmail: string;
     message: string;
+    isAnonymous: boolean;
   }>({
     open: false,
     campaign: null,
@@ -89,6 +90,7 @@ export default function DonationsPage() {
     donorName: '',
     donorEmail: '',
     message: '',
+    isAnonymous: false,
   });
 
   const [donating, setDonating] = useState(false);
@@ -108,79 +110,23 @@ export default function DonationsPage() {
     }
   };
 
-  // Fetch user points
-  const fetchUserPoints = async () => {
-    if (!session?.user?.email) return;
-    const { data } = await supabase
-      .from('users')
-      .select('total_points')
-      .eq('email', session.user.email)
-      .single();
-    if (data) setUserPoints(data.total_points || 0);
-  };
-
   useEffect(() => {
     fetchCampaigns();
   }, []);
 
-  useEffect(() => {
-    if (session?.user?.email) fetchUserPoints();
-  }, [session]);
-
-  // Handle points donation
-  const handlePointsDonation = async () => {
-    if (!pointsDialog.campaign || !pointsDialog.amount) return;
-
-    setDonating(true);
-    try {
-      const response = await fetch('/api/donations', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          campaign_id: pointsDialog.campaign.id,
-          points: parseInt(pointsDialog.amount),
-          is_anonymous: pointsDialog.isAnonymous,
-          message: pointsDialog.message,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        toast({
-          title: 'Thank you! 💚',
-          description: data.message,
-        });
-        setPointsDialog({
-          open: false,
-          campaign: null,
-          amount: '',
-          message: '',
-          isAnonymous: false,
-        });
-        fetchCampaigns();
-        fetchUserPoints();
-      } else {
-        toast({
-          title: 'Donation Failed',
-          description: data.message,
-          variant: 'destructive',
-        });
-      }
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'Failed to process donation',
-        variant: 'destructive',
-      });
-    } finally {
-      setDonating(false);
-    }
-  };
-
   // Handle GCash donation
   const handleGcashDonation = async () => {
     if (!gcashDialog.campaign || !gcashDialog.amount || !gcashDialog.reference) return;
+
+    const amount = parseFloat(gcashDialog.amount);
+    if (amount < 20) {
+      toast({
+        title: 'Minimum Donation',
+        description: 'The minimum donation amount is \u20b120.',
+        variant: 'destructive',
+      });
+      return;
+    }
 
     setDonating(true);
     try {
@@ -189,21 +135,23 @@ export default function DonationsPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           campaign_id: gcashDialog.campaign.id,
-          amount: parseFloat(gcashDialog.amount),
+          amount: amount,
           gcash_reference: gcashDialog.reference,
           donor_name: gcashDialog.donorName || session?.user?.name,
           donor_email: gcashDialog.donorEmail || session?.user?.email,
           message: gcashDialog.message,
-          receipt_url: 'pending', // Would need file upload implementation
+          is_anonymous: gcashDialog.isAnonymous,
+          receipt_url: 'pending',
         }),
       });
 
       const data = await response.json();
 
       if (data.success) {
+        const earnedPoints = getPointsForAmount(amount);
         toast({
-          title: 'Donation Submitted! 💚',
-          description: 'Your GCash donation is pending verification.',
+          title: 'Donation Submitted!',
+          description: `Your GCash donation is pending verification.${earnedPoints > 0 ? ` You'll earn ${earnedPoints} pledge points once verified.` : ''}`,
         });
         setGcashDialog({
           open: false,
@@ -213,6 +161,7 @@ export default function DonationsPage() {
           donorName: '',
           donorEmail: '',
           message: '',
+          isAnonymous: false,
         });
       } else {
         toast({
@@ -240,6 +189,11 @@ export default function DonationsPage() {
     });
   };
 
+  // Live preview of points earned based on current amount input
+  const previewPoints = gcashDialog.amount
+    ? getPointsForAmount(parseFloat(gcashDialog.amount) || 0)
+    : 0;
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-50 to-white dark:from-gray-900 dark:to-gray-800">
       <Header />
@@ -251,23 +205,42 @@ export default function DonationsPage() {
             <Heart className="w-8 h-8 text-pink-500" />
             Donation Campaigns
           </h1>
-          <p className="text-gray-500 mt-2 max-w-2xl mx-auto">
-            Support environmental initiatives at UMak. Donate your earned points or contribute via GCash.
+          <p className="text-gray-500 dark:text-gray-400 mt-2 max-w-2xl mx-auto">
+            Support environmental initiatives at UMak. Donate via GCash and earn pledge points!
           </p>
         </div>
 
-        {/* User Points (if logged in) */}
-        {session && (
-          <div className="flex justify-center mb-6">
-            <div className="inline-flex items-center gap-2 bg-green-100 dark:bg-green-900/40 px-6 py-3 rounded-full">
-              <Coins className="w-5 h-5 text-yellow-500" />
-              <span className="text-lg font-bold text-green-700 dark:text-green-300">
-                {userPoints.toLocaleString()}
-              </span>
-              <span className="text-sm text-gray-500">points available</span>
+        {/* Points Tier Guide */}
+        <Card className="mb-8 border-0 shadow-md bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20">
+          <CardContent className="p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <Leaf className="w-5 h-5 text-green-600 dark:text-green-400" />
+              <h3 className="font-semibold text-green-800 dark:text-green-300">
+                Earn Pledge Points with Your Donation
+              </h3>
             </div>
-          </div>
-        )}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              {DONATION_TIERS.map((tier) => (
+                <div
+                  key={tier.min}
+                  className="bg-white dark:bg-gray-800 rounded-lg p-3 text-center border border-green-200 dark:border-green-800"
+                >
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    {tier.max === Infinity
+                      ? `\u20b1${tier.min}+`
+                      : `\u20b1${tier.min} - \u20b1${tier.max}`}
+                  </p>
+                  <p className="text-lg font-bold text-green-600 dark:text-green-400">
+                    {tier.points} pts
+                  </p>
+                </div>
+              ))}
+            </div>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-3 text-center">
+              Points are awarded after admin verification of your GCash donation.
+            </p>
+          </CardContent>
+        </Card>
 
         {/* Campaigns Grid */}
         {loading ? (
@@ -352,137 +325,30 @@ export default function DonationsPage() {
                   </div>
                 </CardContent>
 
-                <CardFooter className="flex gap-2">
-                  {/* Points Donation Button */}
-                  {session && (
-                    <Button
-                      className="flex-1"
-                      onClick={() =>
-                        setPointsDialog({
-                          open: true,
-                          campaign,
-                          amount: '',
-                          message: '',
-                          isAnonymous: false,
-                        })
-                      }
-                    >
-                      <Coins className="w-4 h-4 mr-2" />
-                      Donate Points
-                    </Button>
-                  )}
-
-                  {/* GCash Donation Button */}
-                  {campaign.accepts_gcash && (
-                    <Button
-                      variant={session ? 'outline' : 'default'}
-                      className="flex-1"
-                      onClick={() =>
-                        setGcashDialog({
-                          open: true,
-                          campaign,
-                          amount: '',
-                          reference: '',
-                          donorName: '',
-                          donorEmail: '',
-                          message: '',
-                        })
-                      }
-                    >
-                      <CreditCard className="w-4 h-4 mr-2" />
-                      GCash
-                    </Button>
-                  )}
+                <CardFooter>
+                  <Button
+                    className="flex-1"
+                    onClick={() =>
+                      setGcashDialog({
+                        open: true,
+                        campaign,
+                        amount: '',
+                        reference: '',
+                        donorName: '',
+                        donorEmail: '',
+                        message: '',
+                        isAnonymous: false,
+                      })
+                    }
+                  >
+                    <CreditCard className="w-4 h-4 mr-2" />
+                    Donate via GCash
+                  </Button>
                 </CardFooter>
               </Card>
             ))}
           </div>
         )}
-
-        {/* Points Donation Dialog */}
-        <Dialog
-          open={pointsDialog.open}
-          onOpenChange={(open) =>
-            setPointsDialog((prev) => ({ ...prev, open }))
-          }
-        >
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Donate Points</DialogTitle>
-              <DialogDescription>
-                Donate to: {pointsDialog.campaign?.title}
-              </DialogDescription>
-            </DialogHeader>
-
-            <div className="space-y-4">
-              <div>
-                <Label>Amount (points)</Label>
-                <Input
-                  type="number"
-                  placeholder="Enter points amount"
-                  value={pointsDialog.amount}
-                  onChange={(e) =>
-                    setPointsDialog((prev) => ({ ...prev, amount: e.target.value }))
-                  }
-                  min={1}
-                  max={userPoints}
-                />
-                <p className="text-sm text-gray-500 mt-1">
-                  Available: {userPoints.toLocaleString()} points
-                </p>
-              </div>
-
-              <div>
-                <Label>Message (optional)</Label>
-                <Textarea
-                  placeholder="Leave a message of support..."
-                  value={pointsDialog.message}
-                  onChange={(e) =>
-                    setPointsDialog((prev) => ({ ...prev, message: e.target.value }))
-                  }
-                  maxLength={200}
-                />
-              </div>
-
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={pointsDialog.isAnonymous}
-                  onChange={(e) =>
-                    setPointsDialog((prev) => ({
-                      ...prev,
-                      isAnonymous: e.target.checked,
-                    }))
-                  }
-                  className="rounded"
-                />
-                <span className="text-sm">Donate anonymously</span>
-              </label>
-            </div>
-
-            <DialogFooter>
-              <Button
-                variant="outline"
-                onClick={() =>
-                  setPointsDialog((prev) => ({ ...prev, open: false }))
-                }
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={handlePointsDonation}
-                disabled={
-                  donating ||
-                  !pointsDialog.amount ||
-                  parseInt(pointsDialog.amount) <= 0 ||
-                  parseInt(pointsDialog.amount) > userPoints
-                }
-              >
-                {donating ? 'Processing...' : 'Donate'}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
 
         {/* GCash Donation Dialog */}
         <Dialog
@@ -502,26 +368,38 @@ export default function DonationsPage() {
             <div className="space-y-4">
               {/* GCash Number Display */}
               <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-center">
-                <p className="text-sm text-gray-500 mb-1">Send GCash to:</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Send GCash to:</p>
                 <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                   {gcashDialog.campaign?.gcash_number || '0917-XXX-XXXX'}
                 </p>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                   Laudato Si&apos; - UMak
                 </p>
               </div>
 
               <div>
-                <Label>Amount (PHP)</Label>
+                <Label>Amount (PHP) — Minimum ₱20</Label>
                 <Input
                   type="number"
-                  placeholder="Enter amount"
+                  placeholder="Enter amount (min ₱20)"
                   value={gcashDialog.amount}
                   onChange={(e) =>
                     setGcashDialog((prev) => ({ ...prev, amount: e.target.value }))
                   }
-                  min={1}
+                  min={20}
                 />
+                {/* Live points preview */}
+                {previewPoints > 0 && (
+                  <p className="text-sm text-green-600 dark:text-green-400 mt-1 flex items-center gap-1">
+                    <Leaf className="w-3 h-3" />
+                    You&apos;ll earn <strong>{previewPoints} pledge points</strong> once verified
+                  </p>
+                )}
+                {gcashDialog.amount && parseFloat(gcashDialog.amount) > 0 && parseFloat(gcashDialog.amount) < 20 && (
+                  <p className="text-sm text-red-500 mt-1">
+                    Minimum donation is ₱20
+                  </p>
+                )}
               </div>
 
               <div>
@@ -578,6 +456,21 @@ export default function DonationsPage() {
                   maxLength={200}
                 />
               </div>
+
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={gcashDialog.isAnonymous}
+                  onChange={(e) =>
+                    setGcashDialog((prev) => ({
+                      ...prev,
+                      isAnonymous: e.target.checked,
+                    }))
+                  }
+                  className="rounded"
+                />
+                <span className="text-sm text-gray-700 dark:text-gray-300">Donate anonymously</span>
+              </label>
             </div>
 
             <DialogFooter>
@@ -594,6 +487,7 @@ export default function DonationsPage() {
                 disabled={
                   donating ||
                   !gcashDialog.amount ||
+                  parseFloat(gcashDialog.amount) < 20 ||
                   !gcashDialog.reference ||
                   (!session && (!gcashDialog.donorName || !gcashDialog.donorEmail))
                 }

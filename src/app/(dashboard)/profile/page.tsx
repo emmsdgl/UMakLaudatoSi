@@ -120,6 +120,7 @@ export default function ProfilePage() {
   const [redeemingPromo, setRedeemingPromo] = useState(false);
   const [notifications, setNotifications] = useState(true);
   const [rank, setRank] = useState<number | null>(null);
+  const [promoResult, setPromoResult] = useState<{ type: 'success' | 'already_redeemed' | 'error'; message: string; points?: number } | null>(null);
 
   /**
    * Fetch user profile and badges
@@ -200,21 +201,27 @@ export default function ProfilePage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to redeem promo code');
+        const errorMsg = data.error || data.message || 'Failed to redeem promo code';
+        const isAlreadyRedeemed = errorMsg.toLowerCase().includes('already');
+        setPromoResult({
+          type: isAlreadyRedeemed ? 'already_redeemed' : 'error',
+          message: isAlreadyRedeemed ? 'You have already redeemed this code' : errorMsg,
+        });
+        return;
       }
 
-      toast({
-        title: "🎉 Promo Code Redeemed!",
-        description: `You received ${data.points_awarded} bonus points!`,
+      setPromoResult({
+        type: 'success',
+        message: `You received ${data.pointsGranted} bonus points!`,
+        points: data.pointsGranted,
       });
 
       setPromoCode('');
       fetchProfile(); // Refresh profile to show updated points
     } catch (error) {
-      toast({
-        title: "Invalid Code",
-        description: error instanceof Error ? error.message : "The promo code is invalid or expired",
-        variant: "destructive",
+      setPromoResult({
+        type: 'error',
+        message: error instanceof Error ? error.message : "The promo code is invalid or expired",
       });
     } finally {
       setRedeemingPromo(false);
@@ -532,6 +539,59 @@ export default function ProfilePage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Promo Code Result Pop-up */}
+      <Dialog open={!!promoResult} onOpenChange={(open) => !open && setPromoResult(null)}>
+        <DialogContent className="max-w-xs text-center">
+          <DialogHeader>
+            <div className={`w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-2 ${
+              promoResult?.type === 'success'
+                ? 'bg-gradient-to-br from-green-400 to-emerald-500'
+                : promoResult?.type === 'already_redeemed'
+                ? 'bg-gradient-to-br from-orange-400 to-amber-500'
+                : 'bg-gradient-to-br from-red-400 to-red-500'
+            }`}>
+              {promoResult?.type === 'success' ? (
+                <Gift className="w-8 h-8 text-white" />
+              ) : promoResult?.type === 'already_redeemed' ? (
+                <CheckCircle2 className="w-8 h-8 text-white" />
+              ) : (
+                <Ticket className="w-8 h-8 text-white" />
+              )}
+            </div>
+            <DialogTitle className="text-center">
+              {promoResult?.type === 'success'
+                ? 'Promo Code Redeemed!'
+                : promoResult?.type === 'already_redeemed'
+                ? 'Code Already Redeemed'
+                : 'Redemption Failed'}
+            </DialogTitle>
+            <DialogDescription className="text-center">
+              {promoResult?.message}
+            </DialogDescription>
+          </DialogHeader>
+          {promoResult?.type === 'success' && promoResult.points && (
+            <div className="py-2">
+              <p className="text-3xl font-bold text-green-600 dark:text-green-400">
+                +{promoResult.points} pts
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Added to your balance</p>
+            </div>
+          )}
+          <Button
+            onClick={() => setPromoResult(null)}
+            className={
+              promoResult?.type === 'success'
+                ? 'bg-green-600 hover:bg-green-700 w-full'
+                : promoResult?.type === 'already_redeemed'
+                ? 'bg-orange-500 hover:bg-orange-600 w-full'
+                : 'bg-red-600 hover:bg-red-700 w-full'
+            }
+          >
+            {promoResult?.type === 'success' ? 'Awesome!' : promoResult?.type === 'already_redeemed' ? 'Got it' : 'Try Again'}
+          </Button>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

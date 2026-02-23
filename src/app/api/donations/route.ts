@@ -17,6 +17,20 @@ import type { Session } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
 /**
+ * Donation amount → equivalent pledge points (same tiers as admin/gcash)
+ */
+function getPointsForDonation(amount: number): number {
+  if (amount >= 300) return 30;
+  if (amount >= 200) return 20;
+  if (amount >= 151) return 15;
+  if (amount >= 101) return 10;
+  if (amount >= 81) return 8;
+  if (amount >= 51) return 5;
+  if (amount >= 20) return 3;
+  return 0;
+}
+
+/**
  * GET /api/donations
  * Retrieve active donation campaigns.
  * 
@@ -56,29 +70,46 @@ export async function GET(request: NextRequest) {
           // Get GCash donations total (only verified)
           const { data: gcashDonations } = await supabase
             .from('gcash_donations')
-            .select('amount')
+            .select('amount_php')
             .eq('campaign_id', campaign.id)
-            .eq('verification_status', 'verified');
+            .eq('status', 'verified');
 
           const totalGcash = gcashDonations?.reduce(
-            (sum, d) => sum + d.amount, 
+            (sum, d) => sum + (Number(d.amount_php) || 0),
             0
           ) || 0;
 
-          // Get unique donor count
-          const { count: donorCount } = await supabase
+          // Compute GCash equivalent points for progress
+          const gcashEquivalentPoints = (gcashDonations || []).reduce(
+            (sum, d) => sum + getPointsForDonation(Number(d.amount_php) || 0), 0
+          );
+
+          // Get unique donor count (point + GCash donors)
+          const { count: pointDonorCount } = await supabase
             .from('point_donations')
             .select('user_id', { count: 'exact', head: true })
             .eq('campaign_id', campaign.id);
 
+          const { count: gcashDonorCount } = await supabase
+            .from('gcash_donations')
+            .select('id', { count: 'exact', head: true })
+            .eq('campaign_id', campaign.id)
+            .eq('status', 'verified');
+
+          // Combined progress = point donations + GCash equivalent points
+          const combinedPoints = totalPoints + gcashEquivalentPoints;
+
           return {
             ...campaign,
+            // Map DB column names to frontend-expected names
+            title: campaign.name,
+            end_date: campaign.ends_at,
             stats: {
-              totalPoints,
+              totalPoints: combinedPoints,
               totalGcash,
-              donorCount: donorCount || 0,
-              progressPercent: campaign.goal_points 
-                ? Math.min(100, Math.round((totalPoints / campaign.goal_points) * 100))
+              donorCount: (pointDonorCount || 0) + (gcashDonorCount || 0),
+              progressPercent: campaign.goal_points
+                ? Math.min(100, Math.round((combinedPoints / campaign.goal_points) * 100))
                 : null,
             },
           };
@@ -91,9 +122,16 @@ export async function GET(request: NextRequest) {
       });
     }
 
+    // Map DB column names to frontend-expected names
+    const mapped = (campaigns || []).map((c) => ({
+      ...c,
+      title: c.name,
+      end_date: c.ends_at,
+    }));
+
     return NextResponse.json({
       success: true,
-      campaigns: campaigns || [],
+      campaigns: mapped,
     });
 
   } catch (error) {
@@ -212,7 +250,7 @@ export async function POST(request: NextRequest) {
         amount: -points,
         transaction_type: 'donation',
         reference_id: campaign_id,
-        description: `Donated ${points} pts to: ${campaign.title}`,
+        description: `Donated ${points} pts to: ${campaign.name}`,
       });
 
     // Record the donation
@@ -247,7 +285,7 @@ export async function POST(request: NextRequest) {
       donation: {
         id: donation.id,
         points: points,
-        campaign: campaign.title,
+        campaign: campaign.name,
       },
       newBalance,
     });

@@ -275,26 +275,29 @@ export async function POST(request: NextRequest) {
           .eq('id', pledgeMessageRecord.id);
       }
 
-      // Update user's total points AND sync streak to users table
-      const longestStreak = streakData
-        ? Math.max(streakData.longest_streak, currentStreak)
-        : currentStreak;
-
-      await supabase
+      // Update user's total_points and last_contribution in users table
+      // (streak data lives in the 'streaks' table, not 'users')
+      const { error: updateError } = await supabase
         .from('users')
         .update({
           total_points: (userData.total_points || 0) + pointsAwarded,
-          current_streak: currentStreak,
-          longest_streak: longestStreak,
           last_contribution: now.toISOString()
         })
         .eq('id', userData.id);
+
+      if (updateError) {
+        console.error('User update failed:', updateError.message);
+      }
     } else {
       // Guest users - just update last contribution, no points (1-time only)
-      await supabase
+      const { error: guestUpdateError } = await supabase
         .from('users')
         .update({ last_contribution: now.toISOString() })
         .eq('id', userData.id);
+
+      if (guestUpdateError) {
+        console.error('Guest user update failed:', guestUpdateError.message);
+      }
     }
 
     // Get updated plant stats

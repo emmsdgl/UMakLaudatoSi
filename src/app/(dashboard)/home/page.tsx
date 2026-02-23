@@ -62,6 +62,17 @@ function isUMakEmail(email: string | null | undefined): boolean {
   return email?.toLowerCase().endsWith('@umak.edu.ph') || false;
 }
 
+/**
+ * Get real-world season based on current month
+ */
+function getRealSeason(): "Spring" | "Summer" | "Autumn" | "Winter" {
+  const month = new Date().getMonth(); // 0-11
+  if (month >= 2 && month <= 4) return "Spring";
+  if (month >= 5 && month <= 7) return "Summer";
+  if (month >= 8 && month <= 10) return "Autumn";
+  return "Winter";
+}
+
 interface UserStats {
   total_points: number;
   current_streak: number;
@@ -338,10 +349,11 @@ export default function HomePage() {
         <CardContent className="p-0">
           {/* Plant Canvas */}
           <div className="relative h-64 overflow-hidden">
-            <ThreePlant 
+            <ThreePlant
               stage={getPlantStage()}
               contributors={[]}
               contributions={stats?.total_points || 0}
+              season={getRealSeason()}
             />
             
             {/* Streak Badge */}

@@ -24,7 +24,7 @@ export function Header({ userName, onSignOut }: HeaderProps) {
             <Leaf className="w-5 h-5 text-[#C8E86C]" />
           </div>
           <div>
-            <h1 className="font-display text-xl md:text-2xl text-[#2C2C2C]">
+            <h1 className="font-display text-xl md:text-2xl text-[#2C2C2C] dark:text-gray-100">
               Laudato Si&apos;
             </h1>
             <p className="font-mono text-xs text-muted-foreground hidden md:block">
@@ -36,7 +36,7 @@ export function Header({ userName, onSignOut }: HeaderProps) {
 
         {userName && (
           <div className="flex items-center gap-4">
-            <span className="font-body text-sm text-[#2C2C2C] hidden md:block">
+            <span className="font-body text-sm text-[#2C2C2C] dark:text-gray-200 hidden md:block">
               Welcome, <span className="font-semibold">{userName}</span>
             </span>
             {onSignOut && (
