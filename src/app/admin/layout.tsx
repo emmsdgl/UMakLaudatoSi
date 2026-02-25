@@ -116,6 +116,12 @@ function buildNavItems(role: UserRole) {
       icon: 'QrCode',
     },
     {
+      key: 'wallet',
+      label: 'My Wallet',
+      href: '/admin/wallet',
+      icon: 'Wallet',
+    },
+    {
       key: 'pledges',
       label: 'Pledges',
       href: '/admin/pledges',
@@ -138,6 +144,12 @@ function buildNavItems(role: UserRole) {
       label: 'GCash Verify',
       href: '/admin/gcash',
       icon: 'Banknote',
+    },
+    {
+      key: 'payouts',
+      label: 'Payouts',
+      href: '/admin/payouts',
+      icon: 'Wallet',
     },
     {
       key: 'audit_logs',

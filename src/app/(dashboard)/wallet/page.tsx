@@ -42,6 +42,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/components/ui/use-toast';
 import QRCode from 'react-qr-code';
+import CanteenAdminWallet from '@/components/wallet/CanteenAdminWallet';
 
 interface Redemption {
   id: string;
@@ -61,6 +62,18 @@ interface Redemption {
 }
 
 export default function WalletPage() {
+  const { data: session } = useSession();
+
+  // Canteen admins see their own wallet (earnings + payouts)
+  const userRole = (session?.user as any)?.role as string | undefined;
+  if (userRole === 'canteen_admin') {
+    return <CanteenAdminWallet />;
+  }
+
+  return <StudentWallet />;
+}
+
+function StudentWallet() {
   const { data: session } = useSession();
   const { toast } = useToast();
 

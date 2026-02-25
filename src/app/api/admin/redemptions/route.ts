@@ -277,7 +277,8 @@ export async function POST(request: NextRequest) {
         rewards (
           id,
           name,
-          category
+          category,
+          cost
         )
       `);
 
@@ -360,9 +361,60 @@ export async function POST(request: NextRequest) {
       { status: 'verified' }
     );
 
+    // --- Award verification points (= reward cost) to canteen admin ---
+    const rewardPoints = redemption.points_spent || redemption.rewards?.cost || 0;
+    const verifierRole = adminCheck.user.role;
+    let pointsAwarded = false;
+    let pointsAwardedTo: string | null = null;
+    let needsPointAllocation = false;
+    let canteenAdmins: { id: string; name: string; email: string; avatar_url: string | null }[] = [];
+
+    if (verifierRole === 'canteen_admin' && rewardPoints > 0) {
+      // Credit wallet_balance for the canteen admin who verified
+      const { data: verifierData } = await supabase
+        .from('users')
+        .select('wallet_balance')
+        .eq('id', adminCheck.user.id)
+        .single();
+
+      if (verifierData) {
+        await supabase
+          .from('users')
+          .update({ wallet_balance: (verifierData.wallet_balance || 0) + rewardPoints })
+          .eq('id', adminCheck.user.id);
+
+        await supabase
+          .from('wallet_transactions')
+          .insert({
+            user_id: adminCheck.user.id,
+            amount: rewardPoints,
+            transaction_type: 'verification_earning',
+            reference_id: redemption.id,
+            description: `Verified: ${redemption.rewards?.name || 'reward'} (+${rewardPoints} pts)`,
+            created_by: adminCheck.user.id,
+          });
+
+        pointsAwarded = true;
+        pointsAwardedTo = adminCheck.user.name || adminCheck.user.email;
+      }
+    } else if ((verifierRole === 'super_admin' || verifierRole === 'admin') && rewardPoints > 0) {
+      // Super admin needs to choose which canteen admin gets the points
+      const { data: admins } = await supabase
+        .from('users')
+        .select('id, name, email, avatar_url')
+        .eq('role', 'canteen_admin')
+        .eq('is_banned', false)
+        .order('name');
+
+      canteenAdmins = admins || [];
+      needsPointAllocation = canteenAdmins.length > 0;
+    }
+
     return NextResponse.json({
       success: true,
-      message: 'Redemption verified successfully!',
+      message: pointsAwarded
+        ? `Verified! +${rewardPoints} pts to ${pointsAwardedTo}`
+        : 'Redemption verified successfully!',
       securityValidated,
       redemption: {
         id: redemption.id,
@@ -371,6 +423,11 @@ export async function POST(request: NextRequest) {
         category: redemption.rewards?.category,
         verified_at: new Date().toISOString(),
       },
+      verification_points: rewardPoints,
+      points_awarded: pointsAwarded,
+      points_awarded_to: pointsAwardedTo,
+      needs_point_allocation: needsPointAllocation,
+      canteen_admins: needsPointAllocation ? canteenAdmins : undefined,
     });
 
   } catch (error) {

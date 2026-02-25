@@ -22,9 +22,10 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import PledgeStatusBadge from '@/components/pledge/PledgeStatusBadge';
+import EcoPathBadge from '@/components/eco-paths/EcoPathBadge';
 import ProofUpload from '@/components/pledge/ProofUpload';
 import ProofGallery from '@/components/pledge/ProofGallery';
-import type { PledgeAlbum, PledgeProof } from '@/types';
+import type { PledgeAlbum, PledgeProof, EcoPathId } from '@/types';
 
 export default function PledgeDetailPage() {
   const router = useRouter();
@@ -169,6 +170,9 @@ export default function PledgeDetailPage() {
             )}
             <div className="flex items-center gap-3 flex-wrap">
               <PledgeStatusBadge status={pledge.status} pointsAwarded={pledge.points_awarded} />
+              {pledge.eco_path_id && (
+                <EcoPathBadge pathId={pledge.eco_path_id as EcoPathId} />
+              )}
               <span className="text-xs text-gray-400 dark:text-gray-500">
                 Created {new Date(pledge.created_at).toLocaleDateString()}
               </span>

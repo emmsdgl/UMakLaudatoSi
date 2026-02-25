@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import type { PledgeAlbum, PledgeProof } from '@/types';
+import type { PledgeAlbum, PledgeProof, EcoPathId } from '@/types';
 
 export function usePledges() {
   const [pledges, setPledges] = useState<PledgeAlbum[]>([]);
@@ -26,11 +26,11 @@ export function usePledges() {
     }
   }, []);
 
-  const createPledge = useCallback(async (title: string, description?: string) => {
+  const createPledge = useCallback(async (title: string, description?: string, eco_path_id?: EcoPathId) => {
     const res = await fetch('/api/pledges', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title, description }),
+      body: JSON.stringify({ title, description, eco_path_id }),
     });
     const data = await res.json();
     if (data.success) {
@@ -38,6 +38,20 @@ export function usePledges() {
       return data.pledge as PledgeAlbum;
     }
     throw new Error(data.error || 'Failed to create pledge');
+  }, []);
+
+  const createBatchPledges = useCallback(async (eco_path_id: EcoPathId, actions: string[]) => {
+    const res = await fetch('/api/pledges/batch', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ eco_path_id, actions }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      setPledges(prev => [...data.pledges, ...prev]);
+      return data.pledges as PledgeAlbum[];
+    }
+    throw new Error(data.error || 'Failed to create eco-path pledges');
   }, []);
 
   const submitPledge = useCallback(async (pledgeId: string) => {
@@ -123,6 +137,7 @@ export function usePledges() {
     loading,
     error,
     createPledge,
+    createBatchPledges,
     submitPledge,
     cancelSubmission,
     deletePledge,

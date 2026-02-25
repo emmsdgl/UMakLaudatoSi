@@ -14,27 +14,47 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { usePledges } from '@/hooks/usePledges';
+import { useCarbonFootprint } from '@/hooks/useCarbonFootprint';
+import { useEcoPathProgress } from '@/hooks/useEcoPathProgress';
 import PledgeCard from '@/components/pledge/PledgeCard';
+import EcoPathProgressBanner from '@/components/pledge/EcoPathProgressBanner';
+import EcoPathBadge from '@/components/eco-paths/EcoPathBadge';
+import { ECO_PATHS } from '@/lib/constants/eco-paths';
+import type { EcoPathId } from '@/types';
 
 export default function PledgesPage() {
   const router = useRouter();
   const { pledges, loading, createPledge } = usePledges();
+  const { summary: cfSummary } = useCarbonFootprint();
+  const { progress: ecoPathProgress } = useEcoPathProgress();
 
   const [showCreate, setShowCreate] = useState(false);
   const [newTitle, setNewTitle] = useState('');
   const [newDescription, setNewDescription] = useState('');
+  const [selectedEcoPath, setSelectedEcoPath] = useState<EcoPathId | ''>('');
   const [creating, setCreating] = useState(false);
   const [createError, setCreateError] = useState('');
+
+  const handleOpenCreate = () => {
+    // Pre-fill with user's active eco-path if they have one
+    setSelectedEcoPath(cfSummary?.active_eco_path || '');
+    setShowCreate(true);
+  };
 
   const handleCreate = async () => {
     if (!newTitle.trim()) return;
     setCreating(true);
     setCreateError('');
     try {
-      await createPledge(newTitle.trim(), newDescription.trim() || undefined);
+      await createPledge(
+        newTitle.trim(),
+        newDescription.trim() || undefined,
+        selectedEcoPath || undefined
+      );
       setShowCreate(false);
       setNewTitle('');
       setNewDescription('');
+      setSelectedEcoPath('');
     } catch (err: any) {
       setCreateError(err.message || 'Failed to create pledge');
     } finally {
@@ -56,13 +76,20 @@ export default function PledgesPage() {
           </p>
         </div>
         <Button
-          onClick={() => setShowCreate(true)}
+          onClick={handleOpenCreate}
           className="bg-green-600 hover:bg-green-700 text-white"
         >
           <Plus className="w-4 h-4 mr-1.5" />
           Create Pledge
         </Button>
       </div>
+
+      {/* Eco-path progress banner */}
+      {ecoPathProgress && (
+        <div className="mb-6">
+          <EcoPathProgressBanner progress={ecoPathProgress} />
+        </div>
+      )}
 
       {/* Content */}
       {loading ? (
@@ -79,7 +106,7 @@ export default function PledgesPage() {
             Create your first pledge and start uploading proof to earn points!
           </p>
           <Button
-            onClick={() => setShowCreate(true)}
+            onClick={handleOpenCreate}
             className="bg-green-600 hover:bg-green-700 text-white"
           >
             <Plus className="w-4 h-4 mr-1.5" />
@@ -132,6 +159,28 @@ export default function PledgesPage() {
                 rows={3}
                 className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-800 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
               />
+            </div>
+
+            {/* Eco-path selector */}
+            <div>
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
+                Eco-Path (optional)
+              </label>
+              <select
+                value={selectedEcoPath}
+                onChange={e => setSelectedEcoPath(e.target.value as EcoPathId | '')}
+                className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+              >
+                <option value="">No eco-path</option>
+                {ECO_PATHS.map(p => (
+                  <option key={p.id} value={p.id}>{p.name}</option>
+                ))}
+              </select>
+              {selectedEcoPath && (
+                <div className="mt-1.5">
+                  <EcoPathBadge pathId={selectedEcoPath as EcoPathId} />
+                </div>
+              )}
             </div>
 
             {createError && (

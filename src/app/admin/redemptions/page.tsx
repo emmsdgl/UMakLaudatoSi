@@ -11,7 +11,7 @@
  */
 
 import { useState, useEffect, useRef } from 'react';
-import { QrCode, Search, CheckCircle2, XCircle, Clock, Gift, Camera, CameraOff, Shield, AlertTriangle } from 'lucide-react';
+import { QrCode, Search, CheckCircle2, XCircle, Clock, Gift, Camera, CameraOff, Shield, AlertTriangle, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -19,6 +19,13 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/components/ui/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import {
   Table,
   TableBody,
@@ -28,6 +35,13 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import QRScanner from '@/components/admin/QRScanner';
+
+interface CanteenAdmin {
+  id: string;
+  name: string;
+  email: string;
+  avatar_url: string | null;
+}
 
 interface Redemption {
   id: string;
@@ -62,6 +76,13 @@ export default function AdminRedemptionsPage() {
   const [statusFilter, setStatusFilter] = useState('pending');
   const [showScanner, setShowScanner] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Point allocation dialog state (for super_admin)
+  const [allocDialogOpen, setAllocDialogOpen] = useState(false);
+  const [allocCanteenAdmins, setAllocCanteenAdmins] = useState<CanteenAdmin[]>([]);
+  const [allocRedemptionId, setAllocRedemptionId] = useState<string | null>(null);
+  const [allocPoints, setAllocPoints] = useState(0);
+  const [allocating, setAllocating] = useState(false);
 
   // Fetch redemptions list
   const fetchRedemptions = async (status: string) => {
@@ -106,15 +127,30 @@ export default function AdminRedemptionsPage() {
       if (data.success) {
         const isSecure = data.securityValidated || false;
         setLastVerifiedSecure(isSecure);
-        
+
+        // Build description with points info
+        let desc = `${data.redemption.reward} for ${data.redemption.user}`;
+        if (isSecure) desc += ' (Secure QR)';
+        if (data.points_awarded && data.points_awarded_to) {
+          desc += ` • +${data.verification_points} pts to ${data.points_awarded_to}`;
+        }
+
         toast({
           title: isSecure ? '✅ Verified & Secure!' : '✅ Verified',
-          description: `${data.redemption.reward} for ${data.redemption.user}${isSecure ? ' (Secure QR)' : ''}`,
+          description: desc,
         });
         setLastVerified(data.redemption);
         setManualCode('');
         // Refresh list
         fetchRedemptions(statusFilter);
+
+        // If super_admin needs to allocate points, open the dialog
+        if (data.needs_point_allocation && data.canteen_admins?.length > 0) {
+          setAllocCanteenAdmins(data.canteen_admins);
+          setAllocRedemptionId(data.redemption.id);
+          setAllocPoints(data.verification_points || 2);
+          setAllocDialogOpen(true);
+        }
       } else {
         // Check if it's a security error
         const isSecurityError = data.isSecurityError || false;
@@ -145,6 +181,44 @@ export default function AdminRedemptionsPage() {
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       handleVerify(manualCode);
+    }
+  };
+
+  // Handle point allocation to a canteen admin (super_admin flow)
+  const handleAllocatePoints = async (canteenAdminId: string) => {
+    if (!allocRedemptionId) return;
+    setAllocating(true);
+    try {
+      const response = await fetch('/api/admin/redemptions/allocate-points', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          redemption_id: allocRedemptionId,
+          canteen_admin_id: canteenAdminId,
+        }),
+      });
+      const data = await response.json();
+      if (data.success) {
+        toast({
+          title: 'Points Allocated',
+          description: data.message,
+        });
+        setAllocDialogOpen(false);
+      } else {
+        toast({
+          title: 'Allocation Failed',
+          description: data.message,
+          variant: 'destructive',
+        });
+      }
+    } catch {
+      toast({
+        title: 'Error',
+        description: 'Failed to allocate verification points',
+        variant: 'destructive',
+      });
+    } finally {
+      setAllocating(false);
     }
   };
 
@@ -419,6 +493,54 @@ export default function AdminRedemptionsPage() {
           </Tabs>
         </CardContent>
       </Card>
+
+      {/* Canteen Admin Point Allocation Dialog (Super Admin only) */}
+      <Dialog open={allocDialogOpen} onOpenChange={setAllocDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Star className="w-5 h-5 text-yellow-500" />
+              Allocate Verification Points
+            </DialogTitle>
+            <DialogDescription>
+              Which Canteen Admin verified this redemption? They will receive +{allocPoints} points.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2 mt-2">
+            {allocCanteenAdmins.map((admin) => (
+              <button
+                key={admin.id}
+                onClick={() => handleAllocatePoints(admin.id)}
+                disabled={allocating}
+                className="w-full flex items-center gap-3 p-3 rounded-xl border border-gray-200 dark:border-gray-700 hover:bg-green-50 dark:hover:bg-green-900/20 hover:border-green-300 dark:hover:border-green-700 transition-all disabled:opacity-50"
+              >
+                <Avatar className="w-10 h-10">
+                  <AvatarImage src={admin.avatar_url || ''} />
+                  <AvatarFallback className="bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-400">
+                    {admin.name?.[0] || '?'}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1 text-left">
+                  <p className="font-medium text-sm text-gray-900 dark:text-white">
+                    {admin.name}
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    {admin.email}
+                  </p>
+                </div>
+                <Badge className="bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">
+                  +{allocPoints} pts
+                </Badge>
+              </button>
+            ))}
+            {allocCanteenAdmins.length === 0 && (
+              <p className="text-center text-gray-500 py-4">
+                No canteen admin accounts found.
+              </p>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

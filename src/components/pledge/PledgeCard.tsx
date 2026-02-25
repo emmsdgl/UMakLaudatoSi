@@ -4,7 +4,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ImageIcon, FileText } from 'lucide-react';
 import PledgeStatusBadge from './PledgeStatusBadge';
-import type { PledgeAlbum } from '@/types';
+import EcoPathBadge from '@/components/eco-paths/EcoPathBadge';
+import type { PledgeAlbum, EcoPathId } from '@/types';
 
 interface PledgeCardProps {
   pledge: PledgeAlbum;
@@ -60,6 +61,17 @@ export default function PledgeCard({ pledge, onClick }: PledgeCardProps) {
         <h3 className="font-semibold text-sm text-gray-800 dark:text-white truncate mb-1.5">
           {pledge.title}
         </h3>
+
+        {pledge.eco_path_id && (
+          <div className="mb-1.5 flex items-center gap-1">
+            <EcoPathBadge pathId={pledge.eco_path_id as EcoPathId} size="sm" />
+            {pledge.is_eco_path_pledge && (
+              <span className="text-[10px] text-green-600 dark:text-green-400 font-medium">
+                Path Pledge
+              </span>
+            )}
+          </div>
+        )}
 
         <div className="flex items-center justify-between gap-2">
           <PledgeStatusBadge status={pledge.status} pointsAwarded={pledge.points_awarded} />

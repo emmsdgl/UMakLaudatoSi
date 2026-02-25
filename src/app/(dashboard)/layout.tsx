@@ -16,7 +16,7 @@
 import { useSession } from 'next-auth/react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { Home, Gift, Trophy, User, Wallet, BookOpen } from 'lucide-react';
+import { Home, Gift, Trophy, User, Wallet, BookOpen, Calculator, QrCode } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface DashboardLayoutProps {
@@ -26,12 +26,23 @@ interface DashboardLayoutProps {
 /**
  * Navigation items configuration
  */
-const navItems = [
+const defaultNavItems = [
   { href: '/home', label: 'Home', icon: Home },
+  { href: '/calculator', label: 'Footprint', icon: Calculator },
   { href: '/pledges', label: 'Pledges', icon: BookOpen },
   { href: '/rewards', label: 'Rewards', icon: Gift },
   { href: '/wallet', label: 'Wallet', icon: Wallet },
   { href: '/ranks', label: 'Ranks', icon: Trophy },
+  { href: '/profile', label: 'Profile', icon: User },
+];
+
+/**
+ * Canteen admins only see Dashboard, Verify Rewards, and Profile
+ */
+const canteenAdminNavItems = [
+  { href: '/home', label: 'Home', icon: Home },
+  { href: '/admin/redemptions', label: 'Verify', icon: QrCode },
+  { href: '/wallet', label: 'Wallet', icon: Wallet },
   { href: '/profile', label: 'Profile', icon: User },
 ];
 
@@ -41,12 +52,27 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const router = useRouter();
   const [isBanned, setIsBanned] = useState(false);
 
+  // Determine nav items based on user role
+  const userRole = (session?.user as any)?.role as string | undefined;
+  const navItems = userRole === 'canteen_admin' ? canteenAdminNavItems : defaultNavItems;
+
   // Redirect to login if not authenticated
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/');
     }
   }, [status, router]);
+
+  // Redirect canteen_admin away from pages they shouldn't access
+  useEffect(() => {
+    if (userRole === 'canteen_admin' && pathname) {
+      const allowedPaths = ['/home', '/profile', '/admin/redemptions', '/wallet'];
+      const isAllowed = allowedPaths.some(p => pathname === p || pathname.startsWith(p + '/'));
+      if (!isAllowed) {
+        router.replace('/home');
+      }
+    }
+  }, [userRole, pathname, router]);
 
   // Check if user is banned
   useEffect(() => {

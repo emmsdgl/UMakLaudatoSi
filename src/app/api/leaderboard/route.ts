@@ -13,6 +13,9 @@ import { supabaseAdmin } from '@/lib/supabase-admin';
 // Use admin client for all DB operations (bypasses RLS)
 const supabase = supabaseAdmin;
 
+// Roles excluded from leaderboard rankings
+const EXCLUDED_ROLES = ['canteen_admin'];
+
 /**
  * GET /api/leaderboard
  * Retrieve leaderboard rankings.
@@ -81,6 +84,8 @@ export async function GET(request: NextRequest) {
 
         periodData?.forEach((tx: any) => {
           const userId = tx.user_id;
+          // Skip excluded roles
+          if (EXCLUDED_ROLES.includes(tx.users.role)) return;
           const existing = userPoints.get(userId);
           // Note: We need to fetch amounts separately, this is simplified
           if (!existing) {
@@ -106,10 +111,16 @@ export async function GET(request: NextRequest) {
 
       } else {
         // All-time points leaderboard - use total_points from users table
-        const { data: allTimeData, error: allTimeError } = await supabase
+        let allTimeQuery = supabase
           .from('users')
           .select('id, name, avatar_url, total_points, role')
-          .eq('is_banned', false)
+          .eq('is_banned', false);
+
+        for (const role of EXCLUDED_ROLES) {
+          allTimeQuery = allTimeQuery.neq('role', role);
+        }
+
+        const { data: allTimeData, error: allTimeError } = await allTimeQuery
           .order('total_points', { ascending: false })
           .range(offset, offset + limit - 1);
 
@@ -160,6 +171,8 @@ export async function GET(request: NextRequest) {
 
       contribData?.forEach((contrib: any) => {
         const userId = contrib.user_id;
+        // Skip excluded roles
+        if (EXCLUDED_ROLES.includes(contrib.users.role)) return;
         const existing = userContribs.get(userId);
         if (!existing) {
           userContribs.set(userId, {
@@ -203,15 +216,17 @@ export async function GET(request: NextRequest) {
 
       if (streakError) throw streakError;
 
-      data = streakData?.map((streak: any, index) => ({
-        rank: offset + index + 1,
-        user_id: streak.users.id,
-        name: streak.users.name || 'Anonymous',
-        avatar_url: streak.users.avatar_url,
-        role: streak.users.role,
-        total: streak.current_streak,
-        longest: streak.longest_streak,
-      }));
+      data = streakData
+        ?.filter((streak: any) => !EXCLUDED_ROLES.includes(streak.users.role))
+        .map((streak: any, index) => ({
+          rank: offset + index + 1,
+          user_id: streak.users.id,
+          name: streak.users.name || 'Anonymous',
+          avatar_url: streak.users.avatar_url,
+          role: streak.users.role,
+          total: streak.current_streak,
+          longest: streak.longest_streak,
+        }));
 
     } else {
       return NextResponse.json(

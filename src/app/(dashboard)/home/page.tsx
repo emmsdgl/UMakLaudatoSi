@@ -39,7 +39,9 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/lib/supabase';
-import { BookOpen } from 'lucide-react';
+import { BookOpen, Calculator, Wallet } from 'lucide-react';
+import { useCarbonFootprint } from '@/hooks/useCarbonFootprint';
+import { getEcoPath } from '@/lib/constants/eco-paths';
 import dynamic from 'next/dynamic';
 
 // Dynamically import ThreePlant to avoid SSR issues
@@ -85,6 +87,7 @@ interface UserStats {
   is_guest: boolean; // Non-UMak users
   guest_has_pledged: boolean; // Guest already used their 1-time pledge
   role: string; // admin, student, employee, guest, user
+  wallet_balance: number;
 }
 
 export default function HomePage() {
@@ -95,6 +98,7 @@ export default function HomePage() {
   // State
   const [stats, setStats] = useState<UserStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const { summary: cfSummary } = useCarbonFootprint();
 
   /**
    * Get time-based greeting message
@@ -127,7 +131,7 @@ export default function HomePage() {
       // Get user data including role
       const { data: userData, error: userError } = await supabase
         .from('users')
-        .select('id, total_points, last_contribution, has_completed_onboarding, created_at, role')
+        .select('id, total_points, wallet_balance, last_contribution, has_completed_onboarding, created_at, role')
         .eq('email', userEmail)
         .single();
 
@@ -145,6 +149,7 @@ export default function HomePage() {
           is_guest: isGuest,
           guest_has_pledged: false,
           role: isGuest ? 'guest' : 'user',
+          wallet_balance: 0,
         });
         setLoading(false);
         return;
@@ -208,6 +213,7 @@ export default function HomePage() {
         is_guest: effectiveIsGuest,
         guest_has_pledged: guestHasPledged,
         role: userData.role || (isGuest ? 'guest' : 'user'),
+        wallet_balance: userData.wallet_balance || 0,
       });
 
     } catch (error) {
@@ -287,7 +293,29 @@ export default function HomePage() {
         )}
       </div>
 
-      {/* Plant Visualization Card */}
+      {/* Canteen Admin Wallet Card */}
+      {stats?.role === 'canteen_admin' && (
+        <Card
+          className="border-0 shadow-lg bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20 cursor-pointer hover:shadow-xl transition-shadow"
+          onClick={() => router.push('/wallet')}
+        >
+          <CardContent className="p-5 flex items-center gap-4">
+            <div className="w-14 h-14 rounded-full bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center flex-shrink-0">
+              <Wallet className="w-7 h-7 text-emerald-600" />
+            </div>
+            <div className="flex-1">
+              <p className="text-sm text-gray-500 dark:text-gray-400">Wallet Balance</p>
+              <p className="text-3xl font-bold text-emerald-700 dark:text-emerald-400">
+                {stats.wallet_balance} pts
+              </p>
+            </div>
+            <ArrowRight className="w-5 h-5 text-emerald-500 flex-shrink-0" />
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Plant Visualization Card - Only for non-canteen roles */}
+      {stats?.role !== 'canteen_admin' && (
       <Card className="overflow-hidden border-0 shadow-lg bg-gradient-to-b from-white to-green-50 dark:from-gray-800 dark:to-green-900/20">
         <CardContent className="p-0">
           {/* Plant Canvas */}
@@ -318,8 +346,10 @@ export default function HomePage() {
           </div>
         </CardContent>
       </Card>
+      )}
 
-      {/* Pledges CTA */}
+      {/* Pledges CTA - Only for non-canteen roles */}
+      {stats?.role !== 'canteen_admin' && (
       <Button
         onClick={() => router.push('/pledges')}
         className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white py-7 text-lg font-semibold shadow-lg rounded-2xl"
@@ -328,6 +358,64 @@ export default function HomePage() {
         My Pledges
         <ArrowRight className="w-5 h-5 ml-2" />
       </Button>
+      )}
+
+      {/* Carbon Footprint CTA */}
+      {stats?.role !== 'canteen_admin' && (
+      <>
+      {cfSummary && !cfSummary.has_result && cfSummary.can_retake !== false && (
+        <Card
+          className="border-0 shadow-lg bg-gradient-to-r from-teal-50 to-green-50 dark:from-teal-900/20 dark:to-green-900/20 cursor-pointer hover:shadow-xl transition-shadow"
+          onClick={() => router.push('/calculator')}
+        >
+          <CardContent className="p-4 flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-teal-100 dark:bg-teal-900/40 flex items-center justify-center flex-shrink-0">
+              <Calculator className="w-6 h-6 text-teal-600" />
+            </div>
+            <div className="flex-1">
+              <p className="font-semibold text-gray-800 dark:text-white text-sm">
+                Discover Your Carbon Footprint
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                Take a quick 8-question quiz and find your eco-path
+              </p>
+            </div>
+            <ArrowRight className="w-5 h-5 text-teal-500 flex-shrink-0" />
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Carbon Footprint Summary */}
+      {cfSummary?.has_result && cfSummary.result && (
+        <Card
+          className="border-0 shadow-lg bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 cursor-pointer hover:shadow-xl transition-shadow"
+          onClick={() => router.push(cfSummary.can_retake !== false ? '/calculator' : '/eco-paths')}
+        >
+          <CardContent className="p-4">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-full bg-green-100 dark:bg-green-900/40 flex items-center justify-center flex-shrink-0">
+                <Leaf className="w-6 h-6 text-green-600" />
+              </div>
+              <div className="flex-1">
+                <p className="font-semibold text-gray-800 dark:text-white text-sm">
+                  Your Footprint: {Math.round(cfSummary.result.co2_total)} kg CO₂/month
+                </p>
+                {cfSummary.active_eco_path && (
+                  <p className="text-xs text-green-600 dark:text-green-400">
+                    Active Path: {getEcoPath(cfSummary.active_eco_path)?.name}
+                  </p>
+                )}
+                {!cfSummary.active_eco_path && (
+                  <p className="text-xs text-amber-600 dark:text-amber-400">
+                    Choose an eco-path to start your journey
+                  </p>
+                )}
+              </div>
+              <ArrowRight className="w-5 h-5 text-green-500 flex-shrink-0" />
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Stats Grid */}
       <div className="grid grid-cols-3 gap-3">
@@ -458,6 +546,8 @@ export default function HomePage() {
             </div>
           </CardContent>
         </Card>
+      )}
+      </>
       )}
     </div>
   );

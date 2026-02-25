@@ -35,6 +35,7 @@ export interface User {
   role: UserRole;
   department?: string;
   total_points: number;
+  wallet_balance: number;
   is_umak_verified: boolean;
   is_banned: boolean;
   ban_reason?: string;
@@ -99,6 +100,37 @@ export interface PointSummary {
   points_earned_today: number;
   points_earned_this_week: number;
   can_pledge_today: boolean;
+}
+
+// ============================================================================
+// WALLET TYPES (Canteen Admin)
+// ============================================================================
+
+export type WalletTransactionType = 'verification_earning' | 'payout';
+
+export interface WalletTransaction {
+  id: string;
+  user_id: string;
+  amount: number;
+  transaction_type: WalletTransactionType;
+  reference_id?: string;
+  description?: string;
+  created_by?: string;
+  created_at: string;
+}
+
+export interface WalletPayout {
+  id: string;
+  canteen_admin_id: string;
+  amount: number;
+  gcash_reference?: string;
+  proof_image_url?: string;
+  status: 'completed' | 'cancelled';
+  created_by: string;
+  notes?: string;
+  created_at: string;
+  admin?: { name: string; email: string };
+  canteen_admin?: { name: string; email: string };
 }
 
 // ============================================================================
@@ -327,6 +359,8 @@ export interface PledgeAlbum {
   description?: string;
   status: PledgeAlbumStatus;
   points_awarded: number;
+  eco_path_id?: EcoPathId;
+  is_eco_path_pledge: boolean;
   graded_by?: string;
   graded_at?: string;
   submitted_at?: string;
@@ -347,6 +381,15 @@ export interface PledgeProof {
   file_size: number;
   storage_path?: string;
   created_at: string;
+}
+
+export interface EcoPathPledgeProgress {
+  eco_path_id: EcoPathId;
+  eco_path_name: string;
+  total: number;
+  graded: number;
+  pending: number;
+  all_graded: boolean;
 }
 
 // ============================================================================
@@ -391,4 +434,69 @@ export interface PlantStats {
   total_contributions: number;
   current_stage: PlantStage;
   updated_at: string;
+}
+
+// ============================================================================
+// CARBON FOOTPRINT & ECO-PATH TYPES
+// ============================================================================
+
+/** The 5 eco-path category IDs */
+export type EcoPathId = 'transportation' | 'food' | 'energy' | 'waste' | 'water';
+
+/** Carbon footprint calculator result from database */
+export interface CarbonFootprintResult {
+  id: string;
+  user_id: string;
+  answer_transportation_mode: number;
+  answer_commute_distance: number;
+  answer_diet: number;
+  answer_canteen_vs_bring: number;
+  answer_trash_handling: number;
+  answer_electronics_hours: number;
+  answer_ac_usage: number;
+  answer_shower_length: number;
+  co2_transportation: number;
+  co2_food: number;
+  co2_energy: number;
+  co2_waste: number;
+  co2_water: number;
+  co2_total: number;
+  created_at: string;
+  updated_at: string;
+}
+
+/** User's chosen eco-path record */
+export interface UserEcoPath {
+  id: string;
+  user_id: string;
+  eco_path_id: EcoPathId;
+  is_active: boolean;
+  created_at: string;
+}
+
+/** Calculator question definition (used client-side) */
+export interface CalculatorQuestion {
+  id: number;
+  question: string;
+  category: EcoPathId;
+  options: string[];
+  co2_values: number[];
+}
+
+/** Eco-path definition (hardcoded constant) */
+export interface EcoPath {
+  id: EcoPathId;
+  name: string;
+  description: string;
+  icon: string;
+  color: string;
+  suggested_actions: string[];
+}
+
+/** Summary returned by /api/carbon-footprint GET */
+export interface CarbonFootprintSummary {
+  has_result: boolean;
+  result?: CarbonFootprintResult;
+  active_eco_path?: EcoPathId;
+  top_categories?: { path_id: EcoPathId; co2: number }[];
 }

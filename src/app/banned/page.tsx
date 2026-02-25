@@ -164,23 +164,23 @@ export default function BannedPage() {
                 Need Help?
               </h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                If you believe this is a mistake or would like to appeal this decision, please contact the Student Affairs Office:
+                If you believe this is a mistake or would like to appeal this decision, please contact us at:
               </p>
               <div className="space-y-2">
                 <a
-                  href="mailto:sa@umak.edu.ph"
+                  href="mailto:umaklaudatosi@umak.edu.ph"
                   className="flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400 hover:underline"
                 >
                   <Mail className="w-4 h-4" />
-                  sa@umak.edu.ph
+                  umaklaudatosi@umak.edu.ph
                 </a>
-                <a
+                {/* <a
                   href="tel:+63288817400"
                   className="flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400 hover:underline"
                 >
                   <Phone className="w-4 h-4" />
                   (02) 8881-7400
-                </a>
+                </a> */}
               </div>
             </div>
           </CardContent>

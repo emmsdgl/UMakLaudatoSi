@@ -26,6 +26,7 @@ import {
   Shield,
   Banknote,
   BookOpen,
+  Wallet,
   Menu,
   X,
   Leaf,
@@ -58,6 +59,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   FileText,
   Banknote,
   BookOpen,
+  Wallet,
 };
 
 // Role display names and colors

@@ -29,11 +29,15 @@ export const config = {
   // Protect dashboard routes and API routes
   matcher: [
     "/home/:path*",
+    "/calculator/:path*",
+    "/eco-paths/:path*",
     "/rewards/:path*",
     "/wallet/:path*",
     "/ranks/:path*",
     "/profile/:path*",
     "/pledges/:path*",
     "/api/pledges/:path*",
+    "/api/carbon-footprint/:path*",
+    "/api/eco-paths/:path*",
   ],
 };

@@ -61,6 +61,12 @@ export const ADMIN_PERMISSIONS: Record<string, UserRole[]> = {
   // Pledge Album Review - SA Admin and Super Admin
   pledges: ['admin', 'sa_admin', 'super_admin'],
 
+  // Canteen Admin Wallet - visible to canteen admins
+  wallet: ['admin', 'canteen_admin', 'super_admin'],
+
+  // Canteen Admin Payouts - Super Admin only
+  payouts: ['admin', 'super_admin'],
+
   // Audit Logs - Super Admin only
   audit_logs: ['admin', 'super_admin'],
 

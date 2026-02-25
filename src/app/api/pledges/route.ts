@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { VALID_ECO_PATH_IDS } from '@/lib/constants/eco-paths';
 
 const supabase = supabaseAdmin;
 
@@ -70,7 +71,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { title, description } = body;
+    const { title, description, eco_path_id } = body;
 
     if (!title || typeof title !== 'string' || title.trim().length === 0) {
       return NextResponse.json({ success: false, error: 'Title is required' }, { status: 400 });
@@ -84,6 +85,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: 'Description must be 1000 characters or less' }, { status: 400 });
     }
 
+    // Validate eco_path_id if provided
+    if (eco_path_id && !VALID_ECO_PATH_IDS.includes(eco_path_id)) {
+      return NextResponse.json(
+        { success: false, error: 'Invalid eco-path. Must be one of: ' + VALID_ECO_PATH_IDS.join(', ') },
+        { status: 400 }
+      );
+    }
+
     const now = new Date().toISOString();
     const { data: pledge, error } = await supabase
       .from('pledge_albums')
@@ -91,6 +100,8 @@ export async function POST(request: NextRequest) {
         user_id: userData.id,
         title: title.trim(),
         description: description?.trim() || null,
+        eco_path_id: eco_path_id || null,
+        is_eco_path_pledge: false,
         status: 'draft',
         points_awarded: 0,
         created_at: now,

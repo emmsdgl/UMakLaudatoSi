@@ -15,17 +15,17 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { 
+import {
   Gift,
   Search,
   Filter,
   Star,
   Coins,
   Coffee,
-  BookOpen,
-  Smartphone,
-  Ticket,
   ShoppingBag,
+  Package,
+  TicketPercent,
+  Sparkles,
   CheckCircle2,
   AlertCircle,
   Loader2,
@@ -66,13 +66,13 @@ const getRewardCost = (reward: Reward): number => {
   return reward.cost ?? reward.point_cost ?? 0;
 };
 
-// Category configuration
+// Category configuration — mirrors admin reward categories
 const categories = [
   { id: 'all', name: 'All', icon: ShoppingBag },
-  { id: 'food', name: 'Food', icon: Coffee },
-  { id: 'supplies', name: 'Supplies', icon: BookOpen },
-  { id: 'digital', name: 'Digital', icon: Smartphone },
-  { id: 'event', name: 'Events', icon: Ticket },
+  { id: 'food', name: 'Food & Beverage', icon: Coffee },
+  { id: 'merchandise', name: 'Merchandise', icon: Package },
+  { id: 'voucher', name: 'Vouchers', icon: TicketPercent },
+  { id: 'experience', name: 'Experiences', icon: Sparkles },
   { id: 'other', name: 'Other', icon: Gift },
 ];
 
