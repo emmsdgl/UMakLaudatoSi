@@ -39,8 +39,8 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/lib/supabase';
+import { BookOpen } from 'lucide-react';
 import dynamic from 'next/dynamic';
-import WelcomeModal from '@/components/pledge/WelcomeModal';
 
 // Dynamically import ThreePlant to avoid SSR issues
 const ThreePlant = dynamic(
@@ -95,7 +95,6 @@ export default function HomePage() {
   // State
   const [stats, setStats] = useState<UserStats | null>(null);
   const [loading, setLoading] = useState(true);
-  const [showWelcome, setShowWelcome] = useState(false);
 
   /**
    * Get time-based greeting message
@@ -147,13 +146,6 @@ export default function HomePage() {
           guest_has_pledged: false,
           role: isGuest ? 'guest' : 'user',
         });
-        
-        // Only show welcome modal if user hasn't seen it before (tracked in localStorage)
-        const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
-        if (!hasSeenWelcome) {
-          setShowWelcome(true);
-        }
-        
         setLoading(false);
         return;
       }
@@ -218,15 +210,6 @@ export default function HomePage() {
         role: userData.role || (isGuest ? 'guest' : 'user'),
       });
 
-      // Show welcome modal for new users who haven't completed onboarding
-      // Only if they haven't seen it before (tracked in localStorage)
-      if (!userData.has_completed_onboarding) {
-        const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
-        if (!hasSeenWelcome) {
-          setShowWelcome(true);
-        }
-      }
-
     } catch (error) {
       console.error('Error fetching stats:', error);
     } finally {
@@ -239,38 +222,6 @@ export default function HomePage() {
       fetchStats();
     }
   }, [status, fetchStats]);
-
-  /**
-   * Handle take pledge button
-   */
-  const handleTakePledge = () => {
-    if (stats?.is_new_user || !stats?.has_completed_onboarding) {
-      // New user - go to full pledge flow
-      router.push('/pledge?new=true');
-    } else {
-      // Returning user - go to quick pledge (message only)
-      router.push('/pledge?quick=true');
-    }
-  };
-
-  /**
-   * Handle welcome modal close
-   */
-  const handleWelcomeClose = () => {
-    // Mark as seen in localStorage so it doesn't show again
-    localStorage.setItem('hasSeenWelcome', 'true');
-    setShowWelcome(false);
-  };
-
-  /**
-   * Handle welcome modal start pledge
-   */
-  const handleWelcomeStartPledge = () => {
-    // Mark as seen in localStorage
-    localStorage.setItem('hasSeenWelcome', 'true');
-    setShowWelcome(false);
-    router.push('/pledge?new=true');
-  };
 
   /**
    * Calculate plant growth stage based on streak
@@ -317,14 +268,6 @@ export default function HomePage() {
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-6 max-w-2xl mx-auto space-y-6 pb-24 lg:pb-8">
-      {/* Welcome Modal for New Users */}
-      <WelcomeModal
-        isOpen={showWelcome}
-        onClose={handleWelcomeClose}
-        onStartPledge={handleWelcomeStartPledge}
-        userName={session?.user?.name || undefined}
-      />
-
       {/* Hero Section */}
       <div className="text-center space-y-2">
         <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
@@ -376,54 +319,15 @@ export default function HomePage() {
         </CardContent>
       </Card>
 
-      {/* Take Pledge CTA */}
-      {stats?.can_pledge_today ? (
-        <Button
-          onClick={handleTakePledge}
-          className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white py-7 text-lg font-semibold shadow-lg rounded-2xl"
-        >
-          <Sparkles className="w-6 h-6 mr-2" />
-          {stats?.is_guest ? "Take Your One-Time Pledge" : "Take Today's Pledge"}
-          <ArrowRight className="w-5 h-5 ml-2" />
-        </Button>
-      ) : stats?.is_guest && stats?.guest_has_pledged ? (
-        // Guest has used their 1-time pledge
-        <Card className="border-0 shadow-md bg-amber-50 dark:bg-amber-900/20">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-amber-100 dark:bg-amber-800/30 flex items-center justify-center">
-                <CheckCircle2 className="w-6 h-6 text-amber-600" />
-              </div>
-              <div className="flex-1">
-                <p className="font-semibold text-amber-800 dark:text-amber-300">
-                  Thank You For Your Pledge! 🌱
-                </p>
-                <p className="text-sm text-amber-600 dark:text-amber-400">
-                  Want daily pledges? Sign in with a @umak.edu.ph email
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      ) : (
-        <Card className="border-0 shadow-md bg-green-50 dark:bg-green-900/20">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-green-100 dark:bg-green-800/30 flex items-center justify-center">
-                <CheckCircle2 className="w-6 h-6 text-green-600" />
-              </div>
-              <div className="flex-1">
-                <p className="font-semibold text-green-800 dark:text-green-300">
-                  Today&apos;s Pledge Complete! ✨
-                </p>
-                <p className="text-sm text-green-600 dark:text-green-400">
-                  Come back tomorrow to continue your streak
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+      {/* Pledges CTA */}
+      <Button
+        onClick={() => router.push('/pledges')}
+        className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white py-7 text-lg font-semibold shadow-lg rounded-2xl"
+      >
+        <BookOpen className="w-6 h-6 mr-2" />
+        My Pledges
+        <ArrowRight className="w-5 h-5 ml-2" />
+      </Button>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-3 gap-3">

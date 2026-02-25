@@ -116,6 +116,12 @@ function buildNavItems(role: UserRole) {
       icon: 'QrCode',
     },
     {
+      key: 'pledges',
+      label: 'Pledges',
+      href: '/admin/pledges',
+      icon: 'BookOpen',
+    },
+    {
       key: 'promo_codes',
       label: 'Promo Codes',
       href: '/admin/promo-codes',

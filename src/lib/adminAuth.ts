@@ -58,9 +58,12 @@ export const ADMIN_PERMISSIONS: Record<string, UserRole[]> = {
   // GCash Verification - Finance Admin, SA Admin, Super Admin
   gcash: ['admin', 'finance_admin', 'sa_admin', 'super_admin'],
   
+  // Pledge Album Review - SA Admin and Super Admin
+  pledges: ['admin', 'sa_admin', 'super_admin'],
+
   // Audit Logs - Super Admin only
   audit_logs: ['admin', 'super_admin'],
-  
+
   // Settings - Super Admin only
   settings: ['admin', 'super_admin'],
 };

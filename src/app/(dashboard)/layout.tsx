@@ -16,7 +16,7 @@
 import { useSession } from 'next-auth/react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { Home, Gift, Trophy, User, Wallet } from 'lucide-react';
+import { Home, Gift, Trophy, User, Wallet, BookOpen } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface DashboardLayoutProps {
@@ -28,6 +28,7 @@ interface DashboardLayoutProps {
  */
 const navItems = [
   { href: '/home', label: 'Home', icon: Home },
+  { href: '/pledges', label: 'Pledges', icon: BookOpen },
   { href: '/rewards', label: 'Rewards', icon: Gift },
   { href: '/wallet', label: 'Wallet', icon: Wallet },
   { href: '/ranks', label: 'Ranks', icon: Trophy },

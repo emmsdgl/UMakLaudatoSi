@@ -70,14 +70,15 @@ export interface Streak {
 }
 
 /** Types of point transactions for audit trail */
-export type PointTransactionType = 
-  | 'pledge_reward'      // Daily pledge points
-  | 'streak_bonus'       // Additional streak bonuses
-  | 'promo_code'         // Promo code redemption
-  | 'reward_redemption'  // Spending on rewards (negative)
-  | 'donation'           // Donating to campaigns (negative)
-  | 'admin_adjustment'   // Manual admin changes
-  | 'reset';             // Points reset (penalty)
+export type PointTransactionType =
+  | 'pledge_reward'        // Daily pledge points
+  | 'streak_bonus'         // Additional streak bonuses
+  | 'promo_code'           // Promo code redemption
+  | 'reward_redemption'    // Spending on rewards (negative)
+  | 'donation'             // Donating to campaigns (negative)
+  | 'admin_adjustment'     // Manual admin changes
+  | 'reset'                // Points reset (penalty)
+  | 'pledge_album_reward'; // Points from graded pledge album
 
 export interface PointTransaction {
   id: string;
@@ -311,6 +312,41 @@ export interface PaginatedResponse<T> {
   page: number;
   per_page: number;
   total_pages: number;
+}
+
+// ============================================================================
+// PLEDGE ALBUM TYPES
+// ============================================================================
+
+export type PledgeAlbumStatus = 'draft' | 'submitted' | 'reviewing' | 'graded';
+
+export interface PledgeAlbum {
+  id: string;
+  user_id: string;
+  title: string;
+  description?: string;
+  status: PledgeAlbumStatus;
+  points_awarded: number;
+  graded_by?: string;
+  graded_at?: string;
+  submitted_at?: string;
+  created_at: string;
+  updated_at: string;
+  // Joined data
+  proofs?: PledgeProof[];
+  user?: PublicUser;
+  grader?: PublicUser;
+}
+
+export interface PledgeProof {
+  id: string;
+  pledge_album_id: string;
+  file_url: string;
+  file_name: string;
+  file_type: string;
+  file_size: number;
+  storage_path?: string;
+  created_at: string;
 }
 
 // ============================================================================

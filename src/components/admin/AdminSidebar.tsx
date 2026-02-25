@@ -14,17 +14,18 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { 
-  LayoutDashboard, 
-  Users, 
-  Gift, 
-  QrCode, 
-  Ticket, 
-  Heart, 
-  CreditCard, 
+import {
+  LayoutDashboard,
+  Users,
+  Gift,
+  QrCode,
+  Ticket,
+  Heart,
+  CreditCard,
   FileText,
   Shield,
   Banknote,
+  BookOpen,
   Menu,
   X,
   Leaf,
@@ -56,6 +57,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   CreditCard,
   FileText,
   Banknote,
+  BookOpen,
 };
 
 // Role display names and colors

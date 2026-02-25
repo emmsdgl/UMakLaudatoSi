@@ -4,8 +4,7 @@
  * ============================================================================
  */
 
-export { default as WelcomeModal } from './WelcomeModal';
-export { default as PledgeQuestions } from './PledgeQuestions';
-export { default as PledgeMessage } from './PledgeMessage';
-export { default as GuestPledgeModal } from './GuestPledgeModal';
-export { default as PledgeSuccessModal } from './PledgeSuccessModal';
+export { default as PledgeCard } from './PledgeCard';
+export { default as PledgeStatusBadge } from './PledgeStatusBadge';
+export { default as ProofUpload } from './ProofUpload';
+export { default as ProofGallery } from './ProofGallery';

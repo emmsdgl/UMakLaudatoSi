@@ -23,7 +23,6 @@ import { DonationTicker } from "@/components/plant/DonationTicker";
 import { GrowthProgressBar } from "@/components/plant/GrowthProgressBar";
 import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
 import { DailyLimitMessage } from "@/components/common/DailyLimitMessage";
-import GuestPledgeModal from "@/components/pledge/GuestPledgeModal";
 import { useRealtimeContributions, useRealtimePlantStats } from "@/hooks/useRealtime";
 import { Flame, Trophy, Gift, Heart, Sparkles, Leaf } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -75,22 +74,11 @@ export default function Page() {
     setIsDevMode(params.get('dev') === 'true');
   }, []);
 
-  // Guest pledge state (no longer used - all users go to dashboard)
-  const [showGuestPledge, setShowGuestPledge] = useState(false);
-  const [guestHasPledged, setGuestHasPledged] = useState(false);
   const [showMilestone, setShowMilestone] = useState(false);
 
   // Time & Season State
   const [timeOfDay, setTimeOfDay] = useState(12);
   const [season, setSeason] = useState<Season>("Spring");
-
-  // Check if guest has already pledged (stored in localStorage)
-  useEffect(() => {
-    const pledged = localStorage.getItem('guest_has_pledged');
-    if (pledged === 'true') {
-      setGuestHasPledged(true);
-    }
-  }, []);
 
   // Redirect authenticated users based on role
   // Admins → /admin dashboard
@@ -122,17 +110,6 @@ export default function Page() {
 
   const handleSignOut = useCallback(async () => {
     await signOut({ callbackUrl: "/" });
-  }, []);
-
-  /**
-   * Handle guest pledge completion
-   */
-  const handleGuestPledgeComplete = useCallback(() => {
-    localStorage.setItem('guest_has_pledged', 'true');
-    setGuestHasPledged(true);
-    setShowGuestPledge(false);
-    setShowMilestone(true);
-    setTimeout(() => setShowMilestone(false), 2500);
   }, []);
 
   // Dev mode overrides real values for preview
@@ -267,14 +244,6 @@ export default function Page() {
           </p>
         </footer>
       </main>
-
-      {/* Guest Pledge Modal - kept for backwards compatibility */}
-      <GuestPledgeModal
-        isOpen={showGuestPledge}
-        onClose={() => setShowGuestPledge(false)}
-        onComplete={handleGuestPledgeComplete}
-        guestEmail={session?.user?.email || undefined}
-      />
 
       {/* Dev Controls Panel — activate with ?dev=true */}
       {isDevMode && (

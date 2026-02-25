@@ -33,7 +33,7 @@ export const config = {
     "/wallet/:path*",
     "/ranks/:path*",
     "/profile/:path*",
-    "/pledge/:path*",
-    "/api/contributions/:path*",
+    "/pledges/:path*",
+    "/api/pledges/:path*",
   ],
 };
