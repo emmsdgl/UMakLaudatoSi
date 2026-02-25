@@ -1,291 +1,208 @@
-# Laudato Si' Campus Growth Initiative
+# Laudato Si' — Campus Growth Initiative
 
-## Overview
+A gamified sustainability platform built for **University of Makati (UMak)** that transforms environmental action into tangible, observable growth. Users make eco-pledges, track their carbon footprint, earn points, and redeem rewards — all while watching a shared 3D plant grow in real time with campus-wide contributions.
 
-The Laudato Si' Campus Growth Initiative is an interactive web platform designed to foster environmental awareness and engagement at Universidad de Manila (UMak). The application visualizes collective environmental action through a dynamic 3D plant that grows as users contribute by answering ecological questions and making pledges. The system provides real-time feedback, creating a shared experience that encourages sustained participation and community building around sustainability goals.
+## Features
 
-## Objectives
+### Pledge Album System
+Submit environmental pledges with photo proof. Pledges progress through **draft → submitted → reviewing → graded** stages with admin oversight. Maintain daily streaks for escalating point rewards.
 
-### Primary Goals
+### Carbon Footprint Calculator
+An 8-question quiz that estimates your monthly CO₂ emissions across five categories: transportation, food, energy, waste, and water usage.
 
-1. **Environmental Education**: Provide accessible content about sustainability, climate action, and ecological responsibility through interactive questions and pledges.
+### Eco-Paths
+Choose a sustainability focus area based on your calculator results and track your improvement over time with visual progress indicators.
 
-2. **Community Engagement**: Unite the campus community around a shared environmental vision by visualizing collective contributions in real-time.
+### Rewards Marketplace
+Redeem earned points for food, merchandise, vouchers, experiences, and digital items. Staff verify physical reward pickups via QR code scanning.
 
-3. **Behavioral Change**: Encourage daily sustainable practices by limiting contributions to one per day, fostering consistent rather than sporadic engagement.
+### Interactive 3D Plant
+A procedurally generated tree that evolves through four growth stages (seed → sprout → plant → tree) based on total campus contributions. Features seasonal effects, time-aware lighting, and weather particles.
 
-4. **Visual Impact**: Transform abstract concepts of environmental action into tangible, observable growth through an interactive 3D visualization system.
+### Leaderboards
+Rankings by points, donations, and streaks across daily, weekly, monthly, and all-time periods.
 
-### Target Outcomes
+### Wallet & Donations
+Donate earned points to environmental causes or contribute via GCash. Canteen admins manage wallet balances and payouts.
 
-- Increased awareness of environmental issues among students and faculty
-- Daily engagement with sustainability concepts
-- Creation of a campus-wide shared experience around environmental action
-- Data collection for institutional sustainability metrics
+### Role-Based Admin Dashboard
+Four admin roles with granular permissions:
+- **Super Admin** — Full system access, audit logs, user management, payouts
+- **Finance Admin** — GCash verification, donation management
+- **SA Admin** (Student Affairs) — User management, promo codes, pledge grading
+- **Canteen Admin** — Reward verification, wallet management
 
-## User Experience
+### QR Code System
+Campus-wide QR codes for quick platform access and secure reward redemption verification.
 
-### For Contributors (Students & Faculty)
+## Tech Stack
 
-#### Initial Access
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 14, React 18 |
+| 3D Visualization | React Three Fiber, Three.js, GSAP |
+| Styling | Tailwind CSS, Framer Motion, Radix UI |
+| Authentication | NextAuth.js (Google OAuth) |
+| Database | Supabase (PostgreSQL + Realtime WebSockets) |
+| Payments | Stripe, GCash integration |
+| Other | QR code generation/scanning, React Hook Form, Embla Carousel |
 
-1. Users discover the platform through QR codes displayed around campus or via the public display screen.
-2. Upon scanning, they are directed to the main interface where they can observe the current growth stage of the campus plant.
-3. Authentication is required via Google sign-in to ensure one contribution per user per day.
+## Authentication
 
-#### Contributing Process
+| User Type | Access |
+|---|---|
+| **UMak users** (`@umak.edu.ph`) | Full access — points, streaks, pledges, rewards, leaderboards |
+| **Guest users** | Single pledge allowed, donations only (no points or streaks) |
+| **Admin accounts** | Role-based dashboard access |
 
-1. **Authentication**: Sign in using institutional Google account credentials.
-2. **Question Selection**: The system presents an environmental question (multiple choice quiz or open-ended pledge).
-3. **Submission**: User provides their answer or pledge statement.
-4. **Immediate Feedback**: The plant visibly responds to the contribution, and the user sees their name added to the contributor ticker.
-5. **Daily Limit**: After contributing, the user receives confirmation that they have completed their daily action and can return the next day.
+## Database Schema
 
-#### Viewing Experience
+### Core Tables
 
-Users can access two distinct views:
+| Table | Purpose |
+|---|---|
+| `users` | Profiles, points, wallet balance, role, verification & ban status |
+| `streaks` | Daily streak tracking (current, longest, last pledge date) |
+| `contributions` | Pledge submissions with timestamps and points awarded |
+| `pledge_albums` | Pledge artifacts with status (draft/submitted/reviewing/graded) |
+| `pledge_proofs` | Uploaded file proofs for pledges |
+| `rewards` | Available rewards with point costs and stock tracking |
+| `reward_redemptions` | Redemption requests with QR codes and verification |
+| `point_transactions` | Audit trail of all point movements |
+| `donations` | Point and GCash donations to campaigns |
+| `promo_codes` | Marketing codes that grant points or rewards |
+| `carbon_footprint_results` | Calculator quiz results per user |
+| `user_eco_paths` | User's selected eco-path focus area |
+| `audit_logs` | Admin action logging for compliance |
+| `wallet_transactions` | Canteen admin wallet movements |
+| `wallet_payouts` | GCash payout tracking |
 
-- **Interactive View** (Main Page): Personal contribution interface with authentication
-- **Public Display View** (Display Page): Large-screen visualization intended for public spaces showing real-time growth, contributor names, and seasonal/time-of-day effects
-
-### Visual Feedback System
-
-The plant progresses through four distinct growth stages based on total campus contributions:
-
-- **Seed Stage** (0-9 contributions): Initial germination phase
-- **Sprout Stage** (10-49 contributions): Early growth with visible leaves
-- **Plant Stage** (50-199 contributions): Established foliage and branching structure
-- **Tree Stage** (200+ contributions): Mature tree with full canopy and fruit-bearing capability
-
-The visualization incorporates real-world temporal context:
-
-- **Time of Day**: Lighting adapts from sunrise through day, dusk, and night based on the local time
-- **Seasons**: Environmental elements (flowers, leaves, snow, ground cover) reflect the current month's season
-- **Weather Effects**: Seasonal particle systems simulate falling leaves in autumn and snow in winter
-
-## Developer Guide
-
-### Architecture
-
-The application follows a modern web architecture with clear separation between presentation, data management, and authentication layers.
-
-#### Technology Stack
-
-**Frontend Framework**: Next.js 14 with React 18, providing server-side rendering and optimal performance through automatic code splitting and route optimization.
-
-**3D Visualization**: React Three Fiber wraps Three.js in a React-friendly API, enabling declarative 3D scene composition with automatic memory management and lifecycle handling.
-
-**Authentication**: NextAuth.js manages OAuth 2.0 flows with Google as the identity provider, handling session management and secure credential storage.
-
-**Database**: Supabase (PostgreSQL) provides real-time data synchronization through WebSocket connections, eliminating the need for manual polling.
-
-**Styling**: Tailwind CSS enables utility-first styling with custom theming capabilities, while Framer Motion handles animations and transitions.
-
-### Database Schema
-
-#### Core Tables
-
-**users**
-
-- Stores user profiles from Google authentication
-- Tracks last contribution timestamp for rate limiting
-- Fields: id, email, name, avatar_url, created_at, last_contribution
-
-**questions**
-
-- Contains environmental questions and pledges
-- Supports both multiple-choice quizzes and open-ended pledges
-- Fields: id, type, question, options, correct_answer, placeholder, is_active
-
-**contributions**
-
-- Records each user submission with timestamp
-- Links users to questions with their provided answers
-- Fields: id, user_id, question_id, answer, is_correct, created_at
-
-**plant_stats**
-
-- Singleton table maintaining global growth metrics
-- Auto-updates via database triggers on new contributions
-- Fields: id, total_contributions, current_stage, updated_at
-
-#### Data Flow
-
-1. User submits answer → API route validates authentication and rate limit
-2. Contribution inserted into database → Trigger automatically updates plant_stats
-3. Supabase broadcasts change → All connected clients receive real-time update via WebSocket
-4. React components re-render with new data → 3D plant transitions to new state
-
-### Key Components
-
-#### Real-time Data Hooks (`useRealtime.ts`)
-
-Custom hooks establish persistent connections to Supabase, subscribing to database changes and updating local state automatically. This eliminates API polling and ensures instantaneous updates across all clients.
-
-#### 3D Plant System (`ThreePlant.tsx`)
-
-Procedural generation algorithm creates unique tree structures based on contribution count. The system uses recursive branching with deterministic randomness (seeded hashing) to ensure consistent appearance across sessions while maintaining visual complexity.
-
-Seasonal environment system manages:
-
-- Ground material transitions (soil to snow)
-- Particle systems (falling leaves, snowflakes)
-- Flower blooming and wilting cycles
-- Dynamic lighting based on time and season
-
-#### Seasonal Lighting (`SeasonalLighting`)
-
-Calculates sun/moon position using time-based trigonometry to simulate realistic celestial movement. Light intensity and color temperature adjust dynamically, creating natural transitions between dawn, day, dusk, and night phases.
-
-### API Routes
-
-**POST /api/contributions**
-
-- Validates user session and enforces one-contribution-per-day limit
-- Creates contribution record and returns updated plant statistics
-- Returns 429 status if user already contributed today
-
-**GET /api/questions**
-
-- Retrieves active questions from database
-- No authentication required for question viewing
-
-**POST /api/auth/[...nextauth]**
-
-- Handles OAuth flows with Google
-- Creates or updates user records on successful authentication
-
-### Environment Configuration
-
-Required environment variables:
+### Data Flow
 
 ```
-NEXTAUTH_URL=https://your-domain.com
-NEXTAUTH_SECRET=your-secret-key
-GOOGLE_CLIENT_ID=your-google-oauth-client-id
-GOOGLE_CLIENT_SECRET=your-google-oauth-client-secret
-NEXT_PUBLIC_SUPABASE_URL=your-supabase-project-url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
-```
-
-### Development Workflow
-
-1. **Local Setup**: Clone repository and install dependencies via npm
-2. **Database Migration**: Execute schema.sql against Supabase instance
-3. **Environment Configuration**: Populate .env.local with required credentials
-4. **Development Server**: Run `npm run dev` to start on localhost:3000
-5. **Production Build**: Execute `npm run build` followed by `npm start`
-
-### Security Considerations
-
-- Row Level Security (RLS) policies enforce data access rules at the database level
-- Server-side session validation prevents unauthorized API access
-- Rate limiting implemented via timestamp comparison in contributions table
-- OAuth tokens never exposed to client-side code
-- HTTPS required for authentication flows in production
-
-## System Architecture Diagram
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                        Client Browser                            │
-│                                                                   │
-│  ┌────────────────┐        ┌───────────────────────────────┐   │
-│  │   Next.js App  │◄──────►│   React Three Fiber (3D)      │   │
-│  │   (React UI)   │        │   - Procedural Plant          │   │
-│  └───────┬────────┘        │   - Seasonal Environment      │   │
-│          │                 │   - Dynamic Lighting          │   │
-│          │                 └───────────────────────────────┘   │
-└──────────┼───────────────────────────────────────────────────────┘
-           │
-           │ HTTPS
-           │
-┌──────────┼───────────────────────────────────────────────────────┐
-│          │              Next.js API Routes                        │
-│          │                                                         │
-│  ┌───────▼────────┐     ┌──────────────┐    ┌───────────────┐  │
-│  │  /api/auth     │     │ /api/contrib │    │ /api/questions│  │
-│  │  (NextAuth)    │     │   -utions    │    │               │  │
-│  └────────┬───────┘     └──────┬───────┘    └───────┬───────┘  │
-│           │                    │                     │           │
-└───────────┼────────────────────┼─────────────────────┼───────────┘
-            │                    │                     │
-            │ OAuth 2.0          │ Real-time WS        │ PostgreSQL
-            │                    │                     │
-   ┌────────▼─────────┐  ┌──────▼─────────────────────▼────────┐
-   │  Google OAuth    │  │         Supabase Platform            │
-   │  Identity Provider│  │  ┌─────────────────────────────┐   │
-   └──────────────────┘  │  │    PostgreSQL Database       │   │
-                         │  │  - users                     │   │
-                         │  │  - questions                 │   │
-                         │  │  - contributions             │   │
-                         │  │  - plant_stats               │   │
-                         │  └─────────────────────────────┘   │
-                         │  ┌─────────────────────────────┐   │
-                         │  │   Real-time Engine          │   │
-                         │  │   (WebSocket broadcasts)    │   │
-                         │  └─────────────────────────────┘   │
-                         └─────────────────────────────────────┘
-```
-
-## Data Flow Diagram
-
-```
-User Action → Authentication Check → Database Write → Trigger Execution
-                                                              │
-                                                              ▼
-Supabase Broadcast ← Stats Update ← plant_stats Table ← increment_stats()
+User submits pledge → API validates auth & rate limit → DB write → Supabase broadcast
+                                                                        │
+                                                                        ▼
+All connected clients ← WebSocket update ← Real-time engine ← Stats updated
         │
         ▼
-WebSocket Clients (All Users) → React State Update → UI Re-render
+React state update → 3D plant transitions to new growth state
 ```
 
-## Growth Stage Visualization
+## 3D Plant Visualization
+
+The plant is procedurally generated using seeded hashing for deterministic, consistent appearance across sessions.
+
+### Growth Stages
+
+| Stage | Contributions | Visual |
+|---|---|---|
+| Seed | 0–9 | Initial germination |
+| Sprout | 10–49 | Early growth with visible leaves |
+| Plant | 50–199 | Established foliage and branching |
+| Tree | 200+ | Mature tree with full canopy |
+
+### Environmental Effects
+- **Time of day** — Lighting transitions from sunrise → day → dusk → night
+- **Seasons** — Ground cover, flowers, falling leaves, and snow reflect the current month
+- **Particles** — Seasonal effects like autumn leaves and winter snowflakes
+
+## Getting Started
+
+### Prerequisites
+- Node.js 18+
+- A Supabase project
+- Google OAuth credentials
+
+### Setup
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/emmsdgl/UMakLaudatoSi.git
+   cd UMakLaudatoSi
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Create a `.env.local` file with the required environment variables:
+   ```
+   NEXTAUTH_URL=https://your-domain.com
+   NEXTAUTH_SECRET=your-secret-key
+   GOOGLE_CLIENT_ID=your-google-oauth-client-id
+   GOOGLE_CLIENT_SECRET=your-google-oauth-client-secret
+   NEXT_PUBLIC_SUPABASE_URL=your-supabase-project-url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+   SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
+   ```
+
+4. Run the development server:
+   ```bash
+   npm run dev
+   ```
+
+5. Open [http://localhost:3000](http://localhost:3000)
+
+### Production Build
+
+```bash
+npm run build
+npm start
+```
+
+## Security
+
+- Row-Level Security (RLS) policies at the database level
+- Server-side session validation for all API routes
+- Rate limiting via timestamp checks
+- OAuth tokens never exposed to client-side code
+- Admin audit logging for all privileged actions
+- QR code signing for redemption security
+- User banning system for policy violations
+- HTTPS enforced in production
+
+## System Architecture
 
 ```
-Contributions:    0 ────► 10 ────► 50 ─────► 200 ─────► ∞
-                  │        │        │          │
-Stage:         [Seed]  [Sprout]  [Plant]    [Tree]
-                  │        │        │          │
-Visual:           •        🌱       🪴        🌳
-                          +2       +15        +50+
-                        leaves   branches    fruits
+┌──────────────────────────────────────────────────────────────────┐
+│                         Client Browser                           │
+│                                                                  │
+│  ┌────────────────┐         ┌──────────────────────────────┐    │
+│  │  Next.js App   │◄───────►│  React Three Fiber (3D)      │    │
+│  │  (React UI)    │         │  - Procedural Plant           │    │
+│  │                │         │  - Seasonal Environment       │    │
+│  │  Dashboard     │         │  - Dynamic Lighting           │    │
+│  │  Pledges       │         └──────────────────────────────┘    │
+│  │  Calculator    │                                              │
+│  │  Rewards       │                                              │
+│  │  Wallet        │                                              │
+│  │  Admin Panel   │                                              │
+│  └───────┬────────┘                                              │
+└──────────┼───────────────────────────────────────────────────────┘
+           │ HTTPS
+┌──────────┼───────────────────────────────────────────────────────┐
+│          │               Next.js API Routes                      │
+│  ┌───────▼──────┐  ┌───────────┐  ┌──────────┐  ┌───────────┐  │
+│  │ /api/auth    │  │ /api/     │  │ /api/    │  │ /api/     │  │
+│  │ (NextAuth)   │  │ pledges   │  │ wallet   │  │ admin/*   │  │
+│  └──────┬───────┘  └─────┬─────┘  └────┬─────┘  └─────┬─────┘  │
+└─────────┼────────────────┼──────────────┼──────────────┼─────────┘
+          │                │              │              │
+          │ OAuth 2.0      │  Real-time WebSocket        │
+┌─────────▼──────┐  ┌─────▼──────────────▼──────────────▼─────────┐
+│ Google OAuth   │  │            Supabase Platform                 │
+│ Identity       │  │  ┌──────────────────────────────────────┐   │
+│ Provider       │  │  │  PostgreSQL Database                 │   │
+└────────────────┘  │  │  users, pledges, rewards, donations  │   │
+                    │  └──────────────────────────────────────┘   │
+                    │  ┌──────────────────────────────────────┐   │
+                    │  │  Real-time Engine (WebSockets)       │   │
+                    │  └──────────────────────────────────────┘   │
+                    └─────────────────────────────────────────────┘
 ```
 
-## Future Enhancements
+## License
 
-### Short-term Improvements
-
-1. **Gamification Layer**: Implement achievement badges for consistent participation streaks, environmental milestone celebrations, and personal contribution history.
-
-2. **Social Features**: Enable users to view their contribution ranking, share their pledges with the campus community, and form sustainability teams or groups.
-
-3. **Analytics Dashboard**: Develop administrative interface showing contribution trends, popular question types, peak engagement times, and demographic insights.
-
-4. **Content Management**: Create admin portal for dynamically adding questions, updating seasonal themes, and managing system announcements without code deployment.
-
-### Medium-term Enhancements
-
-1. **Mobile Application**: Develop native iOS and Android versions with push notifications for daily reminders and milestone achievements.
-
-2. **Multi-campus Support**: Extend platform to support multiple institutions, each with independent plants, allowing for inter-campus competitions or collaborations.
-
-3. **Advanced Visualizations**: Introduce additional plant species based on campus location, climate data integration for realistic seasonal timing, and augmented reality features for mobile devices.
-
-4. **Integration Capabilities**: Connect with campus sustainability systems, environmental sensors, and institutional reporting frameworks for comprehensive impact assessment.
-
-### Long-term Vision
-
-1. **Educational Curriculum Integration**: Develop lesson plans, discussion guides, and classroom activities that leverage the platform for formal environmental education courses.
-
-2. **Research Platform**: Enable academic research on behavior change, community engagement patterns, and the effectiveness of visualization-based environmental education.
-
-3. **Sustainability Marketplace**: Connect platform to local environmental initiatives, allowing users to convert virtual contributions into real-world actions like tree planting or campus beautification projects.
-
-4. **Open Source Ecosystem**: Release the platform as an open-source project with comprehensive documentation, enabling other institutions to deploy and customize their own versions.
-
-## Conclusion
-
-The Laudato Si' Campus Growth Initiative represents a convergence of environmental education, community engagement, and modern web technology. By transforming individual actions into collective visual growth, the platform creates meaningful connections between abstract environmental concepts and tangible outcomes. The system's architecture prioritizes scalability, real-time responsiveness, and maintainability, ensuring long-term viability as the campus community grows and environmental awareness deepens.
-
-For technical support or contribution guidelines, please contact the development team or refer to the project repository documentation.
+This project was developed for University of Makati as part of the Laudato Si' sustainability initiative.
