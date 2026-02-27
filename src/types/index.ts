@@ -237,19 +237,6 @@ export interface DonationCampaign {
   created_at: string;
 }
 
-export interface PointDonation {
-  id: string;
-  user_id: string;
-  campaign_id: string;
-  points_donated: number;
-  message?: string;
-  is_anonymous: boolean;
-  created_at: string;
-  // Joined
-  user?: PublicUser;
-  campaign?: DonationCampaign;
-}
-
 export type GCashDonationStatus = 'pending' | 'verified' | 'rejected' | 'refunded';
 
 export interface GCashDonation {
@@ -286,7 +273,7 @@ export interface LeaderboardEntry {
 }
 
 export type LeaderboardPeriod = 'daily' | 'weekly' | 'monthly' | 'all_time';
-export type LeaderboardType = 'points' | 'donations' | 'streaks';
+export type LeaderboardType = 'points' | 'donations' | 'streaks' | 'seeds';
 
 // ============================================================================
 // AUDIT LOG TYPES
@@ -393,37 +380,6 @@ export interface EcoPathPledgeProgress {
 }
 
 // ============================================================================
-// CONTRIBUTION TYPES (Extended from base)
-// ============================================================================
-
-export interface Contribution {
-  id: string;
-  user_id: string;
-  question_id: string;
-  answer: string;
-  is_correct?: boolean;
-  created_at: string;
-  // Points awarded for this contribution
-  points_awarded?: number;
-  // Joined data
-  user?: PublicUser;
-  question?: Question;
-}
-
-export type QuestionType = 'quiz' | 'pledge';
-
-export interface Question {
-  id: string;
-  type: QuestionType;
-  question: string;
-  options?: string[];
-  correct_answer?: string;
-  placeholder?: string;
-  is_active: boolean;
-  created_at: string;
-}
-
-// ============================================================================
 // PLANT STATS (Extended)
 // ============================================================================
 
@@ -499,4 +455,70 @@ export interface CarbonFootprintSummary {
   result?: CarbonFootprintResult;
   active_eco_path?: EcoPathId;
   top_categories?: { path_id: EcoPathId; co2: number }[];
+}
+
+// ============================================================================
+// WORDLE GAME TYPES
+// ============================================================================
+
+export interface WordleWord {
+  id: string;
+  word: string;
+  scheduled_date: string;
+  created_by?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export type WordleGameStatus = 'in_progress' | 'won' | 'lost';
+
+export interface WordleGame {
+  id: string;
+  user_id: string;
+  word_id: string;
+  game_date: string;
+  guesses: string[];
+  status: WordleGameStatus;
+  attempts_used: number;
+  completed_at?: string;
+  created_at: string;
+}
+
+export interface WordleSeed {
+  id: string;
+  user_id: string;
+  current_seed_streak: number;
+  longest_seed_streak: number;
+  total_seeds_earned: number;
+  last_win_date?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+/** Tile evaluation result for a single letter */
+export type LetterStatus = 'correct' | 'present' | 'absent';
+
+/** Client-side representation of a guess with evaluation */
+export interface EvaluatedGuess {
+  word: string;
+  result: LetterStatus[];
+}
+
+/** State returned by GET /api/wordle (today's game state for current user) */
+export interface WordleGameState {
+  has_word_today: boolean;
+  game_date: string;
+  game?: {
+    status: WordleGameStatus;
+    guesses: EvaluatedGuess[];
+    attempts_used: number;
+    completed_at?: string;
+  };
+  seed_stats?: {
+    current_seed_streak: number;
+    longest_seed_streak: number;
+    total_seeds_earned: number;
+  };
+  answer?: string;
+  weekly_wins?: string[]; // Dates (YYYY-MM-DD) of wins this week
 }

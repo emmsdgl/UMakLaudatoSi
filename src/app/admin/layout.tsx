@@ -152,6 +152,12 @@ function buildNavItems(role: UserRole) {
       icon: 'Wallet',
     },
     {
+      key: 'wordle',
+      label: 'Wordle Words',
+      href: '/admin/wordle',
+      icon: 'Gamepad2',
+    },
+    {
       key: 'audit_logs',
       label: 'Audit Logs',
       href: '/admin/audit-logs',

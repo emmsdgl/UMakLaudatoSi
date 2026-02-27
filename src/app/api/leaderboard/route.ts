@@ -137,9 +137,9 @@ export async function GET(request: NextRequest) {
       }
 
     } else if (type === 'contributions') {
-      // Contributions leaderboard - count total pledges
+      // Pledges leaderboard - count total pledge messages
       let query = supabase
-        .from('contributions')
+        .from('pledge_messages')
         .select(`
           user_id,
           users!inner(
@@ -156,12 +156,12 @@ export async function GET(request: NextRequest) {
         query = query.gte('created_at', dateFilter);
       }
 
-      const { data: contribData, error: contribError } = await query;
+      const { data: pledgeData, error: pledgeError } = await query;
 
-      if (contribError) throw contribError;
+      if (pledgeError) throw pledgeError;
 
       // Aggregate by user
-      const userContribs = new Map<string, {
+      const userPledges = new Map<string, {
         user_id: string;
         name: string;
         avatar_url: string | null;
@@ -169,17 +169,17 @@ export async function GET(request: NextRequest) {
         total: number;
       }>();
 
-      contribData?.forEach((contrib: any) => {
-        const userId = contrib.user_id;
+      pledgeData?.forEach((pledge: any) => {
+        const userId = pledge.user_id;
         // Skip excluded roles
-        if (EXCLUDED_ROLES.includes(contrib.users.role)) return;
-        const existing = userContribs.get(userId);
+        if (EXCLUDED_ROLES.includes(pledge.users.role)) return;
+        const existing = userPledges.get(userId);
         if (!existing) {
-          userContribs.set(userId, {
+          userPledges.set(userId, {
             user_id: userId,
-            name: contrib.users.name || 'Anonymous',
-            avatar_url: contrib.users.avatar_url,
-            role: contrib.users.role,
+            name: pledge.users.name || 'Anonymous',
+            avatar_url: pledge.users.avatar_url,
+            role: pledge.users.role,
             total: 1,
           });
         } else {
@@ -187,7 +187,7 @@ export async function GET(request: NextRequest) {
         }
       });
 
-      data = Array.from(userContribs.values())
+      data = Array.from(userPledges.values())
         .sort((a, b) => b.total - a.total)
         .slice(offset, offset + limit)
         .map((entry, index) => ({
@@ -227,6 +227,49 @@ export async function GET(request: NextRequest) {
           total: streak.current_streak,
           longest: streak.longest_streak,
         }));
+
+    } else if (type === 'seeds') {
+      // Seeds leaderboard - ranked by LONGEST (best) streak
+      // Position is based on all-time best, so missing a day doesn't drop rank
+      const { data: seedData, error: seedError } = await supabase
+        .from('wordle_seeds')
+        .select('current_seed_streak, longest_seed_streak, total_seeds_earned, user_id')
+        .order('longest_seed_streak', { ascending: false })
+        .range(offset, offset + limit - 1);
+
+      if (seedError) throw seedError;
+
+      // Fetch user details for seed entries
+      const userIds = seedData?.map((s: any) => s.user_id) || [];
+      let usersData: any[] = [];
+      if (userIds.length > 0) {
+        const { data: users } = await supabase
+          .from('users')
+          .select('id, name, avatar_url, role, is_banned')
+          .in('id', userIds);
+        usersData = users || [];
+      }
+
+      const userMap = new Map(usersData.map((u: any) => [u.id, u]));
+
+      data = seedData
+        ?.filter((seed: any) => {
+          const user = userMap.get(seed.user_id);
+          return user && !user.is_banned && !EXCLUDED_ROLES.includes(user.role);
+        })
+        .map((seed: any, index: number) => {
+          const user = userMap.get(seed.user_id);
+          return {
+            rank: offset + index + 1,
+            user_id: seed.user_id,
+            name: user?.name || 'Anonymous',
+            avatar_url: user?.avatar_url,
+            role: user?.role,
+            total: seed.longest_seed_streak,
+            current_streak: seed.current_seed_streak,
+            total_seeds: seed.total_seeds_earned,
+          };
+        });
 
     } else {
       return NextResponse.json(

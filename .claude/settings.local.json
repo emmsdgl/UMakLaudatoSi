@@ -13,7 +13,12 @@
       "Bash(npx tsc:*)",
       "Bash(git status:*)",
       "Bash(ls:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(find /c/Users/User/Desktop/\"LAUDATO SI WEB APP\"/laudato-si/src -type d -name \"\\(dashboard\\)\" -o -name \"admin\" -o -name \"api\")",
+      "Bash(npx supabase --version)",
+      "Bash(SUPABASE_SERVICE_ROLE_KEY=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFtY21md3plZ2NwcGF0dGdjbXh1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NTE1Mzc5NCwiZXhwIjoyMDgwNzI5Nzk0fQ.y8p0J_NK_sMIkx3qQ8EDS3swjrf2hhkbSvSWDXxH2Rw\" node scripts/backup-database.mjs)",
+      "Bash(xargs grep -l \"pledge\\\\|reward\")",
+      "Bash(npx next build --no-lint)"
     ]
   }
 }

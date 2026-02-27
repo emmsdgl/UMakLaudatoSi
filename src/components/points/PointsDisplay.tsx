@@ -69,9 +69,9 @@ export default function PointsDisplay({
           .eq('user_id', userData.id)
           .single();
 
-        // Get contribution count
+        // Get pledge count
         const { count: contribCount } = await supabase
-          .from('contributions')
+          .from('pledge_messages')
           .select('*', { count: 'exact', head: true })
           .eq('user_id', userData.id);
 

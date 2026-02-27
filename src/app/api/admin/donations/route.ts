@@ -69,16 +69,9 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Compute actual totals dynamically from donation tables
+    // Compute actual totals dynamically from GCash donations
     const mappedCampaigns = await Promise.all(
       (campaigns || []).map(async (campaign) => {
-        // Sum point donations from point_donations table
-        const { data: pointData } = await supabase
-          .from('point_donations')
-          .select('points_donated')
-          .eq('campaign_id', campaign.id);
-        const pointTotal = pointData?.reduce((sum, d) => sum + (d.points_donated || 0), 0) || 0;
-
         // Sum verified GCash donations from gcash_donations table
         const { data: gcashData } = await supabase
           .from('gcash_donations')
@@ -96,9 +89,7 @@ export async function GET(request: NextRequest) {
           ...campaign,
           title: campaign.name,
           goal_amount: campaign.goal_points,
-          // Campaign progress = point donations + GCash equivalent points
-          current_amount: pointTotal + gcashEquivalentPoints,
-          point_donations_total: pointTotal,
+          current_amount: gcashEquivalentPoints,
           gcash_total: gcashTotal,
           gcash_equivalent_points: gcashEquivalentPoints,
         };

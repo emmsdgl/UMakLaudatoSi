@@ -43,7 +43,6 @@ interface DashboardStats {
   };
   donations?: {
     activeCampaigns: number;
-    totalPointsDonated: number;
     pendingGcashVerifications: number;
     totalGcashVerified: number;
   };
@@ -236,12 +235,6 @@ export default function AdminDashboardPage() {
                 <div className="flex justify-between">
                   <span className="text-gray-500">Active Campaigns</span>
                   <span className="font-semibold text-gray-900 dark:text-white">{stats.donations.activeCampaigns}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Points Donated</span>
-                  <span className="font-semibold text-gray-900 dark:text-white">
-                    {stats.donations.totalPointsDonated.toLocaleString()} pts
-                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-500">GCash Verified</span>

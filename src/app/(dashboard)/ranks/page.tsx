@@ -4,32 +4,24 @@
  * ============================================================================
  * LEADERBOARD / RANKS PAGE
  * ============================================================================
- * Features:
- * - Top eco warriors ranking
- * - Current user's position highlighted
- * - Weekly/Monthly/All-time filters
- * - Animated rank display
+ * Seeds-only leaderboard ranked by longest (best) streak.
+ * Position is based on all-time best streak — missing a day resets
+ * current streak but does NOT drop the user's rank.
  * ============================================================================
  */
 
 import { useEffect, useState, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
-import { 
+import {
   Trophy,
   Crown,
   Medal,
   Award,
   TrendingUp,
-  Flame,
+  Sprout,
   Star,
-  ChevronUp,
-  ChevronDown,
-  Minus
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { supabase } from '@/lib/supabase';
@@ -37,83 +29,63 @@ import { supabase } from '@/lib/supabase';
 interface LeaderboardUser {
   id: string;
   name: string;
-  email: string;
   image: string | null;
-  total_points: number;
+  best_streak: number;
   current_streak: number;
+  total_seeds: number;
   rank: number;
-  trend?: 'up' | 'down' | 'same';
 }
-
-type TimeFilter = 'weekly' | 'monthly' | 'alltime';
 
 export default function RanksPage() {
   const { data: session } = useSession();
 
-  // State
   const [leaderboard, setLeaderboard] = useState<LeaderboardUser[]>([]);
   const [currentUser, setCurrentUser] = useState<LeaderboardUser | null>(null);
   const [loading, setLoading] = useState(true);
-  const [timeFilter, setTimeFilter] = useState<TimeFilter>('alltime');
 
-  /**
-   * Fetch leaderboard data
-   */
   const fetchLeaderboard = useCallback(async () => {
     setLoading(true);
 
     try {
-      // Map time filter to API period param
-      const periodMap: Record<TimeFilter, string> = {
-        weekly: 'weekly',
-        monthly: 'monthly',
-        alltime: 'all',
-      };
-
-      // Fetch leaderboard via API route (bypasses RLS)
-      const res = await fetch(`/api/leaderboard?type=points&period=${periodMap[timeFilter]}&limit=100`);
+      const res = await fetch('/api/leaderboard?type=seeds&limit=100');
       const json = await res.json();
 
       if (!json.success) throw new Error(json.message);
 
-      const rankedUsers = (json.data || []).map((user: any) => ({
+      const rankedUsers: LeaderboardUser[] = (json.data || []).map((user: any) => ({
         id: user.user_id,
         name: user.name,
-        email: '',
         image: user.avatar_url,
-        total_points: user.total,
-        current_streak: 0,
+        best_streak: user.total,
+        current_streak: user.current_streak || 0,
+        total_seeds: user.total_seeds || 0,
         rank: user.rank,
-        trend: 'same' as const,
       }));
 
       setLeaderboard(rankedUsers);
 
-      // Find current user's position using direct query (SELECT works with anon key)
+      // Find current user's position
       if (session?.user?.email) {
         const { data: userData } = await supabase
           .from('users')
-          .select('id, name, email, avatar_url, total_points')
+          .select('id, name, avatar_url')
           .eq('email', session.user.email)
           .single();
 
         if (userData) {
-          // Check if user is already in the leaderboard
-          const existingPos = rankedUsers.find((u: any) => u.id === userData.id);
+          const existingPos = rankedUsers.find((u) => u.id === userData.id);
           if (existingPos) {
             setCurrentUser(existingPos);
           } else {
-            const { count } = await supabase
-              .from('users')
-              .select('*', { count: 'exact', head: true })
-              .gt('total_points', userData.total_points || 0);
-
+            // User hasn't played Wordle yet
             setCurrentUser({
-              ...userData,
+              id: userData.id,
+              name: userData.name,
               image: userData.avatar_url,
+              best_streak: 0,
               current_streak: 0,
-              rank: (count || 0) + 1,
-              trend: 'same',
+              total_seeds: 0,
+              rank: rankedUsers.length + 1,
             });
           }
         }
@@ -123,27 +95,21 @@ export default function RanksPage() {
     } finally {
       setLoading(false);
     }
-  }, [session?.user?.email, timeFilter]);
+  }, [session?.user?.email]);
 
   useEffect(() => {
     fetchLeaderboard();
   }, [fetchLeaderboard]);
 
-  /**
-   * Get initials from name
-   */
   const getInitials = (name: string) => {
     return name
       .split(' ')
-      .map(n => n[0])
+      .map((n) => n[0])
       .join('')
       .toUpperCase()
       .slice(0, 2);
   };
 
-  /**
-   * Get rank badge configuration
-   */
   const getRankBadge = (rank: number) => {
     if (rank === 1) return { icon: Crown, color: 'text-yellow-500', bg: 'bg-yellow-100 dark:bg-yellow-900/30' };
     if (rank === 2) return { icon: Medal, color: 'text-gray-400', bg: 'bg-gray-100 dark:bg-gray-700' };
@@ -151,41 +117,18 @@ export default function RanksPage() {
     return null;
   };
 
-  /**
-   * Get trend icon
-   */
-  const getTrendIcon = (trend?: 'up' | 'down' | 'same') => {
-    switch (trend) {
-      case 'up':
-        return <ChevronUp className="w-4 h-4 text-green-500" />;
-      case 'down':
-        return <ChevronDown className="w-4 h-4 text-red-500" />;
-      default:
-        return <Minus className="w-4 h-4 text-gray-400" />;
-    }
-  };
-
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-6 max-w-2xl mx-auto space-y-6 pb-24 lg:pb-8">
       {/* Header */}
       <div className="text-center space-y-2">
-        <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full bg-gradient-to-br from-yellow-400 to-amber-500 flex items-center justify-center">
-          <Trophy className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
+        <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center">
+          <Sprout className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
         </div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white">Leaderboard</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white">Seed Leaderboard</h1>
         <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">
-          Top eco warriors at UMak
+          Ranked by longest Wordle streak
         </p>
       </div>
-
-      {/* Time Filter */}
-      <Tabs value={timeFilter} onValueChange={(v) => setTimeFilter(v as TimeFilter)}>
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="weekly">Weekly</TabsTrigger>
-          <TabsTrigger value="monthly">Monthly</TabsTrigger>
-          <TabsTrigger value="alltime">All Time</TabsTrigger>
-        </TabsList>
-      </Tabs>
 
       {/* Current User Position */}
       {currentUser && (
@@ -210,20 +153,20 @@ export default function RanksPage() {
               </div>
 
               <div className="text-right">
-                <p className="text-2xl font-bold">{currentUser.total_points}</p>
-                <p className="text-white/80 text-sm">points</p>
+                <p className="text-2xl font-bold">{currentUser.best_streak}</p>
+                <p className="text-white/80 text-sm">best streak</p>
               </div>
             </div>
 
-            {currentUser.rank > 1 && (
-              <div className="mt-3 pt-3 border-t border-white/20">
-                <p className="text-sm text-white/80">
-                  🎯 {currentUser.rank <= 10 
-                    ? `${(leaderboard[currentUser.rank - 2]?.total_points || 0) - currentUser.total_points + 1} points to rank up!`
-                    : `Keep going! You're doing great!`}
-                </p>
+            <div className="mt-3 pt-3 border-t border-white/20 flex items-center justify-between">
+              <div className="flex items-center gap-1 text-sm text-white/80">
+                <Sprout className="w-4 h-4" />
+                Current streak: {currentUser.current_streak}
               </div>
-            )}
+              <div className="text-sm text-white/80">
+                Total seeds: {currentUser.total_seeds}
+              </div>
+            </div>
           </CardContent>
         </Card>
       )}
@@ -242,7 +185,7 @@ export default function RanksPage() {
             <div className="mt-2 bg-gray-200 dark:bg-gray-700 rounded-t-lg w-20 h-16 flex flex-col items-center justify-center">
               <Medal className="w-5 h-5 text-gray-400 mb-1" />
               <span className="text-xs font-bold text-gray-600 dark:text-gray-300">
-                {leaderboard[1]?.total_points}
+                {leaderboard[1]?.best_streak} seeds
               </span>
             </div>
           </div>
@@ -258,7 +201,7 @@ export default function RanksPage() {
             <div className="mt-2 bg-gradient-to-t from-yellow-400 to-amber-300 rounded-t-lg w-24 h-24 flex flex-col items-center justify-center">
               <Crown className="w-6 h-6 text-yellow-700 mb-1" />
               <span className="text-sm font-bold text-yellow-800">
-                {leaderboard[0]?.total_points}
+                {leaderboard[0]?.best_streak} seeds
               </span>
             </div>
           </div>
@@ -274,7 +217,7 @@ export default function RanksPage() {
             <div className="mt-2 bg-gradient-to-t from-amber-500 to-amber-300 rounded-t-lg w-20 h-12 flex flex-col items-center justify-center">
               <Award className="w-5 h-5 text-amber-700 mb-1" />
               <span className="text-xs font-bold text-amber-800">
-                {leaderboard[2]?.total_points}
+                {leaderboard[2]?.best_streak} seeds
               </span>
             </div>
           </div>
@@ -306,14 +249,14 @@ export default function RanksPage() {
             </div>
           ) : leaderboard.length === 0 ? (
             <div className="text-center py-8">
-              <Star className="w-12 h-12 mx-auto text-gray-400 mb-4" />
+              <Sprout className="w-12 h-12 mx-auto text-gray-400 mb-4" />
               <p className="text-gray-500 dark:text-gray-400">No rankings yet</p>
-              <p className="text-sm text-gray-400">Be the first to earn points!</p>
+              <p className="text-sm text-gray-400">Play Wordle daily to start your streak!</p>
             </div>
           ) : (
             <div className="space-y-2">
-              {leaderboard.slice(0, 20).map((user, index) => {
-                const isCurrentUser = user.email === session?.user?.email;
+              {leaderboard.slice(0, 20).map((user) => {
+                const isCurrentUser = currentUser?.id === user.id;
                 const rankBadge = getRankBadge(user.rank);
 
                 return (
@@ -321,8 +264,8 @@ export default function RanksPage() {
                     key={user.id}
                     className={`
                       flex items-center gap-3 p-3 rounded-xl transition-all
-                      ${isCurrentUser 
-                        ? 'bg-green-50 dark:bg-green-900/20 border-2 border-green-500' 
+                      ${isCurrentUser
+                        ? 'bg-green-50 dark:bg-green-900/20 border-2 border-green-500'
                         : 'hover:bg-gray-50 dark:hover:bg-gray-700/50'}
                     `}
                   >
@@ -346,27 +289,26 @@ export default function RanksPage() {
                       </AvatarFallback>
                     </Avatar>
 
-                    {/* Name & Streak */}
+                    {/* Name & Current Streak */}
                     <div className="flex-1 min-w-0">
                       <p className={`font-medium truncate ${isCurrentUser ? 'text-green-600 dark:text-green-400' : 'text-gray-800 dark:text-white'}`}>
                         {user.name || 'Anonymous'}
                         {isCurrentUser && ' (You)'}
                       </p>
                       <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
-                        <Flame className="w-3 h-3 text-orange-500" />
-                        {user.current_streak} day streak
+                        <Sprout className="w-3 h-3 text-green-500" />
+                        {user.current_streak > 0
+                          ? `${user.current_streak} active streak`
+                          : 'No active streak'}
                       </div>
                     </div>
 
-                    {/* Trend */}
-                    {getTrendIcon(user.trend)}
-
-                    {/* Points */}
+                    {/* Best Streak */}
                     <div className="text-right">
                       <p className="font-bold text-gray-800 dark:text-white">
-                        {user.total_points.toLocaleString()}
+                        {user.best_streak}
                       </p>
-                      <p className="text-xs text-gray-500">pts</p>
+                      <p className="text-xs text-gray-500">best</p>
                     </div>
                   </div>
                 );
@@ -380,7 +322,7 @@ export default function RanksPage() {
       <Card className="border-0 shadow-md bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20">
         <CardContent className="p-4 text-center">
           <p className="text-sm text-green-800 dark:text-green-300">
-            🌱 Every pledge counts! Keep making daily commitments to climb the ranks.
+            Play Eco-Wordle daily to grow your seed streak and climb the ranks!
           </p>
         </CardContent>
       </Card>

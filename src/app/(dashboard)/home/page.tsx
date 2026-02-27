@@ -20,10 +20,10 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { 
-  Flame, 
-  Star, 
-  TrendingUp, 
+import {
+  Flame,
+  Star,
+  TrendingUp,
   Leaf,
   Gift,
   Trophy,
@@ -31,13 +31,18 @@ import {
   CheckCircle2,
   Clock,
   ArrowRight,
-  Heart
+  Heart,
+  Megaphone,
+  Sprout,
+  Zap,
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/components/ui/use-toast';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
 import { supabase } from '@/lib/supabase';
 import { BookOpen, Calculator, Wallet } from 'lucide-react';
 import { useCarbonFootprint } from '@/hooks/useCarbonFootprint';
@@ -88,6 +93,7 @@ interface UserStats {
   guest_has_pledged: boolean; // Guest already used their 1-time pledge
   role: string; // admin, student, employee, guest, user
   wallet_balance: number;
+  has_public_pledge: boolean;
 }
 
 export default function HomePage() {
@@ -99,6 +105,11 @@ export default function HomePage() {
   const [stats, setStats] = useState<UserStats | null>(null);
   const [loading, setLoading] = useState(true);
   const { summary: cfSummary } = useCarbonFootprint();
+  const [pledgeModalOpen, setPledgeModalOpen] = useState(false);
+  const [pledgeMessage, setPledgeMessage] = useState('');
+  const [pledgeSubmitting, setPledgeSubmitting] = useState(false);
+  const [seedStreak, setSeedStreak] = useState({ current: 0, longest: 0, total: 0 });
+  const [weeklyWins, setWeeklyWins] = useState<string[]>([]);
 
   /**
    * Get time-based greeting message
@@ -150,6 +161,7 @@ export default function HomePage() {
           guest_has_pledged: false,
           role: isGuest ? 'guest' : 'user',
           wallet_balance: 0,
+          has_public_pledge: false,
         });
         setLoading(false);
         return;
@@ -176,13 +188,20 @@ export default function HomePage() {
       // Check if guest has already used their 1-time pledge
       let guestHasPledged = false;
       if (effectiveIsGuest) {
-        const { count: contributionCount } = await supabase
-          .from('contributions')
+        const { count: pledgeCount } = await supabase
+          .from('pledge_messages')
           .select('*', { count: 'exact', head: true })
           .eq('user_id', userData.id);
-        
-        guestHasPledged = (contributionCount || 0) > 0;
+
+        guestHasPledged = (pledgeCount || 0) > 0;
       }
+
+      // Check if user already has a public pledge
+      const { count: publicPledgeCount } = await supabase
+        .from('pledge_messages')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', userData.id);
+      const hasPublicPledge = (publicPledgeCount || 0) > 0;
 
       // Check if user can pledge today
       const today = new Date().toDateString();
@@ -214,6 +233,7 @@ export default function HomePage() {
         guest_has_pledged: guestHasPledged,
         role: userData.role || (isGuest ? 'guest' : 'user'),
         wallet_balance: userData.wallet_balance || 0,
+        has_public_pledge: hasPublicPledge,
       });
 
     } catch (error) {
@@ -226,6 +246,25 @@ export default function HomePage() {
   useEffect(() => {
     if (status === 'authenticated') {
       fetchStats();
+      // Fetch seed streak data for the streak indicator
+      fetch('/api/wordle')
+        .then(res => res.json())
+        .then(json => {
+          if (json.success && json.data) {
+            const seedStats = json.data.seed_stats;
+            if (seedStats) {
+              setSeedStreak({
+                current: seedStats.current_seed_streak || 0,
+                longest: seedStats.longest_seed_streak || 0,
+                total: seedStats.total_seeds_earned || 0,
+              });
+            }
+            if (json.data.weekly_wins) {
+              setWeeklyWins(json.data.weekly_wins);
+            }
+          }
+        })
+        .catch(() => {}); // Silently fail - streak just shows 0
     }
   }, [status, fetchStats]);
 
@@ -251,6 +290,53 @@ export default function HomePage() {
     if (streak < 14) return "Look at those leaves! You're doing great! 🍃";
     if (streak < 30) return "Your plant is thriving beautifully! 🌳";
     return "A magnificent tree! You're an eco-champion! 🌲✨";
+  };
+
+  /**
+   * Handle public pledge submission
+   */
+  const handlePublicPledge = async () => {
+    if (!pledgeMessage.trim() || pledgeSubmitting) return;
+
+    setPledgeSubmitting(true);
+    try {
+      const res = await fetch('/api/public-pledge', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: pledgeMessage.trim() }),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        toast({
+          title: 'Pledge Published!',
+          description: `Your public pledge is now live! +${data.points_earned} points earned.`,
+        });
+        setPledgeModalOpen(false);
+        setPledgeMessage('');
+        // Update local state
+        setStats(prev => prev ? {
+          ...prev,
+          has_public_pledge: true,
+          total_points: prev.total_points + (data.points_earned || 20),
+        } : prev);
+      } else {
+        toast({
+          title: 'Unable to submit',
+          description: data.message || 'Something went wrong.',
+          variant: 'destructive',
+        });
+      }
+    } catch {
+      toast({
+        title: 'Error',
+        description: 'Failed to submit your pledge. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setPledgeSubmitting(false);
+    }
   };
 
   // Loading skeleton
@@ -360,6 +446,73 @@ export default function HomePage() {
       </Button>
       )}
 
+      {/* Make a Public Pledge CTA — only for eligible users who haven't pledged yet */}
+      {stats?.role !== 'canteen_admin' && !stats?.is_guest && !stats?.has_public_pledge && (
+        <Card
+          className="border-0 shadow-lg bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-900/20 dark:to-yellow-900/20 cursor-pointer hover:shadow-xl transition-shadow"
+          onClick={() => setPledgeModalOpen(true)}
+        >
+          <CardContent className="p-4 flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center flex-shrink-0">
+              <Megaphone className="w-6 h-6 text-amber-600" />
+            </div>
+            <div className="flex-1">
+              <p className="font-semibold text-gray-800 dark:text-white text-sm">
+                Make a Public Pledge
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                Share your eco-commitment and earn 20 points!
+              </p>
+            </div>
+            <ArrowRight className="w-5 h-5 text-amber-500 flex-shrink-0" />
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Public Pledge Modal */}
+      <Dialog open={pledgeModalOpen} onOpenChange={setPledgeModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Megaphone className="w-5 h-5 text-amber-500" />
+              Make a Public Pledge
+            </DialogTitle>
+            <DialogDescription>
+              Your pledge will be displayed publicly on the main page for everyone visiting the site to see. You can only make one public pledge, so make it count!
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-2">
+            <Textarea
+              placeholder="I pledge to..."
+              value={pledgeMessage}
+              onChange={(e) => setPledgeMessage(e.target.value.slice(0, 500))}
+              className="min-h-[120px] resize-none"
+            />
+            <p className="text-xs text-gray-400 text-right">
+              {pledgeMessage.length}/500
+            </p>
+          </div>
+
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button
+              variant="outline"
+              onClick={() => setPledgeModalOpen(false)}
+              disabled={pledgeSubmitting}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handlePublicPledge}
+              disabled={!pledgeMessage.trim() || pledgeSubmitting}
+              className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white"
+            >
+              {pledgeSubmitting ? 'Submitting...' : 'Publish Pledge'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Carbon Footprint CTA */}
       {stats?.role !== 'canteen_admin' && (
       <>
@@ -450,35 +603,85 @@ export default function HomePage() {
         </Card>
       </div>
 
-      {/* Points System Info - Only show for UMak users who can earn points */}
+      {/* Seed Streak Card - Weekly view with clickable redirect to Wordle */}
       {!stats?.is_guest && (
-        <Card className="border-0 shadow-md bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20">
-          <CardContent className="p-4">
-            <h4 className="font-semibold text-gray-800 dark:text-white mb-3 flex items-center gap-2">
-              <Star className="w-4 h-4 text-yellow-500" />
-              Daily Points System
-            </h4>
-            <div className="grid grid-cols-5 gap-2 text-center">
-              {[1, 2, 3, 4, 5].map((day) => {
-                const isActive = (stats?.current_streak || 0) >= day;
+        <Card
+          className="border-0 shadow-md bg-white dark:bg-gray-800 cursor-pointer hover:shadow-lg transition-shadow"
+          onClick={() => router.push('/wordle')}
+        >
+          <CardContent className="p-5">
+            {/* Header row */}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <Zap className="w-5 h-5 text-amber-500" />
+                <span className="font-semibold text-gray-800 dark:text-white">Streak</span>
+              </div>
+              <span className="text-xs text-gray-400 flex items-center gap-1">
+                View Details <ArrowRight className="w-3 h-3" />
+              </span>
+            </div>
+
+            {/* Current streak number */}
+            <div className="flex items-baseline gap-1 mb-4">
+              <span className="text-3xl font-bold text-gray-800 dark:text-white">
+                {seedStreak.current}
+              </span>
+              <span className="text-sm text-gray-500 dark:text-gray-400">
+                day{seedStreak.current !== 1 ? 's' : ''}
+              </span>
+            </div>
+
+            {/* Weekly day circles: M T W T F S S */}
+            <div className="flex items-center justify-between mb-4">
+              {(['M', 'T', 'W', 'T', 'F', 'S', 'S'] as const).map((dayLabel, idx) => {
+                // Calculate the date for this day of the week (Mon=0, Sun=6)
+                const now = new Date();
+                const phNow = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Manila' }));
+                const currentDay = phNow.getDay(); // 0=Sun
+                const diffToMon = currentDay === 0 ? 6 : currentDay - 1;
+                const monday = new Date(phNow);
+                monday.setDate(phNow.getDate() - diffToMon);
+                const targetDate = new Date(monday);
+                targetDate.setDate(monday.getDate() + idx);
+                const dateStr = targetDate.toLocaleDateString('en-CA'); // YYYY-MM-DD
+                const isWon = weeklyWins.includes(dateStr);
+
                 return (
-                  <div
-                    key={day}
-                    className={`p-2 rounded-lg ${
-                      isActive 
-                        ? 'bg-green-500 text-white' 
-                        : 'bg-white dark:bg-gray-700 text-gray-500 dark:text-gray-400'
-                    }`}
-                  >
-                    <p className="text-xs">Day {day}</p>
-                    <p className="font-bold">{day}pt</p>
+                  <div key={idx} className="flex flex-col items-center gap-1.5">
+                    <div
+                      className={`w-9 h-9 rounded-full flex items-center justify-center ${
+                        isWon
+                          ? 'bg-green-500'
+                          : 'bg-gray-100 dark:bg-gray-700'
+                      }`}
+                    >
+                      {isWon ? (
+                        <CheckCircle2 className="w-5 h-5 text-white" />
+                      ) : (
+                        <div className="w-2.5 h-2.5 rounded-full bg-gray-300 dark:bg-gray-500" />
+                      )}
+                    </div>
+                    <span className={`text-xs font-medium ${
+                      isWon ? 'text-green-600 dark:text-green-400' : 'text-gray-400 dark:text-gray-500'
+                    }`}>
+                      {dayLabel}
+                    </span>
                   </div>
                 );
               })}
             </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
-              Earn more points as your streak grows! Max 5 pts/day at Day 5+
-            </p>
+
+            {/* Bottom stats */}
+            <div className="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-gray-700">
+              <div>
+                <p className="text-xs text-gray-400 dark:text-gray-500">Longest Streak</p>
+                <p className="font-bold text-gray-800 dark:text-white">{seedStreak.longest} day{seedStreak.longest !== 1 ? 's' : ''}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-xs text-gray-400 dark:text-gray-500">Total Seeds</p>
+                <p className="font-bold text-gray-800 dark:text-white">{seedStreak.total}</p>
+              </div>
+            </div>
           </CardContent>
         </Card>
       )}

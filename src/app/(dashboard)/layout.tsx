@@ -54,7 +54,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   // Determine nav items based on user role
   const userRole = (session?.user as any)?.role as string | undefined;
-  const navItems = userRole === 'canteen_admin' ? canteenAdminNavItems : defaultNavItems;
+  const navItems = userRole === 'canteen_admin'
+    ? canteenAdminNavItems
+    : userRole === 'super_admin'
+      ? defaultNavItems.filter(item => item.href !== '/wallet')
+      : defaultNavItems;
 
   // Redirect to login if not authenticated
   useEffect(() => {

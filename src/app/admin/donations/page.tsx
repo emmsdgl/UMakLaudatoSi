@@ -613,16 +613,7 @@ export default function AdminDonationsPage() {
               </div>
               
               {/* Summary Stats */}
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                <div className="p-4 bg-pink-50 dark:bg-pink-900/20 rounded-lg">
-                  <div className="flex items-center gap-2 text-pink-600 dark:text-pink-400">
-                    <Coins className="w-5 h-5" />
-                    <span className="text-sm">Point Donations</span>
-                  </div>
-                  <p className="text-2xl font-bold mt-1 text-gray-900 dark:text-white">
-                    {((viewingCampaign as any).point_donations_total || 0).toLocaleString()} pts
-                  </p>
-                </div>
+              <div className="mb-6">
                 <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
                   <div className="flex items-center gap-2 text-green-600 dark:text-green-400">
                     <DollarSign className="w-5 h-5" />
@@ -653,10 +644,10 @@ export default function AdminDonationsPage() {
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className={`font-semibold ${donation.type === 'gcash' ? 'text-green-600' : 'text-pink-600'}`}>
-                          {donation.type === 'gcash' ? `₱${donation.amount}` : `${donation.point_amount} pts`}
+                        <p className="font-semibold text-green-600">
+                          ₱{donation.amount}
                         </p>
-                        <p className="text-xs text-gray-500">{donation.type === 'gcash' ? 'GCash' : 'Points'}</p>
+                        <p className="text-xs text-gray-500">GCash</p>
                       </div>
                     </div>
                   ))}

@@ -31,6 +31,7 @@ import {
   X,
   Leaf,
   ChevronRight,
+  Gamepad2,
 } from 'lucide-react';
 import type { UserRole } from '@/types';
 import { cn } from '@/lib/utils';
@@ -60,6 +61,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Banknote,
   BookOpen,
   Wallet,
+  Gamepad2,
 };
 
 // Role display names and colors

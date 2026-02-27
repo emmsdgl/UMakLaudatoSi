@@ -62,9 +62,9 @@ export async function GET(request: NextRequest) {
         .select('*', { count: 'exact', head: true })
         .gte('created_at', weekAgo);
 
-      // Active users today (made a contribution)
+      // Active users today (made a pledge)
       const { count: activeToday } = await supabase
-        .from('contributions')
+        .from('pledge_messages')
         .select('user_id', { count: 'exact', head: true })
         .gte('created_at', today);
 
@@ -154,13 +154,6 @@ export async function GET(request: NextRequest) {
         .select('*', { count: 'exact', head: true })
         .eq('is_active', true);
 
-      // Total points donated
-      const { data: pointDonations } = await supabase
-        .from('point_donations')
-        .select('points_donated');
-
-      const totalPointsDonated = pointDonations?.reduce((sum, d) => sum + d.points_donated, 0) || 0;
-
       // Pending GCash verifications
       const { count: pendingGcash } = await supabase
         .from('gcash_donations')
@@ -177,28 +170,27 @@ export async function GET(request: NextRequest) {
 
       stats.donations = {
         activeCampaigns: activeCampaigns || 0,
-        totalPointsDonated,
         pendingGcashVerifications: pendingGcash || 0,
         totalGcashVerified: totalGcash,
       };
     }
 
-    // Contribution stats (available to all admins)
+    // Pledge stats (available to all admins)
     // Today's pledges
     const { count: todayPledges } = await supabase
-      .from('contributions')
+      .from('pledge_messages')
       .select('*', { count: 'exact', head: true })
       .gte('created_at', today);
 
     // This week's pledges
     const { count: weekPledges } = await supabase
-      .from('contributions')
+      .from('pledge_messages')
       .select('*', { count: 'exact', head: true })
       .gte('created_at', weekAgo);
 
     // This month's pledges
     const { count: monthPledges } = await supabase
-      .from('contributions')
+      .from('pledge_messages')
       .select('*', { count: 'exact', head: true })
       .gte('created_at', monthAgo);
 

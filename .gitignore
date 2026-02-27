@@ -46,6 +46,9 @@ node_modules/
 **/tempobook/dynamic/
 **/tempobook/storyboards/
 
+# database backups
+/backups
+
 # remove git history
 .git
 

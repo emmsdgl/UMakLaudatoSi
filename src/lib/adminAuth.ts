@@ -61,8 +61,8 @@ export const ADMIN_PERMISSIONS: Record<string, UserRole[]> = {
   // Pledge Album Review - SA Admin and Super Admin
   pledges: ['admin', 'sa_admin', 'super_admin'],
 
-  // Canteen Admin Wallet - visible to canteen admins
-  wallet: ['admin', 'canteen_admin', 'super_admin'],
+  // Canteen Admin Wallet - visible to canteen admins only
+  wallet: ['admin', 'canteen_admin'],
 
   // Canteen Admin Payouts - Super Admin only
   payouts: ['admin', 'super_admin'],
@@ -72,6 +72,9 @@ export const ADMIN_PERMISSIONS: Record<string, UserRole[]> = {
 
   // Settings - Super Admin only
   settings: ['admin', 'super_admin'],
+
+  // Wordle Word Management - Super Admin only
+  wordle: ['admin', 'super_admin'],
 };
 
 /**

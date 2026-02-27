@@ -1,26 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 
-// Answer ID to readable label mapping (from PledgeQuestions)
-const answerLabels: Record<string, string> = {
-  shower: 'Take shorter showers',
-  tap: 'Turn off tap while brushing',
-  reuse: 'Reuse water for plants',
-  collect: 'Collect rainwater',
-  lights: 'Turn off unused lights',
-  unplug: 'Unplug devices when not in use',
-  natural: 'Use natural light',
-  ac: 'Limit air conditioning use',
-  reusable: 'Use reusable containers',
-  plastic: 'Avoid single-use plastics',
-  segregate: 'Properly segregate waste',
-  compost: 'Compost food scraps',
-  walk: 'Walk instead of using vehicles',
-  plant: 'Plant or water a plant',
-  appreciate: 'Spend time outdoors',
-  share: 'Share eco-tips with others',
-};
-
 export function useRealtimeContributions() {
   const [contributions, setContributions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -59,50 +39,13 @@ export function useRealtimeContributions() {
         .order('created_at', { ascending: false })
         .limit(20);
 
-      // Fetch contributions (question answers)
-      const { data: contribs } = await supabase
-        .from('contributions')
-        .select(`
-          id,
-          answer,
-          question_id,
-          created_at,
-          user_id,
-          users (
-            name,
-            avatar_url
-          )
-        `)
-        .order('created_at', { ascending: false })
-        .limit(20);
-
-      // Merge and sort by date, deduplicate by user
-      const allItems: any[] = [];
-      const seenUsers = new Set<string>();
-
-      const pledgeItems = (pledges || []).map(p => ({
+      const items = (pledges || []).map(p => ({
         ...p,
         pledge_text: p.message,
       }));
 
-      const contribItems = (contribs || []).map(c => ({
-        ...c,
-        pledge_text: answerLabels[c.answer] || c.answer,
-      }));
-
-      const merged = [...pledgeItems, ...contribItems]
-        .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-
-      for (const item of merged) {
-        if (!seenUsers.has(item.user_id)) {
-          seenUsers.add(item.user_id);
-          allItems.push(item);
-        }
-        if (allItems.length >= 20) break;
-      }
-
       // Reverse so oldest is first, newest at end (new pledges appear at the tail)
-      setContributions(allItems.reverse());
+      setContributions(items.reverse());
       setLoading(false);
     }
 
@@ -138,39 +81,8 @@ export function useRealtimeContributions() {
       )
       .subscribe();
 
-    // Subscribe to new contributions
-    const contribChannel = supabase
-      .channel('contributions-channel')
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'contributions',
-        },
-        async (payload) => {
-          const { data: userData } = await supabase
-            .from('users')
-            .select('name, avatar_url')
-            .eq('id', payload.new.user_id)
-            .single();
-
-          const newItem = {
-            ...payload.new,
-            users: userData,
-            pledge_text: answerLabels[payload.new.answer] || payload.new.answer,
-            _isNew: true,
-          };
-
-          // Buffer the new item — it will be flushed after ~12s
-          pendingRef.current.push(newItem);
-        }
-      )
-      .subscribe();
-
     return () => {
       supabase.removeChannel(pledgeChannel);
-      supabase.removeChannel(contribChannel);
     };
   }, []);
 

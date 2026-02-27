@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { ECO_PATHS } from '@/lib/constants/eco-paths';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/eco-paths
  * Return the 5 eco-path definitions.

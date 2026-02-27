@@ -21,23 +21,23 @@ interface RouteParams {
 }
 
 /**
- * GET - Fetch all donations for a campaign (both point and GCash)
+ * GET - Fetch all GCash donations for a campaign
  */
 export async function GET(request: Request, { params }: RouteParams) {
   try {
     const { id } = await params;
-    
+
     // Get session and validate admin
     const session = await getServerSession(authOptions) as Session | null;
     const adminCheck = await validateAdminSession(session?.user?.email);
-    
+
     if (!adminCheck.isValid || !adminCheck.user) {
       return NextResponse.json(
         { error: adminCheck.error || "Unauthorized" },
         { status: 401 }
       );
     }
-    
+
     // Check permission
     if (!hasPermission(adminCheck.user.role, "donations")) {
       return NextResponse.json(
@@ -45,29 +45,7 @@ export async function GET(request: Request, { params }: RouteParams) {
         { status: 403 }
       );
     }
-    
-    // Fetch point donations
-    const { data: pointDonations, error: pointError } = await supabase
-      .from("point_donations")
-      .select(`
-        id,
-        points_donated,
-        message,
-        created_at,
-        user:user_id (
-          id,
-          name,
-          email,
-          avatar_url
-        )
-      `)
-      .eq("campaign_id", id)
-      .order("created_at", { ascending: false });
-    
-    if (pointError) {
-      console.error("Error fetching point donations:", pointError);
-    }
-    
+
     // Fetch GCash donations
     const { data: gcashDonations, error: gcashError } = await supabase
       .from("gcash_donations")
@@ -84,28 +62,20 @@ export async function GET(request: Request, { params }: RouteParams) {
       `)
       .eq("campaign_id", id)
       .order("created_at", { ascending: false });
-    
+
     if (gcashError) {
       console.error("Error fetching GCash donations:", gcashError);
     }
-    
-    // Combine and sort donations
-    const allDonations = [
-      ...(pointDonations || []).map((d: any) => ({
-        ...d,
-        type: "points",
-        point_amount: d.points_donated,
-      })),
-      ...(gcashDonations || []).map((d: any) => ({
-        ...d,
-        type: "gcash",
-        amount: d.amount_php,
-      })),
-    ].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-    
+
+    const donations = (gcashDonations || []).map((d: any) => ({
+      ...d,
+      type: "gcash",
+      amount: d.amount_php,
+    }));
+
     return NextResponse.json({
       success: true,
-      donations: allDonations,
+      donations,
     });
   } catch (error) {
     console.error("Admin campaign donations API error:", error);
