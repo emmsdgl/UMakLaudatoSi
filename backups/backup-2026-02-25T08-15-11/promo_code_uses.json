@@ -1,0 +1,58 @@
+[
+  {
+    "id": "de333d15-952c-40b8-a38a-5d211c89ac35",
+    "promo_code_id": "f071e54a-12e4-423c-b1e7-fff06334b530",
+    "user_id": "ec9642b5-1cc6-4271-a2cb-c555012621c3",
+    "used_at": "2025-12-13T13:53:57.560449+00:00",
+    "points_granted": 10
+  },
+  {
+    "id": "7890b125-3ae8-4daf-876e-219882c378b6",
+    "promo_code_id": "f071e54a-12e4-423c-b1e7-fff06334b530",
+    "user_id": "cc08e695-7557-48d3-bd25-ae5296dc8ba6",
+    "used_at": "2025-12-13T13:54:06.149189+00:00",
+    "points_granted": 10
+  },
+  {
+    "id": "2cd7de09-5b9d-47aa-87b0-3e661836c714",
+    "promo_code_id": "99bca95f-ad5a-4ac8-af76-c02911ef7c2a",
+    "user_id": "cc08e695-7557-48d3-bd25-ae5296dc8ba6",
+    "used_at": "2025-12-13T13:55:25.33424+00:00",
+    "points_granted": 5
+  },
+  {
+    "id": "a6935827-fa2b-426c-be81-3bf83116e8cd",
+    "promo_code_id": "214a1d49-c7f7-4d06-b6a1-7f385c9d0011",
+    "user_id": "7ebda958-46e0-4514-98ae-09ecc0ed6de9",
+    "used_at": "2025-12-14T13:24:57.726401+00:00",
+    "points_granted": 1000
+  },
+  {
+    "id": "017e22b4-62d5-40f4-9559-258aae2ee8e4",
+    "promo_code_id": "214a1d49-c7f7-4d06-b6a1-7f385c9d0011",
+    "user_id": "235e30ba-2368-41cc-8430-f9e1c597efd3",
+    "used_at": "2025-12-17T14:15:23.244554+00:00",
+    "points_granted": 1000
+  },
+  {
+    "id": "92694f92-9d3f-4289-a050-61ae13d3bddd",
+    "promo_code_id": "214a1d49-c7f7-4d06-b6a1-7f385c9d0011",
+    "user_id": "6da04df1-d1b9-4292-882a-4a6ab0cef0be",
+    "used_at": "2025-12-23T08:31:28.748363+00:00",
+    "points_granted": 1000
+  },
+  {
+    "id": "c147c11d-8590-43e2-b359-f9647536cd63",
+    "promo_code_id": "f071e54a-12e4-423c-b1e7-fff06334b530",
+    "user_id": "6f7e90af-7984-4533-898c-9e05a4d20344",
+    "used_at": "2026-02-12T06:19:58.161939+00:00",
+    "points_granted": 10
+  },
+  {
+    "id": "c41a254b-5c87-40bd-9bff-e0a360722a97",
+    "promo_code_id": "99bca95f-ad5a-4ac8-af76-c02911ef7c2a",
+    "user_id": "6f7e90af-7984-4533-898c-9e05a4d20344",
+    "used_at": "2026-02-12T08:06:27.151602+00:00",
+    "points_granted": 5
+  }
+]

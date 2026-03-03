@@ -388,14 +388,14 @@ export default function RewardsPage() {
                     {reward.name}
                   </h3>
                   
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5 flex-wrap">
                     <div className="flex items-center gap-1">
                       <Coins className="w-3 h-3 text-yellow-500" />
                       <span className={`text-sm font-bold ${canAfford ? 'text-green-600' : 'text-gray-400'}`}>
                         {rewardCost}
                       </span>
                     </div>
-                    <Badge variant="secondary" className="text-xs">
+                    <Badge variant="secondary" className="text-[10px] px-1.5 py-0 truncate max-w-full">
                       {categories.find(c => c.id === reward.category)?.name || reward.category}
                     </Badge>
                   </div>

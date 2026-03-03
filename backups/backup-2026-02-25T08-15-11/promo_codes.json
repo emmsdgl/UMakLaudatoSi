@@ -1,0 +1,53 @@
+[
+  {
+    "id": "214a1d49-c7f7-4d06-b6a1-7f385c9d0011",
+    "code": "TRYAGAIN2026",
+    "code_type": "points",
+    "value": 1000,
+    "reward_id": null,
+    "max_uses": 10,
+    "current_uses": 3,
+    "is_single_use_per_user": true,
+    "eligible_roles": null,
+    "valid_from": "2025-12-13T00:00:00+00:00",
+    "valid_until": "2025-12-31T00:00:00+00:00",
+    "is_active": true,
+    "created_by": "ec9642b5-1cc6-4271-a2cb-c555012621c3",
+    "description": "lala talaga",
+    "created_at": "2025-12-14T13:11:59.559263+00:00"
+  },
+  {
+    "id": "f071e54a-12e4-423c-b1e7-fff06334b530",
+    "code": "EARTHDAY",
+    "code_type": "points",
+    "value": 10,
+    "reward_id": null,
+    "max_uses": 500,
+    "current_uses": 3,
+    "is_single_use_per_user": true,
+    "eligible_roles": null,
+    "valid_from": "2025-12-12T04:56:04.735956+00:00",
+    "valid_until": null,
+    "is_active": true,
+    "created_by": null,
+    "description": "Earth Day special bonus",
+    "created_at": "2025-12-12T04:56:04.735956+00:00"
+  },
+  {
+    "id": "99bca95f-ad5a-4ac8-af76-c02911ef7c2a",
+    "code": "WELCOME2025",
+    "code_type": "points",
+    "value": 5,
+    "reward_id": null,
+    "max_uses": 1000,
+    "current_uses": 2,
+    "is_single_use_per_user": true,
+    "eligible_roles": null,
+    "valid_from": "2025-12-12T04:56:04.735956+00:00",
+    "valid_until": null,
+    "is_active": true,
+    "created_by": null,
+    "description": "Welcome bonus for new users",
+    "created_at": "2025-12-12T04:56:04.735956+00:00"
+  }
+]

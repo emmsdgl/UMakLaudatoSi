@@ -1,0 +1,72 @@
+[
+  {
+    "id": "3eff6ae1-9332-412c-b659-4edfb349cf49",
+    "type": "quiz",
+    "question": "What is the most effective way to reduce your carbon footprint?",
+    "options": [
+      "Using public transportation",
+      "Eating less meat",
+      "Reducing energy consumption at home",
+      "All of the above"
+    ],
+    "correct_answer": "All of the above",
+    "placeholder": null,
+    "created_at": "2025-12-08T08:17:22.32071+00:00",
+    "is_active": true
+  },
+  {
+    "id": "d7ec5328-0529-4a85-80e3-d777baca9b3e",
+    "type": "quiz",
+    "question": "How much water can you save by turning off the tap while brushing teeth?",
+    "options": [
+      "Up to 3 liters per day",
+      "Up to 8 liters per day",
+      "Up to 15 liters per day",
+      "Up to 25 liters per day"
+    ],
+    "correct_answer": "Up to 8 liters per day",
+    "placeholder": null,
+    "created_at": "2025-12-08T08:17:22.32071+00:00",
+    "is_active": true
+  },
+  {
+    "id": "aa115c82-3821-4b37-945d-41b8fc43aedf",
+    "type": "pledge",
+    "question": "Make a pledge for the environment",
+    "options": null,
+    "correct_answer": null,
+    "placeholder": null,
+    "created_at": "2025-12-08T08:17:22.32071+00:00",
+    "is_active": true
+  },
+  {
+    "id": "23d6513d-c60b-41b1-bcf4-e6fea9736ed2",
+    "type": "quiz",
+    "question": "What percentage of plastic waste is actually recycled globally?",
+    "options": [
+      "9%",
+      "25%",
+      "50%",
+      "75%"
+    ],
+    "correct_answer": "9%",
+    "placeholder": null,
+    "created_at": "2025-12-08T08:17:22.32071+00:00",
+    "is_active": true
+  },
+  {
+    "id": "12793ddd-191d-421f-8b51-96570ea97c7c",
+    "type": "quiz",
+    "question": "Which renewable energy source is the fastest growing?",
+    "options": [
+      "Solar",
+      "Wind",
+      "Hydroelectric",
+      "Geothermal"
+    ],
+    "correct_answer": "Solar",
+    "placeholder": null,
+    "created_at": "2025-12-08T08:17:22.32071+00:00",
+    "is_active": true
+  }
+]

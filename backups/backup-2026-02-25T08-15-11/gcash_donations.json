@@ -1,0 +1,16 @@
+[
+  {
+    "id": "4e35fa9a-28a1-4c37-9c35-0ace43573846",
+    "donor_name": "EMMAUS DIGOL",
+    "donor_email": "edigol.a12240991@umak.edu.ph",
+    "donor_phone": null,
+    "amount_php": 20,
+    "reference_number": "123456",
+    "campaign_id": "707482fe-2966-4272-a1ff-28ae4ca71996",
+    "status": "verified",
+    "verified_by": "60bcc977-5060-4ff9-b9a5-e9766b09c03b",
+    "verified_at": "2026-02-19T00:09:27.222+00:00",
+    "notes": null,
+    "created_at": "2026-02-19T00:08:53.027053+00:00"
+  }
+]

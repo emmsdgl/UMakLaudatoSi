@@ -1,0 +1,22 @@
+[
+  {
+    "id": "eb90e21b-aa6a-44f9-a709-a45700fff9f3",
+    "user_id": "96b14de1-267f-4347-b3cc-9117a12a3d3a",
+    "amount": 75,
+    "transaction_type": "verification_earning",
+    "reference_id": "5650a074-dfdd-43c9-82d5-a0c7fcc4383d",
+    "description": "Allocated: 75 pts for reward verification",
+    "created_by": "60bcc977-5060-4ff9-b9a5-e9766b09c03b",
+    "created_at": "2026-02-25T05:09:54.347112+00:00"
+  },
+  {
+    "id": "3f8ca6f0-ef24-4154-bf9e-ba9d409bd0e9",
+    "user_id": "96b14de1-267f-4347-b3cc-9117a12a3d3a",
+    "amount": 75,
+    "transaction_type": "verification_earning",
+    "reference_id": "619fee36-b5b0-44c5-9b17-bf00dde88ad9",
+    "description": "Verified: Free Coffee (+75 pts)",
+    "created_by": "96b14de1-267f-4347-b3cc-9117a12a3d3a",
+    "created_at": "2026-02-25T05:22:11.631514+00:00"
+  }
+]

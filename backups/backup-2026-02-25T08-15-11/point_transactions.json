@@ -1,0 +1,242 @@
+[
+  {
+    "id": "00bb7453-397c-416c-b79a-f686bc78eddf",
+    "user_id": "7ebda958-46e0-4514-98ae-09ecc0ed6de9",
+    "amount": -75,
+    "transaction_type": "reward_redemption",
+    "reference_id": "929becb3-e588-45c3-a141-e09ae607d656",
+    "description": "Redeemed: Free Coffee",
+    "admin_id": null,
+    "created_at": "2026-01-03T06:42:38.606708+00:00"
+  },
+  {
+    "id": "ebdf4922-5112-4435-93fe-2cb2efdb8a78",
+    "user_id": "7ebda958-46e0-4514-98ae-09ecc0ed6de9",
+    "amount": -75,
+    "transaction_type": "reward_redemption",
+    "reference_id": "dc6bb74a-fb2c-46b8-9457-28887c7881b5",
+    "description": "Redeemed: Free Coffee",
+    "admin_id": null,
+    "created_at": "2026-01-03T07:07:45.832539+00:00"
+  },
+  {
+    "id": "b49ab3e8-a09f-467d-b70a-575e496255cb",
+    "user_id": "7ebda958-46e0-4514-98ae-09ecc0ed6de9",
+    "amount": -75,
+    "transaction_type": "reward_redemption",
+    "reference_id": "84a19fc1-c85f-4eaf-8fef-c143e15f9152",
+    "description": "Redeemed: Free Coffee",
+    "admin_id": null,
+    "created_at": "2026-01-03T07:12:12.349345+00:00"
+  },
+  {
+    "id": "b2ec3729-2bfd-47e4-9913-186de0ce31fa",
+    "user_id": "60bcc977-5060-4ff9-b9a5-e9766b09c03b",
+    "amount": 1,
+    "transaction_type": "pledge_reward",
+    "reference_id": "2011c3f9-67fd-42f3-99d8-49c241a26194",
+    "description": "Daily pledge - Day 1 streak (+1 pts)",
+    "admin_id": null,
+    "created_at": "2026-02-12T03:10:23.930457+00:00"
+  },
+  {
+    "id": "bbf25385-b4c4-4f3d-a54b-41eb2f0eabcf",
+    "user_id": "6f7e90af-7984-4533-898c-9e05a4d20344",
+    "amount": 1,
+    "transaction_type": "pledge_reward",
+    "reference_id": "bc1b1ff9-11ca-4a89-8641-0fca9c41d405",
+    "description": "Daily pledge - Day 1 streak (+1 pts)",
+    "admin_id": null,
+    "created_at": "2026-02-12T06:02:53.484474+00:00"
+  },
+  {
+    "id": "8a56a187-bbcf-4dae-b46d-31954e13604b",
+    "user_id": "6f7e90af-7984-4533-898c-9e05a4d20344",
+    "amount": 10,
+    "transaction_type": "promo_code",
+    "reference_id": "f071e54a-12e4-423c-b1e7-fff06334b530",
+    "description": "Promo code: EARTHDAY (+10 pts)",
+    "admin_id": null,
+    "created_at": "2026-02-12T06:19:57.968566+00:00"
+  },
+  {
+    "id": "16776a6b-b5e0-4606-b6e4-1ed416d9b54d",
+    "user_id": "6f7e90af-7984-4533-898c-9e05a4d20344",
+    "amount": 5,
+    "transaction_type": "promo_code",
+    "reference_id": "99bca95f-ad5a-4ac8-af76-c02911ef7c2a",
+    "description": "Promo code: WELCOME2025 (+5 pts)",
+    "admin_id": null,
+    "created_at": "2026-02-12T08:06:26.897854+00:00"
+  },
+  {
+    "id": "f66d07c8-e114-4806-b746-e8cfc62a2231",
+    "user_id": "6f7e90af-7984-4533-898c-9e05a4d20344",
+    "amount": 2,
+    "transaction_type": "pledge_reward",
+    "reference_id": "2feef1c3-3dc1-4280-844c-d6f202f98331",
+    "description": "Daily pledge - Day 2 streak (+2 pts)",
+    "admin_id": null,
+    "created_at": "2026-02-13T02:53:47.792433+00:00"
+  },
+  {
+    "id": "33434694-ee58-4300-aea9-28dbda26ec33",
+    "user_id": "60bcc977-5060-4ff9-b9a5-e9766b09c03b",
+    "amount": 2,
+    "transaction_type": "pledge_reward",
+    "reference_id": "be38ebfb-6540-413e-a2d9-30bf527f700c",
+    "description": "Daily pledge - Day 2 streak (+2 pts)",
+    "admin_id": null,
+    "created_at": "2026-02-13T03:30:40.984442+00:00"
+  },
+  {
+    "id": "d53d3bd0-2934-42fc-abdf-7b3079245855",
+    "user_id": "6f7e90af-7984-4533-898c-9e05a4d20344",
+    "amount": -18,
+    "transaction_type": "donation",
+    "reference_id": "707482fe-2966-4272-a1ff-28ae4ca71996",
+    "description": "Donated 18 pts to: undefined",
+    "admin_id": null,
+    "created_at": "2026-02-13T05:55:47.872564+00:00"
+  },
+  {
+    "id": "adb8e903-3ea8-43b7-9aa5-76e511e47aa9",
+    "user_id": "6f7e90af-7984-4533-898c-9e05a4d20344",
+    "amount": 1,
+    "transaction_type": "pledge_reward",
+    "reference_id": "e7ec3af3-7e41-43e5-9c6c-9733e01ef3a2",
+    "description": "Daily pledge - Day 1 streak (+1 pts)",
+    "admin_id": null,
+    "created_at": "2026-02-16T05:39:41.462336+00:00"
+  },
+  {
+    "id": "ae004169-a88d-488b-9258-614310ef6ed0",
+    "user_id": "6f7e90af-7984-4533-898c-9e05a4d20344",
+    "amount": 1,
+    "transaction_type": "pledge_reward",
+    "reference_id": "c8b3bf91-a19c-42f4-b8bc-f6089fdb76c2",
+    "description": "Daily pledge - Day 1 streak (+1 pts)",
+    "admin_id": null,
+    "created_at": "2026-02-18T01:58:40.596872+00:00"
+  },
+  {
+    "id": "698f52fb-b75a-46b2-bc53-f4e41185e247",
+    "user_id": "6f7e90af-7984-4533-898c-9e05a4d20344",
+    "amount": 2,
+    "transaction_type": "pledge_reward",
+    "reference_id": "724cc329-5325-4e5d-a845-7524446c57b8",
+    "description": "Daily pledge - Day 2 streak (+2 pts)",
+    "admin_id": null,
+    "created_at": "2026-02-18T23:28:26.467081+00:00"
+  },
+  {
+    "id": "643ef22c-cef4-42e1-a097-0b25a9831a55",
+    "user_id": "6f7e90af-7984-4533-898c-9e05a4d20344",
+    "amount": 1,
+    "transaction_type": "pledge_reward",
+    "reference_id": "a47291e9-1237-444e-9065-9d0a1f7e8cf2",
+    "description": "Daily pledge - Day 1 streak (+1 pts)",
+    "admin_id": null,
+    "created_at": "2026-02-23T07:33:24.903476+00:00"
+  },
+  {
+    "id": "c262efd7-0fe1-4067-97c6-593268d3fe21",
+    "user_id": "6f7e90af-7984-4533-898c-9e05a4d20344",
+    "amount": 50,
+    "transaction_type": "admin_adjustment",
+    "reference_id": null,
+    "description": "Admin adjustment",
+    "admin_id": null,
+    "created_at": "2026-02-25T02:40:02.358474+00:00"
+  },
+  {
+    "id": "869facf0-6ffd-421a-932b-c84c2c3366dd",
+    "user_id": "6f7e90af-7984-4533-898c-9e05a4d20344",
+    "amount": 50,
+    "transaction_type": "admin_adjustment",
+    "reference_id": null,
+    "description": "Admin adjustment",
+    "admin_id": null,
+    "created_at": "2026-02-25T02:40:05.943956+00:00"
+  },
+  {
+    "id": "e4a9486d-c0fe-4a58-9ab8-24e30c693adc",
+    "user_id": "6f7e90af-7984-4533-898c-9e05a4d20344",
+    "amount": 50,
+    "transaction_type": "admin_adjustment",
+    "reference_id": null,
+    "description": "Admin adjustment",
+    "admin_id": null,
+    "created_at": "2026-02-25T03:38:17.933941+00:00"
+  },
+  {
+    "id": "d044d4e8-fc8a-4d1c-b8a7-bf01d6e02592",
+    "user_id": "6f7e90af-7984-4533-898c-9e05a4d20344",
+    "amount": -75,
+    "transaction_type": "reward_redemption",
+    "reference_id": "652baf7c-3869-4f4f-83ad-09466f9e1346",
+    "description": "Redeemed: Free Coffee",
+    "admin_id": null,
+    "created_at": "2026-02-25T03:39:11.653322+00:00"
+  },
+  {
+    "id": "00eaa3e7-2fb8-42f4-bd30-9a305be406cb",
+    "user_id": "96b14de1-267f-4347-b3cc-9117a12a3d3a",
+    "amount": 2,
+    "transaction_type": "admin_adjustment",
+    "reference_id": "652baf7c-3869-4f4f-83ad-09466f9e1346",
+    "description": "Reward verification bonus (+2 pts)",
+    "admin_id": null,
+    "created_at": "2026-02-25T03:39:58.229474+00:00"
+  },
+  {
+    "id": "4824ecb9-e829-4c9b-bfe3-ad721b0ef535",
+    "user_id": "6f7e90af-7984-4533-898c-9e05a4d20344",
+    "amount": 50,
+    "transaction_type": "admin_adjustment",
+    "reference_id": null,
+    "description": "Admin adjustment",
+    "admin_id": null,
+    "created_at": "2026-02-25T05:08:55.420656+00:00"
+  },
+  {
+    "id": "5647f985-f10d-4eb6-b3e0-2368847c680f",
+    "user_id": "6f7e90af-7984-4533-898c-9e05a4d20344",
+    "amount": -75,
+    "transaction_type": "reward_redemption",
+    "reference_id": "5650a074-dfdd-43c9-82d5-a0c7fcc4383d",
+    "description": "Redeemed: Free Coffee",
+    "admin_id": null,
+    "created_at": "2026-02-25T05:09:11.053168+00:00"
+  },
+  {
+    "id": "54c6cbfd-01d7-4eee-976a-6ccd408883e9",
+    "user_id": "96b14de1-267f-4347-b3cc-9117a12a3d3a",
+    "amount": -2,
+    "transaction_type": "admin_adjustment",
+    "reference_id": null,
+    "description": "Admin adjustment",
+    "admin_id": null,
+    "created_at": "2026-02-25T05:18:59.191813+00:00"
+  },
+  {
+    "id": "a2dc07e2-cfd2-4f76-9e91-ccec827d1ba7",
+    "user_id": "6f7e90af-7984-4533-898c-9e05a4d20344",
+    "amount": 80,
+    "transaction_type": "admin_adjustment",
+    "reference_id": null,
+    "description": "Admin adjustment",
+    "admin_id": null,
+    "created_at": "2026-02-25T05:20:13.193568+00:00"
+  },
+  {
+    "id": "83e617d8-8e3e-4e6d-9641-4aca6e1198a2",
+    "user_id": "6f7e90af-7984-4533-898c-9e05a4d20344",
+    "amount": -75,
+    "transaction_type": "reward_redemption",
+    "reference_id": "619fee36-b5b0-44c5-9b17-bf00dde88ad9",
+    "description": "Redeemed: Free Coffee",
+    "admin_id": null,
+    "created_at": "2026-02-25T05:21:39.373121+00:00"
+  }
+]
