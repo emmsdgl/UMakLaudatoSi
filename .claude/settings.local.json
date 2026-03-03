@@ -13,7 +13,9 @@
       "Bash(npx tsc:*)",
       "Bash(git status:*)",
       "Bash(ls:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(xargs grep -l \"dev\")",
+      "Bash(find src/app/api -name \"route.ts\" -exec grep -l \"plant\\\\|tree\\\\|growth\\\\|stats\" {} ;)"
     ]
   }
 }

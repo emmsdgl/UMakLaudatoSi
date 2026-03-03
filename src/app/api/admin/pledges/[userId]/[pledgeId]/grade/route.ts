@@ -96,7 +96,7 @@ export async function POST(
       .insert({
         user_id: params.userId,
         amount: points,
-        transaction_type: 'pledge_album_reward',
+        transaction_type: 'pledge_reward',
         reference_id: params.pledgeId,
         description: `Pledge Album: ${pledge.title} (+${points} pts)`,
         admin_id: adminCheck.user.id,

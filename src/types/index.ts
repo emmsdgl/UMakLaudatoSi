@@ -78,8 +78,7 @@ export type PointTransactionType =
   | 'reward_redemption'    // Spending on rewards (negative)
   | 'donation'             // Donating to campaigns (negative)
   | 'admin_adjustment'     // Manual admin changes
-  | 'reset'                // Points reset (penalty)
-  | 'pledge_album_reward'; // Points from graded pledge album
+  | 'reset';               // Points reset (penalty)
 
 export interface PointTransaction {
   id: string;
