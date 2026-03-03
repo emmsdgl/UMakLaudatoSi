@@ -177,13 +177,41 @@ export default function HomePage() {
         .eq('user_id', userData.id)
         .single();
 
-      // Get user rank
-      const { count } = await supabase
-        .from('users')
-        .select('*', { count: 'exact', head: true })
-        .gt('total_points', userData.total_points || 0);
+      // Get user rank (based on seed leaderboard - longest_seed_streak, matching /ranks page)
+      let rank = 0;
+      const { data: userSeedData } = await supabase
+        .from('wordle_seeds')
+        .select('longest_seed_streak')
+        .eq('user_id', userData.id)
+        .single();
 
-      const rank = (count || 0) + 1;
+      const userBestStreak = userSeedData?.longest_seed_streak || 0;
+
+      // Count how many non-banned, non-excluded users have a longer streak
+      const { data: allSeeds } = await supabase
+        .from('wordle_seeds')
+        .select('user_id, longest_seed_streak')
+        .gt('longest_seed_streak', userBestStreak);
+
+      if (allSeeds) {
+        // Filter out banned users and excluded roles (matching leaderboard API logic)
+        const seedUserIds = allSeeds.map((s: any) => s.user_id);
+        if (seedUserIds.length > 0) {
+          const { data: seedUsers } = await supabase
+            .from('users')
+            .select('id, role, is_banned')
+            .in('id', seedUserIds);
+
+          const validCount = (seedUsers || []).filter(
+            (u: any) => !u.is_banned && u.role !== 'canteen_admin'
+          ).length;
+          rank = validCount + 1;
+        } else {
+          rank = 1;
+        }
+      } else {
+        rank = 1;
+      }
 
       // Check if guest has already used their 1-time pledge
       let guestHasPledged = false;
