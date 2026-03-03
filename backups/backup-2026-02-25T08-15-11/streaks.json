@@ -1,0 +1,47 @@
+[
+  {
+    "id": "9c2c4903-a0b5-4079-9bbd-c673087b0a51",
+    "user_id": "cc08e695-7557-48d3-bd25-ae5296dc8ba6",
+    "current_streak": 1,
+    "longest_streak": 1,
+    "last_pledge_date": "2025-12-13",
+    "streak_started_at": "2025-12-13T13:49:19.244+00:00",
+    "updated_at": "2025-12-13T13:49:20.910446+00:00"
+  },
+  {
+    "id": "97759436-20f0-4073-a26c-c10e7c4d1b01",
+    "user_id": "7ebda958-46e0-4514-98ae-09ecc0ed6de9",
+    "current_streak": 1,
+    "longest_streak": 1,
+    "last_pledge_date": "2025-12-17",
+    "streak_started_at": "2025-12-12T06:12:55.332+00:00",
+    "updated_at": "2025-12-17T14:11:05.091+00:00"
+  },
+  {
+    "id": "6b6421dc-e267-4e81-a830-a2bc848bc482",
+    "user_id": "235e30ba-2368-41cc-8430-f9e1c597efd3",
+    "current_streak": 1,
+    "longest_streak": 1,
+    "last_pledge_date": "2025-12-17",
+    "streak_started_at": "2025-12-17T14:13:15.822+00:00",
+    "updated_at": "2025-12-17T14:13:17.480402+00:00"
+  },
+  {
+    "id": "c47b5e60-a6c5-46bc-ac47-08324f4db568",
+    "user_id": "60bcc977-5060-4ff9-b9a5-e9766b09c03b",
+    "current_streak": 2,
+    "longest_streak": 2,
+    "last_pledge_date": "2026-02-13",
+    "streak_started_at": "2026-02-12T03:10:21.982+00:00",
+    "updated_at": "2026-02-13T03:30:40.219+00:00"
+  },
+  {
+    "id": "7e2cb6d4-bbc5-4d1a-a8b3-01e626013140",
+    "user_id": "6f7e90af-7984-4533-898c-9e05a4d20344",
+    "current_streak": 1,
+    "longest_streak": 2,
+    "last_pledge_date": "2026-02-23",
+    "streak_started_at": "2025-12-12T10:54:03.999+00:00",
+    "updated_at": "2026-02-23T07:33:24.155+00:00"
+  }
+]

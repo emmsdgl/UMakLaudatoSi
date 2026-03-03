@@ -1,0 +1,80 @@
+[
+  {
+    "id": "dc6bb74a-fb2c-46b8-9457-28887c7881b5",
+    "user_id": "7ebda958-46e0-4514-98ae-09ecc0ed6de9",
+    "reward_id": "f47bec5d-e72a-46ac-9f20-21a2c47dc570",
+    "points_spent": 75,
+    "status": "verified",
+    "redeemed_at": "2026-01-03T07:07:45.400454+00:00",
+    "completed_at": null,
+    "redemption_code": "RDM-85A8CB48",
+    "expires_at": "2026-01-10T07:07:42.45+00:00",
+    "created_at": "2026-01-03T07:07:45.400454+00:00",
+    "verified_at": "2026-01-03T07:08:31.725+00:00"
+  },
+  {
+    "id": "929becb3-e588-45c3-a141-e09ae607d656",
+    "user_id": "7ebda958-46e0-4514-98ae-09ecc0ed6de9",
+    "reward_id": "f47bec5d-e72a-46ac-9f20-21a2c47dc570",
+    "points_spent": 75,
+    "status": "verified",
+    "redeemed_at": "2026-01-03T06:42:37.727459+00:00",
+    "completed_at": null,
+    "redemption_code": "RDM-F00E91A5",
+    "expires_at": "2026-01-10T06:42:37.612+00:00",
+    "created_at": "2026-01-03T06:42:37.727459+00:00",
+    "verified_at": "2026-01-03T07:08:40.027+00:00"
+  },
+  {
+    "id": "84a19fc1-c85f-4eaf-8fef-c143e15f9152",
+    "user_id": "7ebda958-46e0-4514-98ae-09ecc0ed6de9",
+    "reward_id": "f47bec5d-e72a-46ac-9f20-21a2c47dc570",
+    "points_spent": 75,
+    "status": "verified",
+    "redeemed_at": "2026-01-03T07:12:11.860344+00:00",
+    "completed_at": null,
+    "redemption_code": "RDM-BD591332",
+    "expires_at": "2026-01-10T07:12:08.915+00:00",
+    "created_at": "2026-01-03T07:12:11.860344+00:00",
+    "verified_at": "2026-01-03T07:27:26.456+00:00"
+  },
+  {
+    "id": "652baf7c-3869-4f4f-83ad-09466f9e1346",
+    "user_id": "6f7e90af-7984-4533-898c-9e05a4d20344",
+    "reward_id": "f47bec5d-e72a-46ac-9f20-21a2c47dc570",
+    "points_spent": 75,
+    "status": "verified",
+    "redeemed_at": "2026-02-25T03:39:11.178996+00:00",
+    "completed_at": null,
+    "redemption_code": "RDM-BBA7462B",
+    "expires_at": "2026-03-04T03:39:11.211+00:00",
+    "created_at": "2026-02-25T03:39:11.178996+00:00",
+    "verified_at": "2026-02-25T03:39:57.042+00:00"
+  },
+  {
+    "id": "5650a074-dfdd-43c9-82d5-a0c7fcc4383d",
+    "user_id": "6f7e90af-7984-4533-898c-9e05a4d20344",
+    "reward_id": "f47bec5d-e72a-46ac-9f20-21a2c47dc570",
+    "points_spent": 75,
+    "status": "verified",
+    "redeemed_at": "2026-02-25T05:09:10.58303+00:00",
+    "completed_at": null,
+    "redemption_code": "RDM-01C693B3",
+    "expires_at": "2026-03-04T05:09:10.685+00:00",
+    "created_at": "2026-02-25T05:09:10.58303+00:00",
+    "verified_at": "2026-02-25T05:09:43.695+00:00"
+  },
+  {
+    "id": "619fee36-b5b0-44c5-9b17-bf00dde88ad9",
+    "user_id": "6f7e90af-7984-4533-898c-9e05a4d20344",
+    "reward_id": "f47bec5d-e72a-46ac-9f20-21a2c47dc570",
+    "points_spent": 75,
+    "status": "verified",
+    "redeemed_at": "2026-02-25T05:21:38.925663+00:00",
+    "completed_at": null,
+    "redemption_code": "RDM-AF8EF28A",
+    "expires_at": "2026-03-04T05:21:38.999+00:00",
+    "created_at": "2026-02-25T05:21:38.925663+00:00",
+    "verified_at": "2026-02-25T05:22:10.924+00:00"
+  }
+]

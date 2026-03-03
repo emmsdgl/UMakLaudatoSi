@@ -1,0 +1,80 @@
+[
+  {
+    "id": "11d7331a-555e-4404-b182-b9f69c19d6de",
+    "name": "This is a test rewards",
+    "description": " This is a test rewards",
+    "cost": 100,
+    "category": "other",
+    "image_url": null,
+    "total_quantity": 10,
+    "remaining_quantity": 10,
+    "is_active": false,
+    "created_at": "2025-12-14T13:00:30.247161+00:00",
+    "updated_at": "2025-12-14T13:00:30.247161+00:00"
+  },
+  {
+    "id": "2ff85580-8e91-4238-a37a-a817ef559159",
+    "name": "Plant Kit",
+    "description": "Indoor plant starter kit with seeds and pot",
+    "cost": 250,
+    "category": "other",
+    "image_url": "https://amcmfwzegcppattgcmxu.supabase.co/storage/v1/object/public/images/rewards/1771989435851-pnm61i.jpg",
+    "total_quantity": 2,
+    "remaining_quantity": 2,
+    "is_active": true,
+    "created_at": "2025-12-12T08:10:29.703374+00:00",
+    "updated_at": "2025-12-12T08:10:29.703374+00:00"
+  },
+  {
+    "id": "b65399b5-0b68-4afa-b32a-1cb5a875dd13",
+    "name": "UMak Tumbler",
+    "description": "Reusable stainless steel tumbler with UMak logo",
+    "cost": 150,
+    "category": "merchandise",
+    "image_url": "",
+    "total_quantity": 3,
+    "remaining_quantity": 3,
+    "is_active": true,
+    "created_at": "2025-12-12T08:10:29.703374+00:00",
+    "updated_at": "2025-12-12T08:10:29.703374+00:00"
+  },
+  {
+    "id": "f47bec5d-e72a-46ac-9f20-21a2c47dc570",
+    "name": "Free Coffee",
+    "description": "One free coffee at the campus café",
+    "cost": 75,
+    "category": "food",
+    "image_url": "https://amcmfwzegcppattgcmxu.supabase.co/storage/v1/object/public/images/rewards/1767420959506-ru6m4d.jpg",
+    "total_quantity": 50,
+    "remaining_quantity": 43,
+    "is_active": true,
+    "created_at": "2025-12-12T08:10:29.703374+00:00",
+    "updated_at": "2025-12-12T08:10:29.703374+00:00"
+  },
+  {
+    "id": "502a9c67-a228-4bf7-9451-7ffef63adf16",
+    "name": "Cafeteria 10% Discount",
+    "description": "10% discount on your next cafeteria purchase",
+    "cost": 50,
+    "category": "discount",
+    "image_url": "",
+    "total_quantity": 0,
+    "remaining_quantity": 0,
+    "is_active": true,
+    "created_at": "2025-12-12T08:10:29.703374+00:00",
+    "updated_at": "2025-12-12T08:10:29.703374+00:00"
+  },
+  {
+    "id": "0f64d3f0-de7a-4f53-a489-1b5da1ea4fb8",
+    "name": "Eco Tote Bag",
+    "description": "Sustainable canvas tote bag",
+    "cost": 100,
+    "category": "merchandise",
+    "image_url": "",
+    "total_quantity": 0,
+    "remaining_quantity": 0,
+    "is_active": true,
+    "created_at": "2025-12-12T08:10:29.703374+00:00",
+    "updated_at": "2025-12-12T08:10:29.703374+00:00"
+  }
+]

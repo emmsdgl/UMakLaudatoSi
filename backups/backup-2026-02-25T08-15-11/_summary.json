@@ -1,0 +1,112 @@
+{
+  "timestamp": "2026-02-25T08:15:18.960Z",
+  "supabase_url": "https://amcmfwzegcppattgcmxu.supabase.co",
+  "tables": [
+    {
+      "table": "audit_logs",
+      "rows": 20,
+      "error": null
+    },
+    {
+      "table": "carbon_footprint_results",
+      "rows": 3,
+      "error": null
+    },
+    {
+      "table": "contributions",
+      "rows": 2,
+      "error": null
+    },
+    {
+      "table": "donation_campaigns",
+      "rows": 1,
+      "error": null
+    },
+    {
+      "table": "gcash_donations",
+      "rows": 1,
+      "error": null
+    },
+    {
+      "table": "plant_stats",
+      "rows": 1,
+      "error": null
+    },
+    {
+      "table": "pledge_albums",
+      "rows": 3,
+      "error": null
+    },
+    {
+      "table": "pledge_messages",
+      "rows": 14,
+      "error": null
+    },
+    {
+      "table": "pledge_proofs",
+      "rows": 7,
+      "error": null
+    },
+    {
+      "table": "point_donations",
+      "rows": 1,
+      "error": null
+    },
+    {
+      "table": "point_transactions",
+      "rows": 24,
+      "error": null
+    },
+    {
+      "table": "promo_code_uses",
+      "rows": 8,
+      "error": null
+    },
+    {
+      "table": "promo_codes",
+      "rows": 3,
+      "error": null
+    },
+    {
+      "table": "questions",
+      "rows": 5,
+      "error": null
+    },
+    {
+      "table": "redemptions",
+      "rows": 6,
+      "error": null
+    },
+    {
+      "table": "rewards",
+      "rows": 6,
+      "error": null
+    },
+    {
+      "table": "streaks",
+      "rows": 5,
+      "error": null
+    },
+    {
+      "table": "user_eco_paths",
+      "rows": 1,
+      "error": null
+    },
+    {
+      "table": "users",
+      "rows": 10,
+      "error": null
+    },
+    {
+      "table": "wallet_payouts",
+      "rows": 0,
+      "error": null
+    },
+    {
+      "table": "wallet_transactions",
+      "rows": 2,
+      "error": null
+    }
+  ],
+  "total_rows": 123
+}

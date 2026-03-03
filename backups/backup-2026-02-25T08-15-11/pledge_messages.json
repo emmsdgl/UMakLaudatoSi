@@ -1,0 +1,114 @@
+[
+  {
+    "id": "7edfd2d6-85ec-45b7-9c89-ba0621f99c3a",
+    "user_id": "6f7e90af-7984-4533-898c-9e05a4d20344",
+    "message": "I pledge to reduce my plastic use today! 🌱",
+    "points_earned": 1,
+    "is_displayed": false,
+    "created_at": "2025-12-12T10:54:04.139473+00:00"
+  },
+  {
+    "id": "7e9f9d1d-4ae4-4e39-813c-07e14377af7f",
+    "user_id": "0fef8972-317d-4191-8f04-a6826751356b",
+    "message": "I pledge to reduce my plastic use today! 🌱",
+    "points_earned": 0,
+    "is_displayed": false,
+    "created_at": "2025-12-13T13:44:56.782188+00:00"
+  },
+  {
+    "id": "9a3fc59e-fcc6-4248-bb5c-43b5ca5ae4e5",
+    "user_id": "cc08e695-7557-48d3-bd25-ae5296dc8ba6",
+    "message": "Today I'll walk instead of taking a jeep 🚶",
+    "points_earned": 1,
+    "is_displayed": false,
+    "created_at": "2025-12-13T13:49:19.36547+00:00"
+  },
+  {
+    "id": "49d6a0c1-a7bb-404a-be75-28940aaf7889",
+    "user_id": "6da04df1-d1b9-4292-882a-4a6ab0cef0be",
+    "message": "I pledge to reduce my plastic use today! 🌱",
+    "points_earned": 0,
+    "is_displayed": false,
+    "created_at": "2025-12-14T13:29:29.318025+00:00"
+  },
+  {
+    "id": "27d7d0eb-321c-437b-89ea-a49d6bdbb8ad",
+    "user_id": "7ebda958-46e0-4514-98ae-09ecc0ed6de9",
+    "message": "I promise to plant a seed this week 🌻",
+    "points_earned": 1,
+    "is_displayed": false,
+    "created_at": "2025-12-17T14:11:05.230669+00:00"
+  },
+  {
+    "id": "7df15984-bae5-4e56-8a5d-51701ed84bde",
+    "user_id": "235e30ba-2368-41cc-8430-f9e1c597efd3",
+    "message": "I pledge to reduce my plastic use today! 🌱",
+    "points_earned": 1,
+    "is_displayed": false,
+    "created_at": "2025-12-17T14:13:15.932523+00:00"
+  },
+  {
+    "id": "2011c3f9-67fd-42f3-99d8-49c241a26194",
+    "user_id": "60bcc977-5060-4ff9-b9a5-e9766b09c03b",
+    "message": "I pledge to reduce my plastic use today! 🌱",
+    "points_earned": 1,
+    "is_displayed": false,
+    "created_at": "2026-02-12T03:10:22.060389+00:00"
+  },
+  {
+    "id": "bc1b1ff9-11ca-4a89-8641-0fca9c41d405",
+    "user_id": "6f7e90af-7984-4533-898c-9e05a4d20344",
+    "message": "I promise to plant a seed this week 🌻",
+    "points_earned": 1,
+    "is_displayed": false,
+    "created_at": "2026-02-12T06:02:52.721613+00:00"
+  },
+  {
+    "id": "2feef1c3-3dc1-4280-844c-d6f202f98331",
+    "user_id": "6f7e90af-7984-4533-898c-9e05a4d20344",
+    "message": "ASDFGHJKLLHGFF",
+    "points_earned": 2,
+    "is_displayed": false,
+    "created_at": "2026-02-13T02:53:46.961974+00:00"
+  },
+  {
+    "id": "be38ebfb-6540-413e-a2d9-30bf527f700c",
+    "user_id": "60bcc977-5060-4ff9-b9a5-e9766b09c03b",
+    "message": "AKOOOOO SJJJJJASDKSNCMXNK",
+    "points_earned": 2,
+    "is_displayed": false,
+    "created_at": "2026-02-13T03:30:40.272502+00:00"
+  },
+  {
+    "id": "e7ec3af3-7e41-43e5-9c6c-9733e01ef3a2",
+    "user_id": "6f7e90af-7984-4533-898c-9e05a4d20344",
+    "message": "I promise to plant a seed this week 🌻",
+    "points_earned": 1,
+    "is_displayed": false,
+    "created_at": "2026-02-16T05:39:40.755083+00:00"
+  },
+  {
+    "id": "c8b3bf91-a19c-42f4-b8bc-f6089fdb76c2",
+    "user_id": "6f7e90af-7984-4533-898c-9e05a4d20344",
+    "message": "Today I'll walk instead of taking a jeep 🚶",
+    "points_earned": 1,
+    "is_displayed": false,
+    "created_at": "2026-02-18T01:58:39.885458+00:00"
+  },
+  {
+    "id": "724cc329-5325-4e5d-a845-7524446c57b8",
+    "user_id": "6f7e90af-7984-4533-898c-9e05a4d20344",
+    "message": "Today I'll walk instead of taking a jeep 🚶",
+    "points_earned": 2,
+    "is_displayed": false,
+    "created_at": "2026-02-18T23:28:25.713013+00:00"
+  },
+  {
+    "id": "a47291e9-1237-444e-9065-9d0a1f7e8cf2",
+    "user_id": "6f7e90af-7984-4533-898c-9e05a4d20344",
+    "message": "Monday Monday Monday",
+    "points_earned": 1,
+    "is_displayed": false,
+    "created_at": "2026-02-23T07:33:24.063423+00:00"
+  }
+]
