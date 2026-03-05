@@ -69,33 +69,35 @@ Once a student selects a path, they're locked into it until they complete all th
 
 *(Slide shows: Pledge creation screen, pledge album with uploaded photos)*
 
-This is where the real action happens. Every day, a student can create a pledge — they write what environmental action they took and upload a photo as proof.
+This is where the real action happens. Students create pledge albums for each environmental action they commit to — they write what they're doing and upload photos as proof.
 
 For example, a student on the Green Commute path might take a photo of themselves biking to campus, or a screenshot of their grab ride showing they carpooled. A student on Zero Waste Hero might photograph their separated recyclables or their reusable tumbler at the canteen.
+
+Students can work on multiple pledge albums at the same time. They upload proof to each one at their own pace, and when they're ready, they can submit all their pledges simultaneously. There's no limit to how many they can work on — what matters is the quality of the proof.
 
 The key here is **accountability**. This isn't a checkbox. Students have to show real evidence of what they did. And it's not self-validated — every pledge goes through an admin review workflow. Student Affairs staff can view the uploaded photos, verify the action was legitimate, and then grade the submission.
 
 The pledge statuses flow like this: **Submitted**, then **Reviewing**, then **Graded**. Only graded pledges award points. This quality control is what makes our data trustworthy — when we say students made 500 eco-pledges this month, every single one has been verified with photo evidence.
 
-Students are limited to one pledge per day. This keeps the system fair and encourages consistent daily habits rather than cramming.
-
 ---
 
-## STEP 4: Earn & Grow — Points, Streaks, and the 3D Plant
+## STEP 4: Earn & Grow — Points and the 3D Plant
 
-*(Slide shows: Home dashboard with 3D plant, streak counter, points display)*
+*(Slide shows: Home dashboard with 3D plant, points display)*
 
 Now here's where the gamification really kicks in.
 
-**Points and Streaks:** Every consecutive day a student submits a verified pledge, their points increase. Day 1 gives you 1 point, Day 2 gives you 2 points, Day 3 gives 3, Day 4 gives 4, and from Day 5 onward you earn 5 points per day. But if you miss a single day? Your streak resets back to Day 1.
+**Points:** The core reward loop is simple — a student submits a pledge, an admin reviews and grades it, and the student receives points. The more pledges you get graded, the more points you accumulate. And those points can be spent on real rewards in our marketplace. That's the direct incentive for taking environmental action.
 
-This is the same psychology that makes Duolingo addictive. Students don't want to break their streak. It turns environmental action from a one-time thing into a daily habit.
+**The 3D Plant:** And here's what makes our platform truly unique. On the home page, every student sees a shared 3D plant — and it grows based on the collective graded pledges of the entire campus. Every graded pledge adds +1 to the plant's growth. So if a student submits 5 pledges and all 5 get graded, that's +5 added to the campus plant.
 
-**The 3D Plant:** And here's what makes our platform truly unique. On the home page, every student sees a shared 3D plant — and it grows based on the cumulative contributions of the entire campus. When you first start, it's just a seed in the ground. As more students pledge, it sprouts. Then it grows into a full plant with leaves and flowers. And eventually, it becomes a full tree with a canopy, butterflies floating around, and seasonal effects.
+When you first start, it's just a seed in the ground. As more students get their pledges graded, it sprouts. Then it grows into a full plant with leaves and flowers. And eventually, it becomes a full tree with a canopy, butterflies floating around, and seasonal effects.
 
 The plant even changes with the time of day — sunrise lighting in the morning, warm light during the day, dusk in the evening. And it changes with the seasons — blossoms in spring, vibrant green in summer, falling leaves in autumn.
 
-This is not a progress bar. It's a living visual representation of what UMak is achieving together. When a student submits a pledge, the plant grows in real-time for everyone — using live WebSocket updates. That's collective impact you can actually see.
+**Public Pledges:** Once a pledge album is graded, the student gets the option to publicly display the title of their pledge on the homepage — for example, "Reduce single-use food packaging by bringing reusable containers." They can toggle this on or off with a simple switch. This creates a live feed of real environmental actions that the entire campus can see, inspiring others to take action too.
+
+This is not a progress bar. It's a living visual representation of what UMak is achieving together. The plant grows in real-time for everyone — using live WebSocket updates. That's collective impact you can actually see.
 
 ---
 
@@ -103,13 +105,15 @@ This is not a progress bar. It's a living visual representation of what UMak is 
 
 *(Slide shows: Wordle game board with green/yellow/gray tiles, keyboard, streak display)*
 
-To keep students coming back even on days when they might not have an eco-pledge to submit, we built Eco-Wordle — a daily word puzzle using sustainability-themed words.
+To keep students coming back every day, we built Eco-Wordle — a daily word puzzle using sustainability-themed words.
 
 It works just like the popular Wordle game. You have 6 attempts to guess a 5-letter word. Green means the letter is correct and in the right position. Yellow means the letter is in the word but in the wrong spot. Gray means it's not in the word at all.
 
 The difference is: every word is related to the environment — words like "earth," "plant," "waste," "solar," "green." So even the game itself reinforces eco-awareness.
 
-When you solve the puzzle, you earn seeds. Seeds have their own streak tracker — separate from the pledge streak — and they contribute to the plant growth and the campus leaderboard. The leaderboard ranks students by their longest Wordle seed streak, with daily, weekly, monthly, and all-time views.
+When you solve the puzzle, you earn a seed. Seeds track how many days you've played and won. Play every day and your seed streak grows. Miss a day and it resets. This streak is what powers our **Leaderboard** — students are ranked by their longest Wordle seed streak, with daily, weekly, monthly, and all-time views.
+
+So to be clear on how the two systems work: **Points** come from graded pledges and are used to redeem rewards. **Seeds** come from Wordle and are used for leaderboard ranking. They serve different purposes — points reward environmental action, seeds reward daily engagement.
 
 This is our engagement insurance. Even a student who's busy that day and doesn't submit a pledge will still open the app to play Wordle. And once they're in the app, they're one tap away from making a pledge too.
 
@@ -119,7 +123,7 @@ This is our engagement insurance. Even a student who's busy that day and doesn't
 
 *(Slide shows: Rewards grid with food, merchandise, vouchers; QR code redemption screen)*
 
-Everything the students earn — all those points from daily pledges and streaks — can be spent on real rewards.
+All the points students earn from graded pledges can be spent on real rewards.
 
 Our Rewards Marketplace is a full catalog organized by category: Food & Beverage, Merchandise, Vouchers, Experiences, Events, and Digital items. Each reward has a point cost. Students browse, pick what they want, and if they have enough points, they redeem it.
 
@@ -137,15 +141,15 @@ The rewards are what make this system tangible. Students aren't just earning vir
 
 *(Slide shows: Donation campaign cards with progress bars, GCash donation flow)*
 
-Beyond earning and spending points, students can also give back through our Donations feature.
+Beyond pledges and rewards, we also have a Donations feature — and this is where real money supports real environmental causes.
 
-We support two types of donations. First, students can donate their earned points directly to active environmental campaigns — for example, a campus tree-planting initiative or an ocean cleanup fundraiser. Second, anyone — including guests who aren't UMak students — can make a monetary donation via GCash.
+Donations are done exclusively through **GCash**. Anyone — students, faculty, and even guests who aren't from UMak — can donate to active environmental campaigns. For example, a campus tree-planting initiative, an ocean cleanup fundraiser, or a sustainability materials fund.
 
-For GCash donations, we have a tiered points system. Donate 20 to 50 pesos and you earn 3 pledge points. Donate 51 to 100 pesos and you earn 5 points. The tiers go up — donate 200 pesos or more and you earn 30 points. This incentivizes generosity while giving something back.
+We also have a tiered bonus system to incentivize generosity. Donate 20 to 50 pesos and you earn 3 bonus pledge points. Donate 51 to 100 pesos and you earn 5 points. The tiers go up — donate 200 pesos or more and you earn 30 points. So donating doesn't just help the cause — it also gives students more points to redeem rewards.
 
-Every GCash donation is verified by our Finance Admin before points are awarded. The donor submits the GCash reference number, and the admin confirms the payment was received. This prevents fraud and ensures every donation is legitimate.
+To keep this trustworthy, every GCash donation is verified by our Finance Admin before any bonus points are awarded. The donor submits the GCash reference number from their receipt, and the admin confirms the payment was actually received. This prevents fraud and ensures every donation is legitimate.
 
-Each campaign shows its progress — how much has been raised, how many donors have contributed, and the target goal. It creates transparency and motivates more people to contribute when they see the campaign is close to its goal.
+Each campaign page shows its progress — how much has been raised, how many donors have contributed, and the target goal. It creates transparency and motivates more people to contribute when they see the campaign is close to reaching its target.
 
 ---
 
@@ -214,10 +218,10 @@ Thank you. I'm happy to answer any questions.
 | **"What's the cost?"** | The platform runs on free-tier infrastructure — Supabase and Vercel. The main recurring cost is the rewards budget, which canteen partners and campus sponsors can offset. No licensing fees — it's fully custom-built. |
 | **"Who maintains it?"** | Student Affairs manages pledge reviews. Finance handles donation verification. Canteen staff handles reward fulfillment. Super Admin oversees everything. The roles are built into the system — no extra training needed beyond a walkthrough. |
 | **"Is it secure?"** | Google OAuth authentication, Row-Level Security on all data, signed QR codes, complete audit logging with IP tracking, and a user ban system. Multiple layers. |
-| **"What if students cheat?"** | Photo proof is required for every pledge. Admin staff review and grade each one. One pledge per day limit. Ban system for repeat offenders. QR verification prevents reward fraud. It's designed to be trustworthy. |
+| **"What if students cheat?"** | Photo proof is required for every pledge. Admin staff review and grade each one before any points are awarded. Ban system for repeat offenders. QR verification prevents reward fraud. It's designed to be trustworthy. |
 | **"Can it scale to the whole university?"** | Yes. The architecture supports thousands of users. It's API-first, so a mobile app can be added later. Additional eco-paths and reward partners can be added anytime. |
-| **"How is this different from just a survey?"** | Surveys are one-time. This is daily engagement — streaks, points, leaderboards, rewards. It doesn't just collect data, it changes behavior. Students come back every day because there's something at stake. |
+| **"How is this different from just a survey?"** | Surveys are one-time. This is ongoing engagement — points from pledges, Wordle streaks on the leaderboard, real rewards to redeem, and GCash donations to support. It doesn't just collect data, it changes behavior. Students come back every day because there's something at stake. |
 | **"What data do we get for reporting?"** | Daily pledge counts, carbon footprint baselines per student, participation rates by department, streak lengths, reward redemption volume, donation totals, and full audit logs. All exportable. |
 | **"Does this help with accreditation?"** | Absolutely. It generates measurable sustainability metrics aligned with UN Sustainable Development Goals and the Vatican's Laudato Si' Action Platform. Concrete data, not just claims. |
-| **"What if students lose interest?"** | The streak system penalizes missed days, which keeps retention high. Eco-Wordle gives a fun reason to open the app even on lazy days. And rotating rewards and donation campaigns keep the content fresh. |
-| **"Can faculty and staff participate?"** | Yes. Employees with @umak.edu.ph emails have full access — same features as students. Guest users with non-UMak emails can make one pledge and donate. |
+| **"What if students lose interest?"** | Eco-Wordle gives a fun reason to open the app every day — miss a day and your leaderboard streak resets. The rewards marketplace gives tangible incentives to keep pledging. And rotating donation campaigns keep the content fresh. |
+| **"Can faculty and staff participate?"** | Yes. Employees with @umak.edu.ph emails have full access — same features as students. Guest users with non-UMak emails can make one pledge and donate via GCash. |
