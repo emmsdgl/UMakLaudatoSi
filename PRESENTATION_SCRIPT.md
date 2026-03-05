@@ -1,227 +1,129 @@
-# LAUDATO SI' — FULL PRESENTATION SCRIPT
-### (Page-by-page, synced to PPT slides)
+# LAUDATO SI' — 5-MINUTE PRESENTATION SCRIPT
+### (Taglish — synced to PPT slides)
 
 ---
 
 ## Page 1: Title Slide
 
-*(No speaking — title card on screen while audience settles)*
+*(No speaking — title card on screen)*
 
 ---
 
-## Page 2: The Problem
+## Page 2: The Problem (~30 seconds)
 
-Universities worldwide are called to act on climate change, yet most campus sustainability efforts rely on one-time events, posters, and voluntary pledges with no follow-through. Students disengage quickly because there is no feedback loop, no accountability, and no reward for consistent action.
+Most campus sustainability efforts — posters, one-time events, voluntary pledges — hindi naman talaga nag-la-last. Bakit? Kasi walang feedback, walang accountability, at walang reward. Students sign up, tapos nakakalimutan na after a week.
 
----
-
-## Page 3 to 6: What is Laudato Si'?
-
-And that's why we created this **Laudato Si'** website. It is a web-based platform that transforms daily environmental action into a campus-wide game. Students **earn points** for verified eco-pledges, **compete on leaderboards**, **redeem real rewards**, and **watch a shared 3D** plant grow in real-time as the entire campus contributes.
-
-Inspired by Pope Francis's encyclical *Laudato Si': On Care for Our Common Home*, the platform makes sustainability measurable, engaging, and institutionally managed.
-
-**So how does this work?**
-
-First, users need to 'Discover their Carbon Footprint' which we prepared 8 set of questions. This carbon footprint calculator is designed specifically for Filipino users — it asks about jeepney commutes, canteen meals, AC usage, water habits. Things our students, faculty, and admin actually deal with.
-
-At the end, students see their estimated monthly CO2 emissions broken down by category. The app then recommends an Eco-Path based on their biggest impact area.
+Ang tanong: paano natin gagawing consistent yung environmental action ng students — every single day?
 
 ---
 
-## Carbon Footprint Calculator (beside Step 1 slide)
+## Page 3-6: What is Laudato Si'? + Step 1: Carbon Footprint (~1 minute)
 
-So how does the calculator actually work? It's straightforward but grounded in real data.
+That's why we built **Laudato Si'** — a gamified sustainability platform for UMak. Inspired po ito sa encyclical ni Pope Francis na *Laudato Si': On Care for Our Common Home*.
 
-We ask 8 quick questions across 5 categories — Transportation, Food, Energy, Waste, and Water. Every question is contextualized for a Filipino user's daily life. We're not asking about international flights or heating bills — we're asking about jeepney commutes, canteen meals, AC usage, and shower habits. Things our students and faculty actually relate to.
+So paano siya gumagana?
 
-Each answer has a pre-assigned CO2 value in kilograms per month. For example, commuting by private car contributes an estimated 120 kg of CO2 per month, while taking public transit is only 30 kg. Eating meat every meal is 150 kg, while a mostly vegetable diet is just 60 kg. **The biggest single factor? Air conditioning** — using AC most of the day adds 150 kg by itself.
+**Step 1** — Mag-ta-take muna ang student ng **Carbon Footprint Calculator**. 8 questions lang po 'to across 5 categories: Transportation, Food, Energy, Waste, and Water. Hindi po 'to generic — naka-contextualize po sa Filipino student life. Tinatanong natin kung paano sila pumapasok — jeepney ba, motor, o naglalakad. Kumakain ba sa canteen o nagbabaon. Gaano katagal naka-on ang AC. Gaano katagal maligo.
 
-The system adds up the CO2 values from all 8 answers across the 5 categories. A user's total can range from as low as 68 kg per month to as high as 740 kg per month.
-
-Then comes the smart part — the app sorts the categories from highest to lowest emissions and shows the student their top 3 areas for improvement. So if a student's biggest impact comes from Food, Energy, and Transportation — in that order — those become their recommended Eco-Paths. The student then picks one to focus on, and their daily pledges are guided by that path.
-
-It's not about shaming anyone. It's about awareness. Most students and faculty have never quantified their environmental impact before. Once they see that number — say, 182 kg of CO2 per month — it becomes real. And the Eco-Path gives them a concrete way to bring that number down.
+Each answer may kasamang CO2 value in kilograms per month. Ina-add lahat ng system, tapos lalabas yung estimated monthly carbon footprint ng student — for example, 182 kg of CO2 per month. And then the app shows their top 3 worst categories and recommends an Eco-Path based on their results.
 
 ---
 
-## STEP 2: Commit — Choose an Eco-Path
+## Step 2: Commit — Choose an Eco-Path (~30 seconds)
 
-*(Slide shows: Eco-Path selection screen with 5 paths displayed as cards)*
+**Step 2** — Based sa results, pipili sila ng **Eco-Path**. Meron tayong lima:
 
-After discovering their carbon footprint, the student is guided to choose an Eco-Path. We have five paths, each targeting a specific sustainability category:
+- **Green Commute** — transportation
+- **Mindful Eating** — food
+- **Power Saver** — energy
+- **Zero Waste Hero** — waste
+- **Water Guardian** — water
 
-- **Green Commute** — for reducing transportation emissions through carpooling, biking, or taking public transit
-- **Mindful Eating** — for reducing food-related impact through plant-based meals and less food waste
-- **Power Saver** — for cutting energy consumption by unplugging devices, reducing AC usage, and using natural light
-- **Zero Waste Hero** — for minimizing waste through recycling, reusable containers, and composting
-- **Water Guardian** — for conserving water through shorter showers, fixing leaks, and reusing water
-
-The app doesn't just list these randomly. Based on the carbon footprint results, it highlights which paths match the student's highest-emission categories. So if your biggest impact is Energy at 135 kg per month, the app will recommend Power Saver as your top path.
-
-Each Eco-Path comes with 6 specific, actionable commitments. For example, if you choose Green Commute, you might commit to walking or biking to campus twice a week, or carpooling with a classmate. These are real, achievable daily actions — not vague promises.
-
-Once a student selects a path, they're locked into it until they complete all their pledges. This prevents random switching and encourages depth over breadth. You finish what you start.
+Bawat path may 6 specific actions na pwede nilang i-commit — like biking to campus, going meatless, or unplugging devices. Hindi vague — concrete actions po. And once pumili sila ng path, hindi pwede mag-switch hangga't hindi pa tapos lahat ng pledges nila doon. You finish what you start.
 
 ---
 
-## STEP 3: Act Daily — Submit Photo-Verified Pledges
+## Step 3: Act — Submit Photo-Verified Pledges (~30 seconds)
 
-*(Slide shows: Pledge creation screen, pledge album with uploaded photos)*
+**Step 3** — Dito nangyayari yung real action. Gumagawa ang students ng **pledge albums** — sinusulat nila yung ginawa nilang eco-action, tapos nag-a-upload sila ng photo proof.
 
-This is where the real action happens. Students create pledge albums for each environmental action they commit to — they write what they're doing and upload photos as proof.
+For example, nag-bike ka papasok? Photo. Nagbaon ka ng reusable tumbler? Photo. Nag-separate ka ng recyclables? Photo.
 
-For example, a student on the Green Commute path might take a photo of themselves biking to campus, or a screenshot of their grab ride showing they carpooled. A student on Zero Waste Hero might photograph their separated recyclables or their reusable tumbler at the canteen.
+Pwede silang mag-work on multiple pledge albums at the same time at i-submit lahat pag ready na.
 
-Students can work on multiple pledge albums at the same time. They upload proof to each one at their own pace, and when they're ready, they can submit all their pledges simultaneously. There's no limit to how many they can work on — what matters is the quality of the proof.
-
-The key here is **accountability**. This isn't a checkbox. Students have to show real evidence of what they did. And it's not self-validated — every pledge goes through an admin review workflow. Student Affairs staff can view the uploaded photos, verify the action was legitimate, and then grade the submission.
-
-The pledge statuses flow like this: **Submitted**, then **Reviewing**, then **Graded**. Only graded pledges award points. This quality control is what makes our data trustworthy — when we say students made 500 eco-pledges this month, every single one has been verified with photo evidence.
+And importantly — hindi self-validated 'to. Every pledge goes through **admin review**. Student Affairs staff ang mag-che-check ng photos, mag-ve-verify kung legit yung action, at mag-ga-grade. **Submitted → Reviewing → Graded.** Only graded pledges get points.
 
 ---
 
-## STEP 4: Earn & Grow — Points and the 3D Plant
+## Step 4: Earn & Grow — Points and the 3D Plant (~45 seconds)
 
-*(Slide shows: Home dashboard with 3D plant, points display)*
+**Step 4** — Pag na-grade na yung pledge, the student receives points. Yung points na 'to, gagamitin nila to redeem real rewards later.
 
-Now here's where the gamification really kicks in.
+But here's the exciting part — sa homepage, may **shared 3D plant** na nakikita ng lahat. Every graded pledge adds +1 sa growth niya. So kung 5 pledges ang na-grade sayo, +5 'yon sa campus plant.
 
-**Points:** The core reward loop is simple — a student submits a pledge, an admin reviews and grades it, and the student receives points. The more pledges you get graded, the more points you accumulate. And those points can be spent on real rewards in our marketplace. That's the direct incentive for taking environmental action.
+It starts as a seed. Tapos sprout. Tapos a plant with leaves and flowers. And eventually, a full tree with butterflies, seasonal effects — nagbabago pa siya based sa time of day at season.
 
-**The 3D Plant:** And here's what makes our platform truly unique. On the home page, every student sees a shared 3D plant — and it grows based on the collective graded pledges of the entire campus. Every graded pledge adds +1 to the plant's growth. So if a student submits 5 pledges and all 5 get graded, that's +5 added to the campus plant.
+This is the collective impact ng buong UMak na visible sa lahat. Real-time 'to — pag may na-grade na pledge, lumalaki agad yung plant for everyone.
 
-When you first start, it's just a seed in the ground. As more students get their pledges graded, it sprouts. Then it grows into a full plant with leaves and flowers. And eventually, it becomes a full tree with a canopy, butterflies floating around, and seasonal effects.
-
-The plant even changes with the time of day — sunrise lighting in the morning, warm light during the day, dusk in the evening. And it changes with the seasons — blossoms in spring, vibrant green in summer, falling leaves in autumn.
-
-**Public Pledges:** Once a pledge album is graded, the student gets the option to publicly display the title of their pledge on the homepage — for example, "Reduce single-use food packaging by bringing reusable containers." They can toggle this on or off with a simple switch. This creates a live feed of real environmental actions that the entire campus can see, inspiring others to take action too.
-
-This is not a progress bar. It's a living visual representation of what UMak is achieving together. The plant grows in real-time for everyone — using live WebSocket updates. That's collective impact you can actually see.
+And pag na-grade na yung pledge album mo, may option ka to **publicly show** yung title ng pledge mo sa homepage — para ma-inspire yung ibang students na mag-pledge din.
 
 ---
 
-## STEP 5: Play — Eco-Wordle
+## Step 5: Play — Eco-Wordle (~30 seconds)
 
-*(Slide shows: Wordle game board with green/yellow/gray tiles, keyboard, streak display)*
+**Step 5** — Para hindi mawalan ng interest ang students, may **Eco-Wordle** tayo — daily word puzzle gamit ang sustainability-themed words.
 
-To keep students coming back every day, we built Eco-Wordle — a daily word puzzle using sustainability-themed words.
+Same mechanics as Wordle — 6 tries to guess a 5-letter word. Green, yellow, gray. Pero lahat ng words ay eco-related.
 
-It works just like the popular Wordle game. You have 6 attempts to guess a 5-letter word. Green means the letter is correct and in the right position. Yellow means the letter is in the word but in the wrong spot. Gray means it's not in the word at all.
+Pag nanalo ka, you earn a **seed**. Seeds track yung streak mo — ilang consecutive days ka nanalo. And 'yun ang basehan ng **Leaderboard** — ranked by longest seed streak.
 
-The difference is: every word is related to the environment — words like "earth," "plant," "waste," "solar," "green." So even the game itself reinforces eco-awareness.
+Para i-clarify: **Points** galing sa graded pledges — pang-redeem ng rewards. **Seeds** galing sa Wordle — pang-rank sa leaderboard. Magka-iba ang purpose.
 
-When you solve the puzzle, you earn a seed. Seeds track how many days you've played and won. Play every day and your seed streak grows. Miss a day and it resets. This streak is what powers our **Leaderboard** — students are ranked by their longest Wordle seed streak, with daily, weekly, monthly, and all-time views.
-
-So to be clear on how the two systems work: **Points** come from graded pledges and are used to redeem rewards. **Seeds** come from Wordle and are used for leaderboard ranking. They serve different purposes — points reward environmental action, seeds reward daily engagement.
-
-This is our engagement insurance. Even a student who's busy that day and doesn't submit a pledge will still open the app to play Wordle. And once they're in the app, they're one tap away from making a pledge too.
+Ito yung engagement insurance natin. Kahit busy yung student at hindi maka-pledge, mag-o-open pa rin ng app para mag-Wordle.
 
 ---
 
-## STEP 6: Redeem — Rewards Marketplace
+## Step 6: Redeem — Rewards + Donations (~30 seconds)
 
-*(Slide shows: Rewards grid with food, merchandise, vouchers; QR code redemption screen)*
+**Step 6** — Yung points na na-earn from graded pledges? Nagagastos po 'yan sa **Rewards Marketplace**. Meron tayong Food & Beverage, Merchandise, Vouchers, Experiences — real rewards po.
 
-All the points students earn from graded pledges can be spent on real rewards.
+Pag nag-redeem, may lalabas na **QR code**. Pupunta ang student sa canteen, ipa-pakita yung QR, at isa-scan ng staff. Verified, claimed, done.
 
-Our Rewards Marketplace is a full catalog organized by category: Food & Beverage, Merchandise, Vouchers, Experiences, Events, and Digital items. Each reward has a point cost. Students browse, pick what they want, and if they have enough points, they redeem it.
-
-When a student redeems a reward, the system generates a unique QR code. The student goes to the canteen or the partner location, shows their QR code, and the staff member scans it to verify. Once scanned and confirmed, the reward is marked as completed.
-
-This QR verification workflow is important. It prevents cheating — no one can fake a redemption code. It creates a real retail-like experience. And it means campus partners like the canteen are directly integrated into the sustainability ecosystem.
-
-Students can track all their active codes and redemption history in their Wallet page. Each code shows its status — Ready to Use, Verified, Claimed, or Expired.
-
-The rewards are what make this system tangible. Students aren't just earning virtual badges. They're earning a free meal, a university T-shirt, or a voucher. That's what drives sustained participation.
+Meron din po tayong **Donations** — exclusively through GCash. Kahit sino — students, faculty, guests — pwedeng mag-donate sa environmental campaigns. May tiered bonus pa — donate 20 pesos, earn 3 points. Donate 200+, earn 30 points. Verified ng Finance Admin bago ma-award yung bonus.
 
 ---
 
-## Donations
+## Admin & Closing (~1 minute)
 
-*(Slide shows: Donation campaign cards with progress bars, GCash donation flow)*
+And for the admin side — hindi po 'to walang oversight.
 
-Beyond pledges and rewards, we also have a Donations feature — and this is where real money supports real environmental causes.
+We built a **4-tier admin system**: Super Admin, Student Affairs, Finance, and Canteen Admin. Bawat role may kanya-kanyang access lang. Lahat ng admin action — naka-log sa **audit trail**. Sino, kailan, ano ginawa, saan. For accreditation and compliance, fully traceable po.
 
-Donations are done exclusively through **GCash**. Anyone — students, faculty, and even guests who aren't from UMak — can donate to active environmental campaigns. For example, a campus tree-planting initiative, an ocean cleanup fundraiser, or a sustainability materials fund.
+Login is through **Google OAuth** — @umak.edu.ph emails. No passwords stored. Secure po lahat.
 
-We also have a tiered bonus system to incentivize generosity. Donate 20 to 50 pesos and you earn 3 bonus pledge points. Donate 51 to 100 pesos and you earn 5 points. The tiers go up — donate 200 pesos or more and you earn 30 points. So donating doesn't just help the cause — it also gives students more points to redeem rewards.
+**So to close —**
 
-To keep this trustworthy, every GCash donation is verified by our Finance Admin before any bonus points are awarded. The donor submits the GCash reference number from their receipt, and the admin confirms the payment was actually received. This prevents fraud and ensures every donation is legitimate.
+Ang Laudato Si' ay kumuha ng abstract na idea ng "sustainability" at ginawang something na kaya gawin ng student sa loob ng 2 minutes araw-araw. Discover your impact. Choose a path. Take action. Prove it. Earn points. Get rewards. Watch the campus plant grow.
 
-Each campaign page shows its progress — how much has been raised, how many donors have contributed, and the target goal. It creates transparency and motivates more people to contribute when they see the campaign is close to reaching its target.
+It aligns with Pope Francis's call for ecological conversion. It gives UMak measurable data for accreditation. And it makes sustainability exciting for students.
 
----
+Ang proposal po namin — **one-semester pilot**, one college or department. We measure participation, engagement, and impact. After one semester, the data speaks for itself.
 
-## Admin & Governance
+UMak can be the first university in the Philippines na nag-gamify ng sustainability. Hindi lang pag-uusapan — ginagawa, sinusukat, at ginagantimpalaan.
 
-*(Slide shows: Admin dashboard with stats, pledge review screen, audit logs)*
-
-Now, a platform like this is only as credible as its management. So let me show you the institutional governance we've built in.
-
-We have a **4-tier admin system**. The Super Admin has full control over the entire platform. The Student Affairs Admin manages users and reviews pledge submissions. The Finance Admin handles GCash donation verifications. And the Canteen Admin manages reward verification and fulfillment.
-
-Each role only sees what they need. A Canteen Admin can't access user management. A Finance Admin can't grade pledges. This separation of duties follows proper institutional governance.
-
-The Admin Dashboard gives a real-time overview: pledges submitted today, total points in circulation, pending reward claims, active streaks, donation totals. Everything leadership needs to measure the program's impact at a glance.
-
-And most importantly — **every single admin action is logged in a comprehensive audit trail**. Who changed what, when, from which IP address, with before-and-after values recorded. If the university ever needs to audit the system for accreditation or compliance, every action is traceable.
-
-We also have a user ban system for violations, promo code management for special campaigns, and a canteen admin wallet system that compensates staff for their verification work.
-
-This is not a student project running on trust. It's an institutionally managed platform with proper controls.
+Thank you po. Open po kami for questions.
 
 ---
 
-## Security & Technical Credibility
+## Q&A Cheat Sheet
 
-*(Slide shows: Tech stack logos or a simple architecture diagram)*
-
-A quick note on the technical side — because trust matters.
-
-Authentication is handled through **Google OAuth**. Students log in with their @umak.edu.ph email. No passwords are stored in our system. This is the same login system used by major platforms worldwide.
-
-The database uses **Row-Level Security** — meaning even if someone tried to access the database directly, they can only see their own data. Every API endpoint validates the user's session on the server side before returning any information.
-
-QR codes for reward redemptions are digitally signed. You can't copy or fabricate a code — each one is unique, time-limited, and cryptographically verified.
-
-The platform is built with **Next.js**, the same framework used by companies like Netflix and Nike. It runs on **Supabase** for the database with real-time capabilities, and the 3D plant uses **Three.js** — the same technology behind many interactive web experiences.
-
-It's production-ready, mobile-responsive, and scalable.
-
----
-
-## Closing — The Vision
-
-*(Slide shows: The 3D plant as a full tree, or a campus-wide view)*
-
-So to bring it all together —
-
-Laudato Si' takes the abstract idea of "being sustainable" and turns it into something a student can do in 2 minutes every day. Discover your impact. Choose a path. Take action. Prove it. Earn points. Redeem rewards. Watch the campus grow.
-
-It's not about guilt. It's about habit. It's not about one big event. It's about 365 small actions. And it's not about individual effort — it's about watching that 3D plant grow and knowing that every student on campus contributed to it.
-
-This platform directly responds to Pope Francis's call in Laudato Si' for ecological education and conversion. It gives UMak measurable sustainability data for accreditation and institutional reporting. And it makes students genuinely excited to do something good for the environment — every single day.
-
-What we're proposing is a **one-semester pilot** with one college or department. We deploy the platform, measure daily active participation, pledge completion rates, carbon footprint awareness, and reward redemption activity. After one semester, the data speaks for itself.
-
-UMak has the opportunity to be the first university in the Philippines to launch a platform like this. Not just talking about sustainability — but gamifying it, measuring it, and rewarding it.
-
-Thank you. I'm happy to answer any questions.
-
----
-
-## Q&A — Quick Reference Answers
-
-| Likely Question | Your Answer |
+| Question | Answer |
 |---|---|
-| **"What's the cost?"** | The platform runs on free-tier infrastructure — Supabase and Vercel. The main recurring cost is the rewards budget, which canteen partners and campus sponsors can offset. No licensing fees — it's fully custom-built. |
-| **"Who maintains it?"** | Student Affairs manages pledge reviews. Finance handles donation verification. Canteen staff handles reward fulfillment. Super Admin oversees everything. The roles are built into the system — no extra training needed beyond a walkthrough. |
-| **"Is it secure?"** | Google OAuth authentication, Row-Level Security on all data, signed QR codes, complete audit logging with IP tracking, and a user ban system. Multiple layers. |
-| **"What if students cheat?"** | Photo proof is required for every pledge. Admin staff review and grade each one before any points are awarded. Ban system for repeat offenders. QR verification prevents reward fraud. It's designed to be trustworthy. |
-| **"Can it scale to the whole university?"** | Yes. The architecture supports thousands of users. It's API-first, so a mobile app can be added later. Additional eco-paths and reward partners can be added anytime. |
-| **"How is this different from just a survey?"** | Surveys are one-time. This is ongoing engagement — points from pledges, Wordle streaks on the leaderboard, real rewards to redeem, and GCash donations to support. It doesn't just collect data, it changes behavior. Students come back every day because there's something at stake. |
-| **"What data do we get for reporting?"** | Daily pledge counts, carbon footprint baselines per student, participation rates by department, streak lengths, reward redemption volume, donation totals, and full audit logs. All exportable. |
-| **"Does this help with accreditation?"** | Absolutely. It generates measurable sustainability metrics aligned with UN Sustainable Development Goals and the Vatican's Laudato Si' Action Platform. Concrete data, not just claims. |
-| **"What if students lose interest?"** | Eco-Wordle gives a fun reason to open the app every day — miss a day and your leaderboard streak resets. The rewards marketplace gives tangible incentives to keep pledging. And rotating donation campaigns keep the content fresh. |
-| **"Can faculty and staff participate?"** | Yes. Employees with @umak.edu.ph emails have full access — same features as students. Guest users with non-UMak emails can make one pledge and donate via GCash. |
+| **"Magkano gastos?"** | Infrastructure runs on free tiers — Supabase at Vercel. Main cost lang po is rewards budget, na pwede i-sponsor ng canteen partners. Walang licensing fees — custom-built po. |
+| **"Sino mag-ma-maintain?"** | SA Admin for pledges, Finance for donations, Canteen staff for rewards. Built-in na sa system yung roles — isang walkthrough lang need. |
+| **"Secure ba?"** | Google OAuth, Row-Level Security, signed QR codes, complete audit logs. Multiple layers po. |
+| **"Paano kung mag-cheat?"** | Photo proof + admin review bago mag-award ng points. Ban system for violators. QR verification for rewards. |
+| **"Kaya ba i-scale?"** | Yes — thousands of users. API-first kaya pwedeng mag-add ng mobile app later. |
+| **"Pano kung mawalan ng interest?"** | Eco-Wordle for daily engagement. Real rewards from marketplace. Rotating donation campaigns. |
+| **"Ano data makukuha natin?"** | Pledge counts, carbon footprints per student, participation rates, redemption volume, donation totals, audit logs. |
+| **"Tutulong ba sa accreditation?"** | Yes — measurable sustainability metrics aligned sa UN SDGs at Laudato Si' Action Platform. |
