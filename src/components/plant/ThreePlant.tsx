@@ -1154,10 +1154,11 @@ export function ThreePlant({ stage, contributors, contributions, timeOfDay = 12,
   const [showLabel, setShowLabel] = useState(false);
 
   return (
-    <div className="w-full h-full">
-      <Canvas 
-        camera={{ position: [0, 6, 14], fov: 45 }} 
+    <div className="w-full h-full relative z-0">
+      <Canvas
+        camera={{ position: [0, 6, 14], fov: 45 }}
         shadows
+        style={{ position: 'relative', zIndex: 0 }}
         gl={{ antialias: true, alpha: true, toneMapping: THREE.ACESFilmicToneMapping }}
       >
         {/* Background and Fog are managed by SeasonalLighting */}

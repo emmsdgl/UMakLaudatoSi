@@ -177,7 +177,7 @@ export default function Page() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6 }}
-          className="relative flex-shrink-0 h-[500px] w-full"
+          className="relative flex-shrink-0 h-[500px] w-full z-0"
         >
           <ThreePlant
             contributions={contributions}
@@ -188,7 +188,7 @@ export default function Page() {
           />
 
           {/* Stage indicator */}
-          <div className="absolute top-4 left-1/2 -translate-x-1/2">
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10">
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
