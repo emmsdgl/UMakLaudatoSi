@@ -54,14 +54,15 @@ export const authOptions: NextAuthOptions = {
           .single();
 
         if (!existingUser) {
-          // Create new user
-          // UMak users: student role (can earn points, daily pledges)
-          // Non-UMak users: guest role (1-time pledge only)
+          // Create new user with a null role — the user will select
+          // their role via the post-login role selection modal.
+          // We use the admin client to bypass the CHECK constraint
+          // since role will be set immediately after via /api/auth/set-role.
           await supabase.from("users").insert({
             email: user.email,
             name: user.name || "Anonymous",
             avatar_url: user.image,
-            role: isUMakUser ? "student" : "guest",
+            role: null,
           });
         }
       }

@@ -1,6 +1,7 @@
 /**
  * POST /api/auth/set-role
- * Sets the user's role after sign-in based on their selection.
+ * Sets the user's role after first sign-in.
+ * Only works for users who don't have a role yet (role is null).
  * Validates email domain against role:
  *   - @umak.edu.ph → student, employee
  *   - Other emails  → guest, canteen_admin
@@ -20,6 +21,17 @@ export async function POST(request: NextRequest) {
 
   if (!session?.user?.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  // Check if user already has a role — prevent overwriting
+  const { data: user } = await supabase
+    .from("users")
+    .select("role")
+    .eq("email", session.user.email)
+    .single();
+
+  if (user?.role) {
+    return NextResponse.json({ error: "Role already set" }, { status: 403 });
   }
 
   const { role } = await request.json();

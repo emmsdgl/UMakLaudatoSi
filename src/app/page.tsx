@@ -87,19 +87,21 @@ export default function Page() {
   const userEmail = session?.user?.email || '';
   const isUMakEmail = userEmail.toLowerCase().endsWith('@umak.edu.ph');
 
-  // After sign-in: check if user needs role selection
+  // After sign-in: check if user already has a role in the database
+  // Only show role selection for new users (no role yet)
+  const userRole = (session?.user as any)?.role;
+
   useEffect(() => {
     if (status === 'authenticated' && session?.user?.email) {
-      const roleConfirmedKey = `roleConfirmed_${session.user.email}`;
-      if (localStorage.getItem(roleConfirmedKey)) {
-        // Returning user — skip role selection
+      if (userRole) {
+        // User already has a role in the database — go straight to /home
         router.push('/home');
       } else {
-        // New user or first login on this device — show role selection
+        // New user with no role — show role selection modal
         setShowRoleSelection(true);
       }
     }
-  }, [status, session, router]);
+  }, [status, session, router, userRole]);
 
   // Handle role selection
   const handleRoleSelect = async (role: string) => {
@@ -110,7 +112,6 @@ export default function Page() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ role }),
       });
-      localStorage.setItem(`roleConfirmed_${userEmail}`, 'true');
       router.push('/home');
     } catch {
       router.push('/home');
