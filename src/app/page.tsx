@@ -24,7 +24,7 @@ import { GrowthProgressBar } from "@/components/plant/GrowthProgressBar";
 import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
 import { DailyLimitMessage } from "@/components/common/DailyLimitMessage";
 import { useRealtimeContributions, useRealtimePlantStats } from "@/hooks/useRealtime";
-import { Flame, Trophy, Gift, Heart, Sparkles, Leaf } from "lucide-react";
+import { Flame, Trophy, Gift, Heart, Sparkles, Leaf, GraduationCap, Briefcase, UserCircle, UtensilsCrossed } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
@@ -49,7 +49,7 @@ function isUMakUser(email: string | null | undefined): boolean {
 /**
  * Admin roles that should be redirected to admin dashboard
  */
-const ADMIN_ROLES = ['admin', 'canteen_admin', 'finance_admin', 'sa_admin', 'super_admin'];
+
 
 function getPlantStage(count: number): PlantStage {
   if (count >= 500) return 'tree';
@@ -80,21 +80,53 @@ export default function Page() {
   const [timeOfDay, setTimeOfDay] = useState(12);
   const [season, setSeason] = useState<Season>("Spring");
 
-  // Redirect authenticated users based on role
-  // Admins → /admin dashboard
-  // Regular users → /home dashboard
+  // Role selection state (shown after sign-in for new users)
+  const [showRoleSelection, setShowRoleSelection] = useState(false);
+  const [settingRole, setSettingRole] = useState(false);
+
+  const userEmail = session?.user?.email || '';
+  const isUMakEmail = userEmail.toLowerCase().endsWith('@umak.edu.ph');
+
+  // After sign-in: check if user needs role selection
   useEffect(() => {
-    if (status === 'authenticated' && session?.user) {
-      const userRole = (session.user as any).role;
-      
-      // Check if user is admin
-      if (userRole && ADMIN_ROLES.includes(userRole)) {
-        router.push('/admin');
-      } else {
+    if (status === 'authenticated' && session?.user?.email) {
+      const roleConfirmedKey = `roleConfirmed_${session.user.email}`;
+      if (localStorage.getItem(roleConfirmedKey)) {
+        // Returning user — skip role selection
         router.push('/home');
+      } else {
+        // New user or first login on this device — show role selection
+        setShowRoleSelection(true);
       }
     }
   }, [status, session, router]);
+
+  // Handle role selection
+  const handleRoleSelect = async (role: string) => {
+    setSettingRole(true);
+    try {
+      await fetch('/api/auth/set-role', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ role }),
+      });
+      localStorage.setItem(`roleConfirmed_${userEmail}`, 'true');
+      router.push('/home');
+    } catch {
+      router.push('/home');
+    }
+  };
+
+  // Role options based on email domain
+  const roleOptions = isUMakEmail
+    ? [
+        { value: 'student', label: 'Student', description: 'UMak student', icon: GraduationCap, color: 'from-green-500 to-emerald-600', hoverColor: 'hover:border-green-400' },
+        { value: 'employee', label: 'Employee', description: 'UMak faculty / staff', icon: Briefcase, color: 'from-blue-500 to-indigo-600', hoverColor: 'hover:border-blue-400' },
+      ]
+    : [
+        { value: 'guest', label: 'Guest', description: 'Visitor / non-UMak user', icon: UserCircle, color: 'from-gray-500 to-slate-600', hoverColor: 'hover:border-gray-400' },
+        { value: 'canteen_admin', label: 'Canteen Admin', description: 'Canteen staff / partner', icon: UtensilsCrossed, color: 'from-orange-500 to-amber-600', hoverColor: 'hover:border-orange-400' },
+      ];
 
   // Initialize Time & Season
   useEffect(() => {
@@ -346,6 +378,80 @@ export default function Page() {
                 <p className="font-body text-muted-foreground">
                   Your pledge helps our plant grow!
                 </p>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Role Selection Modal */}
+      <AnimatePresence>
+        {showRoleSelection && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              transition={{ type: "spring", stiffness: 300, damping: 25 }}
+              className="w-full max-w-sm bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden"
+            >
+              {/* Modal Header */}
+              <div className="text-center pt-6 pb-4 px-6">
+                {session?.user?.image && (
+                  <img
+                    src={session.user.image}
+                    alt={session.user.name || 'User'}
+                    className="w-16 h-16 rounded-full border-3 border-green-500 shadow-lg mx-auto mb-3"
+                  />
+                )}
+                <h2 className="font-display text-xl text-[#2C2C2C] dark:text-gray-100">
+                  Welcome, {session?.user?.name?.split(' ')[0]}!
+                </h2>
+                <p className="font-body text-sm text-muted-foreground mt-1">
+                  Select your role to continue
+                </p>
+                <p className="font-mono text-xs text-[#4A6B5C] dark:text-[#8BC68C] mt-1">
+                  {userEmail}
+                </p>
+              </div>
+
+              {/* Role Options */}
+              <div className="px-6 pb-6 space-y-3">
+                {roleOptions.map((role, index) => {
+                  const Icon = role.icon;
+                  return (
+                    <motion.button
+                      key={role.value}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.15 + index * 0.1 }}
+                      whileTap={{ scale: 0.97 }}
+                      disabled={settingRole}
+                      onClick={() => handleRoleSelect(role.value)}
+                      className={`w-full flex items-center gap-4 p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 ${role.hoverColor} bg-gray-50 dark:bg-gray-800 transition-all shadow-sm hover:shadow-md disabled:opacity-50`}
+                    >
+                      <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${role.color} flex items-center justify-center flex-shrink-0`}>
+                        <Icon className="w-6 h-6 text-white" />
+                      </div>
+                      <div className="text-left">
+                        <p className="font-semibold text-gray-800 dark:text-white">{role.label}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">{role.description}</p>
+                      </div>
+                    </motion.button>
+                  );
+                })}
+
+                {settingRole && (
+                  <div className="pt-2 text-center">
+                    <div className="w-7 h-7 border-3 border-[#81C784] border-t-transparent rounded-full animate-spin mx-auto" />
+                    <p className="mt-2 text-xs text-muted-foreground">Setting up your account...</p>
+                  </div>
+                )}
               </div>
             </motion.div>
           </motion.div>

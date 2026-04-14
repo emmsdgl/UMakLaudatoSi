@@ -28,6 +28,7 @@ import {
   Shield,
   LogOut,
   ChevronRight,
+  LayoutDashboard,
   Bell,
   Moon,
   Sun,
@@ -65,6 +66,7 @@ import {
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/lib/supabase';
 import { useTheme } from 'next-themes';
+import { useRouter } from 'next/navigation';
 
 interface UserProfile {
   id: string;
@@ -111,6 +113,11 @@ export default function ProfilePage() {
   const { data: session } = useSession();
   const { toast } = useToast();
   const { theme, setTheme } = useTheme();
+  const router = useRouter();
+
+  // Check if user has an admin role
+  const userRole = (session?.user as any)?.role;
+  const isAdmin = ['admin', 'canteen_admin', 'finance_admin', 'sa_admin', 'super_admin'].includes(userRole);
 
   // State
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -515,6 +522,28 @@ export default function ProfilePage() {
           </Dialog>
         </CardContent>
       </Card>
+
+      {/* Admin Dashboard Access */}
+      {isAdmin && (
+        <Button
+          onClick={() => router.push('/admin')}
+          className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white shadow-md"
+        >
+          <LayoutDashboard className="w-4 h-4 mr-2" />
+          Open Admin Dashboard
+          <Badge variant="secondary" className="ml-2 bg-white/20 text-white text-[10px] px-1.5">
+            {userRole === 'admin' || userRole === 'super_admin'
+              ? 'Super Admin'
+              : userRole === 'canteen_admin'
+              ? 'Canteen Admin'
+              : userRole === 'finance_admin'
+              ? 'Finance Admin'
+              : userRole === 'sa_admin'
+              ? 'SA Admin'
+              : userRole}
+          </Badge>
+        </Button>
+      )}
 
       {/* Sign Out */}
       <AlertDialog>

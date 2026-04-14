@@ -55,7 +55,7 @@ export function GoogleAuthButton() {
           {isLoading ? "Signing in..." : "Sign in with Google"}
         </Button>
       </motion.div>
-      
+
       <p className="text-center text-sm text-muted-foreground mt-4 font-body">
         <span className="font-mono text-[#4A6B5C] dark:text-[#8BC68C]">@umak.edu.ph</span> users get full access.
         <br />Guests can make one pledge.
