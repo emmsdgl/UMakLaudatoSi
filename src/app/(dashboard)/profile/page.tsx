@@ -35,7 +35,8 @@ import {
   Ticket,
   CheckCircle2,
   Loader2,
-  Info
+  Info,
+  BookOpen
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -484,6 +485,23 @@ export default function ProfilePage() {
               onCheckedChange={setNotifications}
             />
           </div>
+
+          <Separator />
+
+          {/* Replay Guide */}
+          <button
+            onClick={() => window.dispatchEvent(new Event('replay-guided-tour'))}
+            className="w-full flex items-center justify-between py-2"
+          >
+            <div className="flex items-center gap-3">
+              <BookOpen className="w-5 h-5 text-green-500" />
+              <div className="text-left">
+                <p className="font-medium text-gray-800 dark:text-white">App Guide</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Replay the step-by-step tour</p>
+              </div>
+            </div>
+            <ChevronRight className="w-5 h-5 text-gray-400" />
+          </button>
 
           <Separator />
 

@@ -18,6 +18,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Home, Gift, Trophy, User, Wallet, BookOpen, Calculator, QrCode } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { GuidedTour } from '@/components/common/GuidedTour';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -51,6 +52,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [isBanned, setIsBanned] = useState(false);
+  const [showTourReplay, setShowTourReplay] = useState(false);
 
   // Determine nav items based on user role
   const userRole = (session?.user as any)?.role as string | undefined;
@@ -123,8 +125,21 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     return null;
   }
 
+  // Listen for custom event from profile page to replay the tour
+  useEffect(() => {
+    const handler = () => setShowTourReplay(true);
+    window.addEventListener('replay-guided-tour', handler);
+    return () => window.removeEventListener('replay-guided-tour', handler);
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-emerald-100 dark:from-gray-900 dark:to-gray-800">
+      {/* Guided Tour — auto-shows for first-time users, or replayed from profile */}
+      <GuidedTour
+        forceOpen={showTourReplay}
+        onComplete={() => setShowTourReplay(false)}
+      />
+
       {/* Desktop/Tablet Side Navigation */}
       <aside className="hidden lg:flex fixed left-0 top-0 bottom-0 w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 flex-col p-4 z-50">
         {/* Logo/Brand */}
