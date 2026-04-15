@@ -111,7 +111,7 @@ USING (
     EXISTS (
         SELECT 1 FROM users 
         WHERE users.id = auth.uid() 
-        AND users.role IN ('admin', 'canteen_admin', 'finance_admin', 'sa_admin', 'super_admin')
+        AND users.role IN ('canteen_admin', 'admin', 'super_admin')
     )
 );
 
@@ -152,7 +152,7 @@ USING (
     EXISTS (
         SELECT 1 FROM users 
         WHERE users.id = auth.uid() 
-        AND users.role IN ('admin', 'sa_admin', 'super_admin')
+        AND users.role IN ('admin', 'super_admin')
     )
 );
 
@@ -162,7 +162,7 @@ WITH CHECK (
     EXISTS (
         SELECT 1 FROM users 
         WHERE users.id = auth.uid() 
-        AND users.role IN ('admin', 'canteen_admin', 'finance_admin', 'sa_admin', 'super_admin')
+        AND users.role IN ('canteen_admin', 'admin', 'super_admin')
     )
 );
 

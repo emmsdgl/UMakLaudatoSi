@@ -17,15 +17,13 @@
  * - guest: Single pledge, donation-only access
  * - admin roles: Various administrative capabilities
  */
-export type UserRole = 
-  | 'student' 
-  | 'employee' 
+export type UserRole =
+  | 'student'
+  | 'employee'
   | 'guest'
-  | 'admin'           // General Admin (full access)
-  | 'sa_admin'        // Student Affairs Admin
   | 'canteen_admin'   // Canteen/Rewards verification
-  | 'finance_admin'   // GCash verification
-  | 'super_admin';    // Full access
+  | 'admin'           // Admin (users, points, donations, pledges, GCash)
+  | 'super_admin';    // Full system access
 
 export interface User {
   id: string;

@@ -15,8 +15,8 @@ import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { supabase } from "@/lib/supabase";
 
-// Admin roles that should be redirected to admin dashboard
-const ADMIN_ROLES = ['admin', 'canteen_admin', 'finance_admin', 'sa_admin', 'super_admin'];
+// Admin roles
+const ADMIN_ROLES = ['canteen_admin', 'admin', 'super_admin'];
 
 /**
  * NextAuth configuration options

@@ -61,11 +61,9 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
   // Get role display info
   const getRoleInfo = (role: UserRole | string) => {
     const roleMap: Record<string, { label: string; color: string }> = {
+      canteen_admin: { label: 'Canteen', color: 'text-orange-600 dark:text-orange-400' },
       admin: { label: 'Admin', color: 'text-emerald-600 dark:text-emerald-400' },
       super_admin: { label: 'Super Admin', color: 'text-red-600 dark:text-red-400' },
-      sa_admin: { label: 'SA Admin', color: 'text-pink-600 dark:text-pink-400' },
-      finance_admin: { label: 'Finance', color: 'text-purple-600 dark:text-purple-400' },
-      canteen_admin: { label: 'Canteen', color: 'text-orange-600 dark:text-orange-400' },
     };
     return roleMap[role] || { label: role, color: 'text-gray-600 dark:text-gray-400' };
   };

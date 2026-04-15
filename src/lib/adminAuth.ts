@@ -19,15 +19,9 @@ export const ADMIN_ROLES: UserRole[] = [
   'employee',       // 1 - No admin access
   'guest',          // 2 - No admin access
   'canteen_admin',  // 3 - Rewards verification only
-  'finance_admin',  // 4 - GCash verification, donations
-  'sa_admin',       // 5 - Student management, promo codes
-  'super_admin',    // 6 - Full access
+  'admin',          // 4 - Users, points, donations, pledges, GCash, promo codes
+  'super_admin',    // 5 - Full access
 ];
-
-// Also allow simple 'admin' role as super_admin equivalent
-const ADMIN_ROLE_ALIASES: Record<string, UserRole> = {
-  'admin': 'super_admin',
-};
 
 /**
  * Module-based permission mapping
@@ -35,67 +29,53 @@ const ADMIN_ROLE_ALIASES: Record<string, UserRole> = {
  */
 export const ADMIN_PERMISSIONS: Record<string, UserRole[]> = {
   // Dashboard - visible to all admins
-  dashboard: ['admin', 'canteen_admin', 'finance_admin', 'sa_admin', 'super_admin'],
-  
-  // User Management - SA Admin and Super Admin
-  users: ['admin', 'sa_admin', 'super_admin'],
-  
-  // Points & Streaks - SA Admin and Super Admin
-  points: ['admin', 'sa_admin', 'super_admin'],
-  
-  // Rewards Management - Canteen Admin, SA Admin, Super Admin
-  rewards: ['admin', 'canteen_admin', 'sa_admin', 'super_admin'],
-  
-  // Reward Verification - Canteen Admin, SA Admin, Super Admin
-  redemptions: ['admin', 'canteen_admin', 'sa_admin', 'super_admin'],
-  
-  // Promo Codes - SA Admin and Super Admin
-  promo_codes: ['admin', 'sa_admin', 'super_admin'],
-  
-  // Donations - Finance Admin, SA Admin, Super Admin
-  donations: ['admin', 'finance_admin', 'sa_admin', 'super_admin'],
-  
-  // GCash Verification - Finance Admin, SA Admin, Super Admin
-  gcash: ['admin', 'finance_admin', 'sa_admin', 'super_admin'],
-  
-  // Pledge Album Review - SA Admin and Super Admin
-  pledges: ['admin', 'sa_admin', 'super_admin'],
+  dashboard: ['canteen_admin', 'admin', 'super_admin'],
 
-  // Canteen Admin Wallet - visible to canteen admins only
-  wallet: ['admin', 'canteen_admin'],
+  // User Management
+  users: ['admin', 'super_admin'],
+
+  // Points & Streaks
+  points: ['admin', 'super_admin'],
+
+  // Rewards Management
+  rewards: ['canteen_admin', 'admin', 'super_admin'],
+
+  // Reward Verification
+  redemptions: ['canteen_admin', 'admin', 'super_admin'],
+
+  // Promo Codes
+  promo_codes: ['admin', 'super_admin'],
+
+  // Donations
+  donations: ['admin', 'super_admin'],
+
+  // GCash Verification
+  gcash: ['admin', 'super_admin'],
+
+  // Pledge Album Review
+  pledges: ['admin', 'super_admin'],
+
+  // Canteen Admin Wallet
+  wallet: ['canteen_admin', 'admin', 'super_admin'],
 
   // Canteen Admin Payouts - Super Admin only
-  payouts: ['admin', 'super_admin'],
+  payouts: ['super_admin'],
 
   // Audit Logs - Super Admin only
-  audit_logs: ['admin', 'super_admin'],
+  audit_logs: ['super_admin'],
 
   // Settings - Super Admin only
-  settings: ['admin', 'super_admin'],
+  settings: ['super_admin'],
 
   // Wordle Word Management - Super Admin only
-  wordle: ['admin', 'super_admin'],
+  wordle: ['super_admin'],
 };
-
-/**
- * Normalize role - handle 'admin' alias
- */
-function normalizeRole(role: string): UserRole {
-  if (ADMIN_ROLE_ALIASES[role]) {
-    return ADMIN_ROLE_ALIASES[role];
-  }
-  return role as UserRole;
-}
 
 /**
  * Check if a user has admin access to any module
  */
 export function isAdmin(role: UserRole | string): boolean {
-  // Handle 'admin' as super_admin
-  if (role === 'admin') return true;
-  
-  const normalizedRole = normalizeRole(role as string);
-  const roleIndex = ADMIN_ROLES.indexOf(normalizedRole);
+  const roleIndex = ADMIN_ROLES.indexOf(role as UserRole);
   return roleIndex >= 3; // canteen_admin and above
 }
 
@@ -103,13 +83,9 @@ export function isAdmin(role: UserRole | string): boolean {
  * Check if a user has permission for a specific module
  */
 export function hasPermission(role: UserRole | string, module: string): boolean {
-  // Handle 'admin' as super_admin (full access)
-  if (role === 'admin') return true;
-  
-  const normalizedRole = normalizeRole(role as string);
   const allowedRoles = ADMIN_PERMISSIONS[module];
   if (!allowedRoles) return false;
-  return allowedRoles.includes(normalizedRole);
+  return allowedRoles.includes(role as UserRole);
 }
 
 /**
@@ -118,13 +94,13 @@ export function hasPermission(role: UserRole | string, module: string): boolean 
 export function canManageRole(managerRole: UserRole, targetRole: UserRole): boolean {
   const managerIndex = ADMIN_ROLES.indexOf(managerRole);
   const targetIndex = ADMIN_ROLES.indexOf(targetRole);
-  
+
   // Can only manage roles below your level
   // Super admin can manage everyone except other super admins
   if (managerRole === 'super_admin') {
     return targetRole !== 'super_admin';
   }
-  
+
   return managerIndex > targetIndex;
 }
 
@@ -164,7 +140,7 @@ export async function validateAdminSession(email: string | null | undefined): Pr
       .select('is_banned')
       .eq('email', email)
       .single();
-    
+
     if (banData?.is_banned) {
       return { isValid: false, error: 'Account is suspended' };
     }

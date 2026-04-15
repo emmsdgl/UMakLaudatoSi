@@ -21,7 +21,7 @@ BEGIN
     
     -- Add updated constraint with all roles
     ALTER TABLE users ADD CONSTRAINT users_role_check 
-        CHECK (role IN ('student', 'employee', 'guest', 'admin', 'canteen_admin', 'finance_admin', 'sa_admin', 'super_admin'));
+        CHECK (role IN ('student', 'employee', 'guest', 'canteen_admin', 'admin', 'super_admin'));
 EXCEPTION
     WHEN OTHERS THEN NULL;
 END $$;
@@ -64,7 +64,7 @@ USING (
     EXISTS (
         SELECT 1 FROM users 
         WHERE users.id = auth.uid() 
-        AND users.role IN ('admin', 'canateen_admin', 'finance_admin', 'sa_admin', 'super_admin')
+        AND users.role IN ('canteen_admin', 'admin', 'super_admin')
     )
 );
 
@@ -77,7 +77,7 @@ USING (
     EXISTS (
         SELECT 1 FROM users 
         WHERE users.id = auth.uid() 
-        AND users.role IN ('admin', 'canteen_admin', 'finance_admin', 'sa_admin', 'super_admin')
+        AND users.role IN ('canteen_admin', 'admin', 'super_admin')
     )
 );
 
@@ -91,8 +91,8 @@ USING (
     OR EXISTS (
         SELECT 1 FROM users 
         WHERE users.id = auth.uid() 
-        AND users.role IN ('admin', 'canteen_admin', 'finance_admin', 'sa_admin', 'super_admin')
+        AND users.role IN ('canteen_admin', 'admin', 'super_admin')
     )
 );
 
-COMMENT ON COLUMN users.role IS 'User role: student, employee, guest, admin, canteen_admin, finance_admin, sa_admin, or super_admin';
+COMMENT ON COLUMN users.role IS 'User role: student, employee, guest, canteen_admin, admin, or super_admin';

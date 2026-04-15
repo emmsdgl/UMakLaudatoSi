@@ -48,8 +48,7 @@ const roleBadgeColors: Record<string, string> = {
   employee: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
   guest: 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300',
   canteen_admin: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
-  finance_admin: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
-  sa_admin: 'bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-400',
+  admin: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
   super_admin: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
 };
 
@@ -300,8 +299,7 @@ export default function AdminUsersPage() {
                 <SelectItem value="employee">Employees</SelectItem>
                 <SelectItem value="guest">Guests</SelectItem>
                 <SelectItem value="canteen_admin">Canteen Admin</SelectItem>
-                <SelectItem value="finance_admin">Finance Admin</SelectItem>
-                <SelectItem value="sa_admin">SA Admin</SelectItem>
+                <SelectItem value="admin">Admin</SelectItem>
                 <SelectItem value="super_admin">Super Admin</SelectItem>
               </SelectContent>
             </Select>
@@ -471,8 +469,7 @@ export default function AdminUsersPage() {
               <SelectItem value="student">Student</SelectItem>
               <SelectItem value="employee">Employee</SelectItem>
               <SelectItem value="canteen_admin">Canteen Admin</SelectItem>
-              <SelectItem value="finance_admin">Finance Admin</SelectItem>
-              <SelectItem value="sa_admin">SA Admin</SelectItem>
+              <SelectItem value="admin">Admin</SelectItem>
             </SelectContent>
           </Select>
           <DialogFooter>

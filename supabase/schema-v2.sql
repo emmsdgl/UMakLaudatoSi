@@ -17,7 +17,7 @@
 
 -- Add new columns to existing users table for role management and points
 ALTER TABLE users ADD COLUMN IF NOT EXISTS role TEXT DEFAULT 'student' 
-    CHECK (role IN ('student', 'employee', 'guest', 'admin', 'super_admin', 'canteen_admin', 'finance_admin'));
+    CHECK (role IN ('student', 'employee', 'guest', 'canteen_admin', 'admin', 'super_admin'));
 ALTER TABLE users ADD COLUMN IF NOT EXISTS department TEXT;
 ALTER TABLE users ADD COLUMN IF NOT EXISTS total_points INTEGER DEFAULT 0;
 ALTER TABLE users ADD COLUMN IF NOT EXISTS is_umak_verified BOOLEAN DEFAULT FALSE;

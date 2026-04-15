@@ -118,7 +118,7 @@ export default function ProfilePage() {
 
   // Check if user has an admin role
   const userRole = (session?.user as any)?.role;
-  const isAdmin = ['admin', 'canteen_admin', 'finance_admin', 'sa_admin', 'super_admin'].includes(userRole);
+  const isAdmin = ['canteen_admin', 'admin', 'super_admin'].includes(userRole);
 
   // State
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -550,14 +550,12 @@ export default function ProfilePage() {
           <LayoutDashboard className="w-4 h-4 mr-2" />
           Open Admin Dashboard
           <Badge variant="secondary" className="ml-2 bg-white/20 text-white text-[10px] px-1.5">
-            {userRole === 'admin' || userRole === 'super_admin'
+            {userRole === 'super_admin'
               ? 'Super Admin'
               : userRole === 'canteen_admin'
               ? 'Canteen Admin'
-              : userRole === 'finance_admin'
-              ? 'Finance Admin'
-              : userRole === 'sa_admin'
-              ? 'SA Admin'
+              : userRole === 'admin'
+              ? 'Admin'
               : userRole}
           </Badge>
         </Button>
