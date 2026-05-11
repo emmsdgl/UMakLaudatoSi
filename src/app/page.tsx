@@ -94,8 +94,12 @@ export default function Page() {
   useEffect(() => {
     if (status === 'authenticated' && session?.user?.email) {
       if (userRole) {
-        // User already has a role in the database — go straight to /home
-        router.push('/home');
+        // Admins bypass the student/employee dashboard and go straight to /admin
+        if (userRole === 'admin' || userRole === 'super_admin') {
+          router.push('/admin');
+        } else {
+          router.push('/home');
+        }
       } else {
         // New user with no role — show role selection modal
         setShowRoleSelection(true);

@@ -72,7 +72,10 @@ export default function PledgesPage() {
             My Pledges
           </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            Create pledges and upload proof to earn points
+            Commit to eco-actions, upload photo proof, and earn points.{' '}
+            <span className="font-medium text-green-700 dark:text-green-400">
+              Free — no payment needed.
+            </span>
           </p>
         </div>
         <Button
@@ -131,7 +134,8 @@ export default function PledgesPage() {
           <DialogHeader>
             <DialogTitle>Create New Pledge</DialogTitle>
             <DialogDescription>
-              What are you pledging to do for the environment?
+              A pledge is a real-world eco-action you commit to. Pledges are free — you
+              just upload a photo as proof to earn points.
             </DialogDescription>
           </DialogHeader>
 

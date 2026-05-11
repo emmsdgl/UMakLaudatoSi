@@ -35,6 +35,7 @@ import {
   Megaphone,
   Sprout,
   Zap,
+  Gamepad2,
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -634,7 +635,7 @@ export default function HomePage() {
       {/* Seed Streak Card - Weekly view with clickable redirect to Wordle */}
       {!stats?.is_guest && (
         <Card
-          className="border-0 shadow-md bg-white dark:bg-gray-800 cursor-pointer hover:shadow-lg transition-shadow"
+          className="group border-0 shadow-md bg-white dark:bg-gray-800 cursor-pointer hover:shadow-lg transition-shadow"
           onClick={() => router.push('/wordle')}
         >
           <CardContent className="p-5">
@@ -644,8 +645,10 @@ export default function HomePage() {
                 <Zap className="w-5 h-5 text-amber-500" />
                 <span className="font-semibold text-gray-800 dark:text-white">Streak</span>
               </div>
-              <span className="text-xs text-gray-400 flex items-center gap-1">
-                View Details <ArrowRight className="w-3 h-3" />
+              <span className="text-xs font-semibold inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 group-hover:bg-green-200 dark:group-hover:bg-green-900/50 transition-colors">
+                <Gamepad2 className="w-3.5 h-3.5" />
+                Play Eco-Wordle
+                <ArrowRight className="w-3 h-3" />
               </span>
             </div>
 

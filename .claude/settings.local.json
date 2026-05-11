@@ -16,7 +16,13 @@
       "Bash(cat:*)",
       "Bash(xargs grep -l \"dev\")",
       "Bash(find src/app/api -name \"route.ts\" -exec grep -l \"plant\\\\|tree\\\\|growth\\\\|stats\" {} ;)",
-      "Bash(xargs grep:*)"
+      "Bash(xargs grep:*)",
+      "Bash(python -c \"import openpyxl; print\\(openpyxl.__version__\\)\")",
+      "Bash(where python *)",
+      "Bash(cp \"LAUDATO SI' PLATFORM — User Evaluation Survey \\(Responses\\).xlsx\" \"/tmp/survey.xlsx\")",
+      "Read(//tmp/**)",
+      "Bash(node \"C:/Users/User/AppData/Local/Temp/parse_xlsx.mjs\")",
+      "Bash(node \"C:/Users/User/AppData/Local/Temp/analyze.mjs\")"
     ]
   }
 }

@@ -56,11 +56,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   // Determine nav items based on user role
   const userRole = (session?.user as any)?.role as string | undefined;
-  const navItems = userRole === 'canteen_admin'
-    ? canteenAdminNavItems
-    : userRole === 'super_admin'
-      ? defaultNavItems.filter(item => item.href !== '/wallet')
-      : defaultNavItems;
+  const navItems = userRole === 'canteen_admin' ? canteenAdminNavItems : defaultNavItems;
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -68,6 +64,13 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       router.push('/');
     }
   }, [status, router]);
+
+  // Admins don't share the student/employee dashboard — send them to /admin
+  useEffect(() => {
+    if (userRole === 'admin' || userRole === 'super_admin') {
+      router.replace('/admin');
+    }
+  }, [userRole, router]);
 
   // Redirect canteen_admin away from pages they shouldn't access
   useEffect(() => {

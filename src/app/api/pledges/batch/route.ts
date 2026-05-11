@@ -64,24 +64,43 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Check user has no un-graded eco-path pledges
-    const { count: ungraded } = await supabase
+    // Block only if user has un-graded pledges on a DIFFERENT eco-path
+    // (adding more actions to the same path is allowed)
+    const { data: ungradedPledges } = await supabase
       .from('pledge_albums')
-      .select('*', { count: 'exact', head: true })
+      .select('eco_path_id, title')
       .eq('user_id', userData.id)
       .eq('is_eco_path_pledge', true)
       .neq('status', 'graded');
 
-    if (ungraded && ungraded > 0) {
+    const otherPathPending = (ungradedPledges || []).find(
+      (p: any) => p.eco_path_id && p.eco_path_id !== eco_path_id
+    );
+    if (otherPathPending) {
       return NextResponse.json(
-        { success: false, error: 'Complete your current eco-path pledges before creating new ones.' },
+        { success: false, error: 'Complete your current eco-path pledges before switching to a different path.' },
+        { status: 400 }
+      );
+    }
+
+    // De-duplicate: skip actions the user already has as an un-deleted pledge on this path
+    const existingTitles = new Set(
+      (ungradedPledges || [])
+        .filter((p: any) => p.eco_path_id === eco_path_id)
+        .map((p: any) => p.title)
+    );
+    const newActions = (actions as string[]).filter(a => !existingTitles.has(a));
+
+    if (newActions.length === 0) {
+      return NextResponse.json(
+        { success: false, error: 'You already have pledges for all of the selected actions.' },
         { status: 400 }
       );
     }
 
     // Build insert rows
     const now = new Date().toISOString();
-    const rows = actions.map((action: string) => ({
+    const rows = newActions.map((action: string) => ({
       user_id: userData.id,
       title: action,
       description: null,

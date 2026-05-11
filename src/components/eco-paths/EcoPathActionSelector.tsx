@@ -17,6 +17,8 @@ import type { EcoPath, EcoPathId } from '@/types';
 
 interface EcoPathActionSelectorProps {
   path: EcoPath | null;
+  /** Action titles the user already has as un-deleted pledges on this path. */
+  existingActionTitles?: string[];
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onConfirm: (pathId: EcoPathId, selectedActions: string[]) => Promise<void>;
@@ -24,6 +26,7 @@ interface EcoPathActionSelectorProps {
 
 export default function EcoPathActionSelector({
   path,
+  existingActionTitles = [],
   open,
   onOpenChange,
   onConfirm,
@@ -33,7 +36,11 @@ export default function EcoPathActionSelector({
 
   if (!path) return null;
 
-  const allSelected = selected.size === path.suggested_actions.length;
+  const existingSet = new Set(existingActionTitles);
+  const availableActions = path.suggested_actions.filter(a => !existingSet.has(a));
+  const allSelected =
+    availableActions.length > 0 && selected.size === availableActions.length;
+  const noneAvailable = availableActions.length === 0;
 
   const toggleAction = (action: string) => {
     setSelected(prev => {
@@ -51,7 +58,7 @@ export default function EcoPathActionSelector({
     if (allSelected) {
       setSelected(new Set());
     } else {
-      setSelected(new Set(path.suggested_actions));
+      setSelected(new Set(availableActions));
     }
   };
 
@@ -85,30 +92,49 @@ export default function EcoPathActionSelector({
           </div>
           <DialogTitle>Choose Your Pledges</DialogTitle>
           <DialogDescription>
-            Select which actions you want to commit to. Each one becomes a separate pledge album.
+            Select which actions you want to commit to. Each one becomes a separate pledge
+            album — all free, you just upload photo proof to earn points.
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-2 py-2">
-          {path.suggested_actions.map((action, i) => (
-            <label
-              key={i}
-              className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
-                selected.has(action)
-                  ? 'border-green-300 bg-green-50 dark:border-green-700 dark:bg-green-900/20'
-                  : 'border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600'
-              }`}
-            >
-              <Checkbox
-                checked={selected.has(action)}
-                onCheckedChange={() => toggleAction(action)}
-                className="mt-0.5"
-              />
-              <span className="text-sm text-gray-700 dark:text-gray-300 flex-1">
-                {action}
-              </span>
-            </label>
-          ))}
+          {path.suggested_actions.map((action, i) => {
+            const alreadyPledged = existingSet.has(action);
+            const isChecked = selected.has(action);
+            return (
+              <label
+                key={i}
+                className={`flex items-start gap-3 p-3 rounded-lg border transition-colors ${
+                  alreadyPledged
+                    ? 'border-gray-200 bg-gray-100 dark:border-gray-700 dark:bg-gray-900 cursor-not-allowed opacity-70'
+                    : isChecked
+                    ? 'border-green-300 bg-green-50 dark:border-green-700 dark:bg-green-900/20 cursor-pointer'
+                    : 'border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600 cursor-pointer'
+                }`}
+              >
+                <Checkbox
+                  checked={alreadyPledged ? true : isChecked}
+                  disabled={alreadyPledged}
+                  onCheckedChange={() => !alreadyPledged && toggleAction(action)}
+                  className="mt-0.5"
+                />
+                <span className="text-sm text-gray-700 dark:text-gray-300 flex-1">
+                  {action}
+                </span>
+                {alreadyPledged && (
+                  <span className="text-[10px] uppercase font-semibold tracking-wide px-1.5 py-0.5 rounded bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 mt-0.5">
+                    Already pledged
+                  </span>
+                )}
+              </label>
+            );
+          })}
+          {noneAvailable && (
+            <p className="text-sm text-center text-gray-500 dark:text-gray-400 py-4">
+              You&apos;ve already pledged every action on this path. Complete or delete some
+              to free up slots.
+            </p>
+          )}
         </div>
 
         <DialogFooter className="flex-col sm:flex-row gap-2">
@@ -116,12 +142,13 @@ export default function EcoPathActionSelector({
             <button
               type="button"
               onClick={toggleAll}
-              className="text-xs text-green-600 dark:text-green-400 hover:underline"
+              disabled={noneAvailable}
+              className="text-xs text-green-600 dark:text-green-400 hover:underline disabled:opacity-40 disabled:no-underline disabled:cursor-not-allowed"
             >
               {allSelected ? 'Deselect All' : 'Select All'}
             </button>
             <span className="text-xs text-gray-500 dark:text-gray-400">
-              {selected.size} of {path.suggested_actions.length} selected
+              {selected.size} of {availableActions.length} available
             </span>
           </div>
           <div className="flex gap-2">

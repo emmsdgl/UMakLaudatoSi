@@ -44,7 +44,7 @@ const tourSteps: TourStep[] = [
     icon: <BookOpen className="w-8 h-8 text-emerald-600" />,
     title: 'Make Daily Pledges',
     description:
-      'This is the Pledges page. Commit to eco-friendly actions every day, upload proof photos, and earn points for each pledge you complete.',
+      'This is the Pledges page. Commit to eco-friendly actions every day, upload proof photos, and earn points for each pledge you complete — completely free, no payment needed.',
     gradient: 'from-emerald-400 to-teal-500',
     iconBg: 'bg-emerald-100 dark:bg-emerald-900/40',
     route: '/pledges',

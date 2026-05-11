@@ -20,7 +20,7 @@ export default function EcoPathsPage() {
   const { toast } = useToast();
   const { summary, loading, selectEcoPath } = useCarbonFootprint();
   const { progress, canSwitchPath, loading: progressLoading, refetch: refetchProgress } = useEcoPathProgress();
-  const { createBatchPledges } = usePledges();
+  const { pledges, createBatchPledges } = usePledges();
 
   const [selectedPath, setSelectedPath] = useState<EcoPath | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -215,7 +215,7 @@ export default function EcoPathsPage() {
       <EcoPathDetailDialog
         path={selectedPath}
         isActive={selectedPath ? activePathId === selectedPath.id : false}
-        isLocked={!canSwitchPath}
+        isLocked={!canSwitchPath && selectedPath?.id !== progress?.eco_path_id}
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         onSelect={handleSelectPath}
@@ -224,6 +224,13 @@ export default function EcoPathsPage() {
       {/* Action selector dialog (Step 2: pick pledges) */}
       <EcoPathActionSelector
         path={selectedPath}
+        existingActionTitles={
+          selectedPath
+            ? pledges
+                .filter(p => p.eco_path_id === selectedPath.id && p.status !== 'graded')
+                .map(p => p.title)
+            : []
+        }
         open={actionSelectorOpen}
         onOpenChange={setActionSelectorOpen}
         onConfirm={handleConfirmActions}

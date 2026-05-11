@@ -86,11 +86,25 @@ export default function EcoPathDetailDialog({
 
           {/* Select button */}
           {isActive ? (
-            <div className="p-3 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
-              <p className="text-sm text-green-700 dark:text-green-400 flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4" />
-                This is your current eco-path
-              </p>
+            <div className="space-y-3">
+              <div className="p-3 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
+                <p className="text-sm text-green-700 dark:text-green-400 flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4" />
+                  This is your current eco-path
+                </p>
+              </div>
+              <Button
+                onClick={handleSelect}
+                disabled={selecting}
+                className="w-full bg-green-600 hover:bg-green-700 text-white h-11"
+              >
+                {selecting ? (
+                  <Loader2 className="w-4 h-4 mr-1.5 animate-spin" />
+                ) : (
+                  <Sparkles className="w-4 h-4 mr-1.5" />
+                )}
+                Add More Pledges
+              </Button>
             </div>
           ) : isLocked ? (
             <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
